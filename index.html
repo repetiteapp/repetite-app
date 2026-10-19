@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Repetite · Know what to lift. Know what to eat.</title>
-<meta name="description" content="Repetite plans your next workout and your daily food targets, then adjusts both as you make progress. Food and training in one iPhone app, with your logs kept on your phone.">
+<meta name="description" content="Repetite plans your next workout and your daily food targets, then adjusts both as you make progress. Smart reminders, a rest alarm that rings on time, and an AI coach, with your logs kept on your iPhone.">
 <meta name="theme-color" content="#FAF8F6" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E0C0B" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="images/icon-64.png" type="image/png">
@@ -15,228 +15,462 @@
 <meta property="og:image" content="https://repetiteapp.github.io/repetite-app/images/og.png">
 <meta property="og:url" content="https://repetiteapp.github.io/repetite-app/">
 <meta name="twitter:card" content="summary_large_image">
+<script>(function(){try{var t=localStorage.getItem("repetite-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}document.documentElement.classList.add("js");})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="style.css">
+<script src="site.js" defer></script>
 </head>
 <body>
-
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
-    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></symbol>
-    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></symbol>
-    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></symbol>
-    <symbol id="i-barcode" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6v12M8 6v12M11 6v12M15 6v12M18 6v12M20.5 6v12"/></symbol>
-    <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 8h3l1.6-2.4h6.8L17 8h3v11H4z"/><circle cx="12" cy="13.2" r="3.4"/></symbol>
-    <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.8" fill="currentColor"/></symbol>
-    <symbol id="i-timer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9.5M9.5 2.5h5"/></symbol>
-    <symbol id="i-weights" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3.5 9.5v5M6.5 7.5v9M17.5 7.5v9M20.5 9.5v5M6.5 12h11"/></symbol>
-    <symbol id="i-trend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 17l5.5-5.5 3.5 3.5 7-7.5"/><path d="M15 7.5h4.5V12"/></symbol>
-    <symbol id="i-scale" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="4"/><path d="M9 10.5a3 3 0 016 0z"/></symbol>
-    <symbol id="i-spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9zM18.5 15.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></symbol>
-    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 16.5V11a6 6 0 0112 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2 2 0 004 0" stroke-linecap="round"/></symbol>
-    <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="17" height="7" rx="2"/></symbol>
-    <symbol id="i-wave" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12h1M7 8v8M11 5v14M15 8.5v7M19 10.5v3"/></symbol>
-    <symbol id="i-heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.5l-1.3-1.2C6 15.1 3 12.4 3 9a4.6 4.6 0 018.2-2.9L12 7l.8-.9A4.6 4.6 0 0121 9c0 3.4-3 6.1-7.7 10.3z"/></symbol>
-    <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M7 18.5h10.5a4 4 0 00.6-7.95A6 6 0 006.6 9.7 4.4 4.4 0 007 18.5z"/></symbol>
-    <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9.5 6.5h11M9.5 12h11M9.5 17.5h11"/><path d="M3.5 6.5l1.2 1.2 2-2.4M3.5 12l1.2 1.2 2-2.4M3.5 17.5l1.2 1.2 2-2.4" stroke-linejoin="round"/></symbol>
-    <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19.5 14.5A8 8 0 019.5 4.5a8 8 0 1010 10z"/></symbol>
-    <symbol id="i-import" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M7.5 10l4.5 4.5 4.5-4.5M4.5 16.5v3h15v-3"/></symbol>
-    <symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3l18 18M10.6 6.1A10 10 0 0112 6c5 0 8.5 4.5 9.5 6a17 17 0 01-2.7 3.2M6.4 7.6A16.7 16.7 0 002.5 12c1 1.5 4.5 6 9.5 6a9.3 9.3 0 004.2-1"/></symbol>
-    <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/></symbol>
-    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 6.5h15M9.5 6.5V4h5v2.5M6.5 6.5l1 14h9l1-14"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5 10-11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></g></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></g></symbol>
+    <symbol id="i-barcode" viewBox="0 0 24 24"><path d="M4 6v12M8 6v12M11 6v12M15 6v12M18 6v12M20.5 6v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 8h3l1.6-2.4h6.8L17 8h3v11H4z"/><circle cx="12" cy="13.2" r="3.4"/></g></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/></g><circle cx="12" cy="12" r="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-timer" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9.5M9.5 2.5h5"/></g></symbol>
+    <symbol id="i-weights" viewBox="0 0 24 24"><path d="M3.5 9.5v5M6.5 7.5v9M17.5 7.5v9M20.5 9.5v5M6.5 12h11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-trend" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 17l5.5-5.5 3.5 3.5 7-7.5"/><path d="M15 7.5h4.5V12"/></g></symbol>
+    <symbol id="i-scale" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="4"/><path d="M9 10.5a3 3 0 016 0z"/></g></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9zM18.5 15.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 16.5V11a6 6 0 0112 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2 2 0 004 0" stroke-linecap="round"/></g></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="17" height="7" rx="2"/></g></symbol>
+    <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 12h1M7 8v8M11 5v14M15 8.5v7M19 10.5v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path fill="currentColor" d="M12 20.5l-1.3-1.2C6 15.1 3 12.4 3 9a4.6 4.6 0 018.2-2.9L12 7l.8-.9A4.6 4.6 0 0121 9c0 3.4-3 6.1-7.7 10.3z"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 6.5h11M9.5 12h11M9.5 17.5h11"/><path d="M3.5 6.5l1.2 1.2 2-2.4M3.5 12l1.2 1.2 2-2.4M3.5 17.5l1.2 1.2 2-2.4"/></g></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.5A8 8 0 019.5 4.5a8 8 0 1010 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></g></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A10 10 0 0112 6c5 0 8.5 4.5 9.5 6a17 17 0 01-2.7 3.2M6.4 7.6A16.7 16.7 0 002.5 12c1 1.5 4.5 6 9.5 6a9.3 9.3 0 004.2-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/></g></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 6.5h15M9.5 6.5V4h5v2.5M6.5 6.5l1 14h9l1-14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 21c-3.6 0-6.5-2.6-6.5-6.2 0-3.4 2.6-5.4 3.8-8.3.4 1.6 1.4 2.6 2.4 3 .3-2.6 1.6-5 3.4-6.5-.2 2.6 1 4.6 2.2 6.3A7.5 7.5 0 0118.5 14.8C18.5 18.4 15.6 21 12 21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-8 5-13 15-14-.5 10-5.5 15-13.5 15"/><path d="M5 19l7-7"/></g></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></g></symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3.5l3 3-3 3"/><path d="M20 6.5H8.5A4.5 4.5 0 004 11v.5M7 20.5l-3-3 3-3"/><path d="M4 17.5h11.5A4.5 4.5 0 0020 13v-.5"/></g></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3.5l8.5 4.5-8.5 4.5L3.5 8z"/><path d="M3.5 12.5l8.5 4.5 8.5-4.5M3.5 16.5l8.5 4.5 8.5-4.5"/></g></symbol>
+    <symbol id="i-scope" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7.5"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></g></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></g></symbol>
+    <symbol id="i-tap" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 11V5.5a1.75 1.75 0 013.5 0V11"/><path d="M13 9.5a1.75 1.75 0 013.5 0V12a1.75 1.75 0 013.5 0v2.5a7 7 0 01-7 7h-.5a7 7 0 01-6-3.4L4 15.4a1.8 1.8 0 012.9-2.1l2.6 2.7"/></g></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 018 0v2.5"/></g></symbol>
+    <symbol id="i-flash" viewBox="0 0 24 24"><path d="M9 2.5h6l-1 5h3.5L9.5 21.5 11 12H7.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-speaker" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 010 6M18 6.5a7.5 7.5 0 010 11"/></g></symbol>
+    <symbol id="i-music" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5.5l11-2V16"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></g></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M7 4.5v15a1 1 0 001.5.9l12-7.5a1 1 0 000-1.8l-12-7.5A1 1 0 007 4.5z"/></symbol>
+    <symbol id="i-swap" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.5l3.5 3.5-3.5 3.5M20 7H8M7.5 20.5L4 17l3.5-3.5M4 17h12"/></g></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 6.5A3 3 0 017 3.5h10a3 3 0 013 3v7a3 3 0 01-3 3h-6l-4.5 4v-4H7a3 3 0 01-3-3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-fork" viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9M5 3v5M9 3v5M16.5 21V3.5c-2 0-3.5 2.5-3.5 6.5v3h3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   </defs>
 </svg>
-
-<header class="site-header">
-  <div class="wrap">
-    <a class="brand" href="./"><img src="images/icon-64.png" alt="" width="30" height="30">Repetite</a>
-    <nav class="nav" aria-label="Sections">
-      <a href="#food">Food</a>
-      <a href="#training">Training</a>
-      <a href="#progress">Progress</a>
-      <a href="#privacy">Privacy</a>
-      <a href="#compare">Compare</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#faq">FAQ</a>
-    </nav>
-    <a class="pill-soon" href="#pricing"><svg><use href="#i-phone"/></svg>Coming soon</a>
+<div class="nav-shell">
+  <nav class="glass-nav glass" aria-label="Main">
+    <a class="brand" href="#top"><img src="images/icon-64.png" alt="" width="28" height="28">Repetite</a>
+    <div class="nav-links"><span class="nav-indicator" aria-hidden="true"></span><a href="#tour">Tour</a><a href="#reminders">Reminders</a><a href="#rest">Rest timer</a><a href="#coach">Coach</a><a href="#privacy">Privacy</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a></div>
+    <div class="nav-actions">
+      <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span class="tt-bar"></span><span class="tt-plate"><span class="tt-ring"></span><svg class="tt-sun" aria-hidden="true"><use href="#i-sun"/></svg><svg class="tt-moon" aria-hidden="true"><use href="#i-moon"/></svg></span></button>
+      <a class="nav-cta" href="#pricing"><svg aria-hidden="true"><use href="#i-phone"/></svg>Coming soon</a>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Menu"><span></span></button>
+    </div>
+  </nav>
+  <div class="nav-menu glass" id="nav-menu" hidden>
+    <a href="#tour">Tour</a>
+    <a href="#reminders">Reminders</a>
+    <a href="#rest">Rest timer</a>
+    <a href="#coach">Coach</a>
+    <a href="#privacy">Privacy</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#faq">FAQ</a>
   </div>
-</header>
+</div>
 
 <main>
 
-<section class="hero" aria-labelledby="hero-title">
+<section class="hero" id="top" aria-labelledby="hero-title">
   <div class="wrap">
     <div>
       <span class="eyebrow">For iPhone · Coming soon to the App Store</span>
-      <h1 id="hero-title">Know what to lift.<br><span>Know what to eat.</span></h1>
-      <p class="lede">Repetite plans your next workout and your daily food targets, then adjusts both as you make progress. Log a meal in seconds, train with a target for every set, and keep your data on your iPhone.</p>
+      <h1 id="hero-title">Know what to lift.<br><span class="accent">Know what to eat.</span></h1>
+      <p class="lede">Repetite plans your next workout and your daily food targets, then adjusts both as you make progress. It reminds you only when something's missing, and keeps your data on your iPhone.</p>
       <div class="cta-row">
         <a class="btn btn-dark" href="#pricing" aria-label="Coming soon to the App Store">
-          <svg><use href="#i-phone"/></svg>
+          <svg aria-hidden="true"><use href="#i-phone"/></svg>
           <span><small>Coming soon to the</small><strong>App Store</strong></span>
         </a>
-        <a class="btn btn-ghost" href="#food">See what it does</a>
+        <a class="btn btn-ghost" href="#tour">Take the tour</a>
       </div>
       <div class="promises">
-        <span><svg><use href="#i-check"/></svg>No ads</span>
-        <span><svg><use href="#i-check"/></svg>No account needed</span>
-        <span><svg><use href="#i-check"/></svg>Your logs stay on your iPhone</span>
+        <span><svg aria-hidden="true"><use href="#i-check"/></svg>No ads</span>
+        <span><svg aria-hidden="true"><use href="#i-check"/></svg>No account needed</span>
+        <span><svg aria-hidden="true"><use href="#i-check"/></svg>Your logs stay on your iPhone</span>
       </div>
     </div>
-    <div class="hero-phones" aria-label="Repetite on iPhone">
-      <div class="phone p2"><picture><source srcset="images/workout-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/workout-light.webp" width="603" height="1311" alt="A workout in progress: Back Squat, 237 lb for 8 reps, with the rest timer and last time's numbers"></picture></div>
-      <div class="phone p1"><picture><source srcset="images/today-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/today-light.webp" width="603" height="1311" alt="The Today screen: 831 kcal left, protein, carbs and fat, today's Upper workout, water, weight and sleep"></picture></div>
-      <div class="phone p3"><picture><source srcset="images/food-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/food-light.webp" width="603" height="1311" alt="The Food tab: calories and macros left today, then breakfast and lunch with each food"></picture></div>
+    <div class="hero-phones">
+      <div class="phone p2"><span class="shot"><img class="l" src="images/workout-light.webp" width="603" height="1311" alt="A workout in progress: Back Squat, 237 lb for 8 reps, with the rest timer" decoding="async"><img class="d" src="images/workout-dark.webp" width="603" height="1311" alt="A workout in progress: Back Squat, 237 lb for 8 reps, with the rest timer" loading="lazy" decoding="async"></span></div>
+      <div class="phone p1"><span class="shot"><img class="l" src="images/today-light.webp" width="603" height="1311" alt="The Today screen: 831 kcal left, macros, today&#x27;s Upper workout, water, weight and sleep" decoding="async"><img class="d" src="images/today-dark.webp" width="603" height="1311" alt="The Today screen: 831 kcal left, macros, today&#x27;s Upper workout, water, weight and sleep" loading="lazy" decoding="async"></span></div>
+      <div class="phone p3"><span class="shot"><img class="l" src="images/food-light.webp" width="603" height="1311" alt="The Food tab: calories and macros left, then each meal and its foods" decoding="async"><img class="d" src="images/food-dark.webp" width="603" height="1311" alt="The Food tab: calories and macros left, then each meal and its foods" loading="lazy" decoding="async"></span></div>
+      <div class="float-chip c2 glass" aria-hidden="true">
+        <span class="fc-ic"><svg><use href="#i-bell"/></svg></span>
+        <span><strong>Upper day today</strong><span>5:30 PM · 7 exercises, about 55 min</span></span>
+      </div>
+      <div class="float-chip c1 glass" aria-hidden="true">
+        <span class="fc-ic"><svg><use href="#i-timer"/></svg></span>
+        <span><strong>Rest's up</strong><span>Next: Set 2 · Bench Press</span></span>
+      </div>
     </div>
   </div>
 </section>
 
 <section class="facts" aria-label="At a glance">
   <div class="wrap">
-    <div class="fact"><b>12,700+</b><span>foods built in, offline</span></div>
-    <div class="fact"><b>1 app</b><span>for food and training</span></div>
-    <div class="fact"><b>0</b><span>ads and trackers</span></div>
-    <div class="fact"><b>On time</b><span>rest alarm, even on silent</span></div>
+    <div class="fact reveal"><b data-count="12774">12,774</b><span>foods built in, even offline</span></div>
+    <div class="fact reveal"><b data-count="3">3</b><span>reminders a day at most</span></div>
+    <div class="fact reveal"><b data-count="0">0</b><span>ads and trackers</span></div>
+    <div class="fact reveal"><b data-count="1">1</b><span>app for food and training</span></div>
   </div>
 </section>
 
-<section class="feature" id="food" aria-labelledby="food-title">
+<section class="section" id="tour" aria-labelledby="tour-title">
   <div class="wrap">
-    <div class="copy">
-      <span class="eyebrow">Food</span>
-      <h2 id="food-title">Log a meal in the time it takes to eat a bite.</h2>
-      <p>Type it the way you'd say it, scan the packet or take a photo. Repetite finds the food, works out the portion and keeps a running count of what's left today.</p>
-      <ul class="points">
-        <li><span class="ic"><svg><use href="#i-search"/></svg></span><div><strong>Search 12,700+ foods, even offline</strong><span>Type "2 eggs" or "rice 150 g" and the amount is understood. Indian dishes included.</span></div></li>
-        <li><span class="ic"><svg><use href="#i-barcode"/></svg></span><div><strong>Scan a barcode</strong><span>Packaged food from Open Food Facts, saved for next time.</span></div></li>
-        <li><span class="ic"><svg><use href="#i-camera"/></svg></span><div><strong>Snap a meal, or say it</strong><span>AI reads the plate or what you said and fills in the numbers for you to check.</span></div></li>
-        <li><span class="ic"><svg><use href="#i-list"/></svg></span><div><strong>Your usual, in one tap</strong><span>Recent foods, saved meals, and meal plans you can put on any day.</span></div></li>
-      </ul>
+    <div class="section-head center reveal">
+      <span class="eyebrow">A day with Repetite</span>
+      <h2 id="tour-title">From breakfast to your last set, in one app.</h2>
+      <p>Most people use one app for food and another for the gym. Repetite does both, and each side knows what the other is doing.</p>
     </div>
-    <div class="shots">
-      <div class="phone"><picture><source srcset="images/search-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/search-light.webp" width="603" height="1311" loading="lazy" alt="Food search for chicken showing several chicken foods with calories and protein"></picture></div>
-      <div class="phone"><picture><source srcset="images/food-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/food-light.webp" width="603" height="1311" loading="lazy" alt="The day's meals with calories, protein, carbs and fat for each food"></picture></div>
+    <div class="tour-tabs reveal">
+      <div class="segmented" role="tablist" aria-label="App tour">
+        <span class="seg-pill" aria-hidden="true"></span>
+        <button role="tab" id="tab-today" data-tab="today" aria-controls="panel-today" aria-selected="true">Today</button>
+        <button role="tab" id="tab-log" data-tab="log" aria-controls="panel-log" aria-selected="false" tabindex="-1">Log food</button>
+        <button role="tab" id="tab-meals" data-tab="meals" aria-controls="panel-meals" aria-selected="false" tabindex="-1">Meals</button>
+        <button role="tab" id="tab-train" data-tab="train" aria-controls="panel-train" aria-selected="false" tabindex="-1">Train</button>
+        <button role="tab" id="tab-progress" data-tab="progress" aria-controls="panel-progress" aria-selected="false" tabindex="-1">Progress</button>
+      </div>
     </div>
-  </div>
-</section>
-
-<section class="feature flip" id="training" aria-labelledby="training-title">
-  <div class="wrap">
-    <div class="copy">
-      <span class="eyebrow">Training</span>
-      <h2 id="training-title">A target for every set.</h2>
-      <p>Repetite remembers what you lifted last time and suggests what to beat today, so every session moves you forward.</p>
-      <ul class="points">
-        <li><span class="ic"><svg><use href="#i-target"/></svg></span><div><strong>Next-session targets</strong><span>The weight and reps to aim for on every lift, from your own history.</span></div></li>
-        <li><span class="ic"><svg><use href="#i-timer"/></svg></span><div><strong>A rest timer that rings on time</strong><span>Even on silent and with the phone locked, with a countdown on the Lock Screen and in the Dynamic Island.</span></div></li>
-        <li><span class="ic"><svg><use href="#i-weights"/></svg></span><div><strong>Plates, supersets and drop sets</strong><span>The plates for each side of the bar, and the way you really train.</span></div></li>
-        <li><span class="ic"><svg><use href="#i-import"/></svg></span><div><strong>Bring your history</strong><span>Import your workouts from Hevy or Strong, and start where you left off.</span></div></li>
-      </ul>
-    </div>
-    <div class="shots">
-      <div class="phone"><picture><source srcset="images/workout-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/workout-light.webp" width="603" height="1311" loading="lazy" alt="Logging a set of Back Squat with the rest timer, minus and plus 15 seconds, and plates per side"></picture></div>
-      <div class="phone"><picture><source srcset="images/summary-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/summary-light.webp" width="603" height="1311" loading="lazy" alt="Workout done: 18 sets, two new bests, and next time's targets for each lift"></picture></div>
-    </div>
-  </div>
-</section>
-
-<section class="feature" id="progress" aria-labelledby="progress-title">
-  <div class="wrap">
-    <div class="copy">
-      <span class="eyebrow">Progress</span>
-      <h2 id="progress-title">Targets that follow your real results.</h2>
-      <p>Each week Repetite compares your weight trend with your plan and suggests new calories when you stall. You see where you're heading, and when you'll get there.</p>
-      <ul class="points">
-        <li><span class="ic"><svg><use href="#i-scale"/></svg></span><div><strong>Your weight trend and goal date</strong><span>A steady line through the daily ups and downs.</span></div></li>
-        <li><span class="ic"><svg><use href="#i-trend"/></svg></span><div><strong>Strength that adds up</strong><span>Your estimated best on every lift, and how it's moving.</span></div></li>
-        <li><span class="ic"><svg><use href="#i-spark"/></svg></span><div><strong>A coach that knows your numbers</strong><span>Ask about your food and training. It can suggest a change; nothing happens until you tap Apply.</span></div></li>
-      </ul>
-    </div>
-    <div class="shots">
-      <div class="phone"><picture><source srcset="images/progress-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/progress-light.webp" width="603" height="1311" loading="lazy" alt="Progress: body weight trend toward a goal, the weekly check-in, and strength trends"></picture></div>
-      <div class="phone"><picture><source srcset="images/coach-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/coach-light.webp" width="603" height="1311" loading="lazy" alt="The AI coach answering with a meal's calories, protein, carbs and fat, and why it works"></picture></div>
-    </div>
-  </div>
-</section>
-
-<section class="more" aria-labelledby="more-title">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">And everything around it</span>
-      <h2 id="more-title">Built for every day, not just gym days.</h2>
-    </div>
-    <div class="grid">
-      <div class="card wide">
-        <div>
-          <span class="ic"><svg><use href="#i-bell"/></svg></span>
-          <h3>Reminders that know your day</h3>
-          <p>A nudge only when something's missing: a meal you usually log, protein that's short before dinner, or the workout you planned. Never more than three a day, and never during your quiet hours.</p>
+    <div class="tour-body reveal">
+      <div class="tour-phone">
+        <div class="phone"><div class="stack">
+          <span class="shot on" data-tab="today"><img class="l" src="images/today-light.webp" width="603" height="1311" alt="The Today screen with calories left, today&#x27;s workout, water, weight and sleep" loading="lazy" decoding="async"><img class="d" src="images/today-dark.webp" width="603" height="1311" alt="The Today screen with calories left, today&#x27;s workout, water, weight and sleep" loading="lazy" decoding="async"></span>
+          <span class="shot" data-tab="log"><img class="l" src="images/search-light.webp" width="603" height="1311" alt="Food search for chicken, with calories and protein for each result" loading="lazy" decoding="async"><img class="d" src="images/search-dark.webp" width="603" height="1311" alt="Food search for chicken, with calories and protein for each result" loading="lazy" decoding="async"></span>
+          <span class="shot" data-tab="meals"><img class="l" src="images/food-light.webp" width="603" height="1311" alt="The day&#x27;s meals with calories, protein, carbs and fat for each food" loading="lazy" decoding="async"><img class="d" src="images/food-dark.webp" width="603" height="1311" alt="The day&#x27;s meals with calories, protein, carbs and fat for each food" loading="lazy" decoding="async"></span>
+          <span class="shot" data-tab="train"><img class="l" src="images/workout-light.webp" width="603" height="1311" alt="Logging a set of Back Squat, with the rest timer and plates per side" loading="lazy" decoding="async"><img class="d" src="images/workout-dark.webp" width="603" height="1311" alt="Logging a set of Back Squat, with the rest timer and plates per side" loading="lazy" decoding="async"></span>
+          <span class="shot" data-tab="progress"><img class="l" src="images/progress-light.webp" width="603" height="1311" alt="Progress: weight trend toward a goal, the weekly check-in and strength trends" loading="lazy" decoding="async"><img class="d" src="images/progress-dark.webp" width="603" height="1311" alt="Progress: weight trend toward a goal, the weekly check-in and strength trends" loading="lazy" decoding="async"></span>
+        </div></div>
+      </div>
+      <div>
+        <div class="tour-panel" role="tabpanel" id="panel-today" aria-labelledby="tab-today">
+          <h3>Your whole day on one screen.</h3>
+          <p>Open the app and see what's left to eat, what you're training, and how you slept, before you've scrolled.</p>
+          <ul class="points">
+            <li><span class="ic"><svg><use href="#i-target"/></svg></span><div><strong>What's left to eat</strong><span>Calories, protein, carbs and fat, counting down as you log.</span></div></li>
+            <li><span class="ic"><svg><use href="#i-weights"/></svg></span><div><strong>Today's workout, one tap away</strong><span>Start it from Today, or see when your next session is.</span></div></li>
+            <li><span class="ic"><svg><use href="#i-heart"/></svg></span><div><strong>Your watch, built in</strong><span>Sleep, resting heart rate, steps and calories burned from Apple Health.</span></div></li>
+            <li><span class="ic"><svg><use href="#i-flame"/></svg></span><div><strong>A streak that keeps you going</strong><span>Days logged in a row, right at the top.</span></div></li>
+          </ul>
         </div>
-        <picture><source srcset="images/reminders-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/reminders-light.webp" width="560" height="666" loading="lazy" alt="Coming up: an Upper day reminder at 5:30 PM, a protein reminder at 7:15 PM, and tomorrow's reminders"></picture>
+        <div class="tour-panel" role="tabpanel" id="panel-log" aria-labelledby="tab-log" hidden>
+          <h3>Log a meal in the time it takes to eat a bite.</h3>
+          <p>Type it the way you'd say it, scan the packet or take a photo. Repetite finds the food and works out the portion.</p>
+          <ul class="points">
+            <li><span class="ic"><svg><use href="#i-search"/></svg></span><div><strong>12,774 foods, even offline</strong><span>Type "2 eggs" or "rice 150 g" and the amount is understood. Indian dishes included.</span></div></li>
+            <li><span class="ic"><svg><use href="#i-barcode"/></svg></span><div><strong>Scan a barcode</strong><span>Packaged food from Open Food Facts, saved for next time.</span></div></li>
+            <li><span class="ic"><svg><use href="#i-camera"/></svg></span><div><strong>Snap a meal, or say it</strong><span>AI reads the plate or what you said, and fills in the numbers for you to check.</span></div></li>
+            <li><span class="ic"><svg><use href="#i-spark"/></svg></span><div><strong>AI when it isn't in the database</strong><span>An estimate for anything else, saved so you never ask twice.</span></div></li>
+          </ul>
+        </div>
+        <div class="tour-panel" role="tabpanel" id="panel-meals" aria-labelledby="tab-meals" hidden>
+          <h3>Every meal, every macro, at a glance.</h3>
+          <p>Your day by meal, with what each food added. Fix a portion in a tap, or log yesterday's lunch again.</p>
+          <ul class="points">
+            <li><span class="ic"><svg><use href="#i-list"/></svg></span><div><strong>Meals in the order you ate them</strong><span>Breakfast to dinner, with the time and the totals.</span></div></li>
+            <li><span class="ic"><svg><use href="#i-leaf"/></svg></span><div><strong>Vitamins and minerals</strong><span>See what your day adds up to, not just calories.</span></div></li>
+            <li><span class="ic"><svg><use href="#i-calendar"/></svg></span><div><strong>Meal plans</strong><span>Save a good day and put it on any other day.</span></div></li>
+            <li><span class="ic"><svg><use href="#i-repeat"/></svg></span><div><strong>Your usual, in one tap</strong><span>Recent foods and saved meals, logged again without searching.</span></div></li>
+          </ul>
+        </div>
+        <div class="tour-panel" role="tabpanel" id="panel-train" aria-labelledby="tab-train" hidden>
+          <h3>A target for every set.</h3>
+          <p>Repetite remembers what you lifted last time and suggests what to beat today, so every session moves you forward.</p>
+          <ul class="points">
+            <li><span class="ic"><svg><use href="#i-target"/></svg></span><div><strong>Next-session targets</strong><span>The weight and reps to aim for on every lift, from your own history.</span></div></li>
+            <li><span class="ic"><svg><use href="#i-timer"/></svg></span><div><strong>A rest timer that rings on time</strong><span>With a countdown on the Lock Screen and in the Dynamic Island.</span></div></li>
+            <li><span class="ic"><svg><use href="#i-weights"/></svg></span><div><strong>Plates for each side</strong><span>Load the bar without the maths.</span></div></li>
+            <li><span class="ic"><svg><use href="#i-layers"/></svg></span><div><strong>Warm-ups, drop sets, supersets</strong><span>And reps left in the tank, for the way you really train.</span></div></li>
+          </ul>
+        </div>
+        <div class="tour-panel" role="tabpanel" id="panel-progress" aria-labelledby="tab-progress" hidden>
+          <h3>See where you're heading, and when you'll get there.</h3>
+          <p>Each week Repetite compares your weight trend with your plan and suggests new calories when you stall.</p>
+          <ul class="points">
+            <li><span class="ic"><svg><use href="#i-scale"/></svg></span><div><strong>Your weight trend and goal date</strong><span>A steady line through the daily ups and downs.</span></div></li>
+            <li><span class="ic"><svg><use href="#i-scope"/></svg></span><div><strong>Weekly check-ins</strong><span>Calories that follow your real results.</span></div></li>
+            <li><span class="ic"><svg><use href="#i-trend"/></svg></span><div><strong>Strength that adds up</strong><span>Your estimated best on every lift, and how it's moving.</span></div></li>
+            <li><span class="ic"><svg><use href="#i-calendar"/></svg></span><div><strong>Every day on a calendar</strong><span>Tap any day for its meals and workout.</span></div></li>
+          </ul>
+        </div>
       </div>
-      <div class="card">
-        <span class="ic"><svg><use href="#i-grid"/></svg></span>
-        <h3>Widgets and controls</h3>
-        <p>Calories, macros, water and today's workout on your Home Screen and Lock Screen, with water and logging in Control Center.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="reminders" aria-labelledby="reminders-title">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Smart reminders</span>
+      <h2 id="reminders-title">Reminders that know what you've already done.</h2>
+      <p>Repetite plans each day's reminders from your own data, and plans again every time you log. You never hear about a meal you've eaten or a workout you've finished.</p>
+    </div>
+    <div class="reminders-grid">
+      <div class="lock reveal" id="lock-demo" aria-label="A Lock Screen showing a day of Repetite reminders">
+        <div class="lock-screen">
+          <span class="lock-island"></span>
+          <span class="lock-status" aria-hidden="true"><svg viewBox="0 0 18 11" fill="#fff"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="6" rx="1"/><rect x="10" y="2.5" width="3" height="8.5" rx="1"/><rect x="15" y="0" width="3" height="11" rx="1"/></svg><svg viewBox="0 0 16 11" fill="#fff"><path d="M8 2.2c2.2 0 4.2.8 5.7 2.2l1.3-1.3A10 10 0 008 .4 10 10 0 001 3.1l1.3 1.3A8.2 8.2 0 018 2.2zm0 3.4c1.3 0 2.5.5 3.4 1.3l1.3-1.3A6.6 6.6 0 008 3.8a6.6 6.6 0 00-4.7 1.8l1.3 1.3c.9-.8 2.1-1.3 3.4-1.3zM8 9l1.8 1.9L8 12.7 6.2 10.9z"/></svg><svg viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3.5" stroke="#fff" opacity="0.5"/><rect x="2.5" y="2.5" width="18" height="7" rx="2" fill="#fff"/><path d="M24 4v4c.8-.3 1.3-1.1 1.3-2S24.8 4.3 24 4z" fill="#fff" opacity="0.5"/></svg></span>
+          <div class="lock-date">Monday, October 19</div>
+          <div class="lock-time">7:15</div>
+          <ol class="notes" aria-live="polite">
+            <li class="note"><img src="images/icon-64.png" alt="" width="34" height="34"><div><div class="note-head"><b>REPETITE</b><span>now</span></div><strong>62 g protein to go today</strong><p>Ideas from what you eat: paneer bhurji (25 g) or Greek yogurt (20 g).</p></div><div class="note-actions"><span>Log food</span></div></li>
+            <li class="note"><img src="images/icon-64.png" alt="" width="34" height="34"><div><div class="note-head"><b>REPETITE</b><span>5:30 PM</span></div><strong>Upper day today</strong><p>7 exercises, about 55 min. Last time: Bench Press 80 kg × 8.</p></div></li>
+            <li class="note"><img src="images/icon-64.png" alt="" width="34" height="34"><div><div class="note-head"><b>REPETITE</b><span>9:00 AM</span></div><strong>No breakfast logged yet</strong><p>Your usual: oats, banana and whey (520 kcal). Log it in one tap, or add something else.</p></div></li>
+          </ol>
+          <div class="lock-bottom" aria-hidden="true"><span><svg><use href="#i-flash"/></svg></span><span><svg><use href="#i-camera"/></svg></span></div>
+          <span class="lock-home"></span>
+        </div>
       </div>
-      <div class="card">
+      <ul class="rules">
+        <li class="reveal"><span class="ic"><svg><use href="#i-clock"/></svg></span><strong>Your times, learned</strong><span>From the meals and workouts you log, not fixed alarms.</span></li>
+        <li class="reveal"><span class="ic"><svg><use href="#i-check"/></svg></span><strong>Cancelled when done</strong><span>Log lunch and the lunch reminder never comes.</span></li>
+        <li class="reveal"><span class="ic"><svg><use href="#i-bell"/></svg></span><strong>Three a day at most</strong><span>Food reminders at least 2 hours apart, and nothing in your quiet hours.</span></li>
+        <li class="reveal"><span class="ic"><svg><use href="#i-moon"/></svg></span><strong>Rest days stay quiet</strong><span>Never "go lift" on a rest day. At most, a nudge to walk.</span></li>
+        <li class="reveal"><span class="ic"><svg><use href="#i-tap"/></svg></span><strong>Buttons that do the job</strong><span>Log my usual, +1 glass or Start workout, right from the notification.</span></li>
+        <li class="reveal"><span class="ic"><svg><use href="#i-lock"/></svg></span><strong>Planned on your iPhone</strong><span>Nothing is sent anywhere to plan them. A kind you keep ignoring slows down.</span></li>
+      </ul>
+    </div>
+
+    <div class="tryit reveal" id="tryit">
+      <div>
+        <span class="eyebrow">Try it</span>
+        <h3>Tick something off and watch its reminder go.</h3>
+        <p class="sub">It's 12:00 PM on a training day.</p>
+        <div class="toggles">
+          <label class="switch-row"><span>Logged lunch<small>The lunch reminder is cancelled</small></span><input type="checkbox" data-done="lunch" id="try-lunch"></label>
+          <label class="switch-row"><span>Drank 2 glasses of water<small>No water check this afternoon</small></span><input type="checkbox" data-done="water" id="try-water"></label>
+          <label class="switch-row"><span>Finished today's workout<small>No workout reminder tonight</small></span><input type="checkbox" data-done="workout" id="try-workout"></label>
+          <label class="switch-row"><span>Hit 180 g protein<small>No protein reminder before dinner</small></span><input type="checkbox" data-done="protein" id="try-protein"></label>
+        </div>
+      </div>
+      <div class="coming" aria-live="polite">
+        <div class="coming-head"><strong>Coming up</strong><span>3 reminders</span></div>
+        <ol>
+          <li data-id="lunch"><time>1:30 PM</time><div><strong>No lunch logged yet</strong><span>Your usual: chicken burrito bowl (640 kcal).</span></div></li>
+          <li data-id="water"><time>3:00 PM</time><div><strong>Water check</strong><span>1.2 of 3 L so far today.</span></div></li>
+          <li data-id="workout"><time>5:30 PM</time><div><strong>Upper day today</strong><span>7 exercises, about 55 min.</span></div></li>
+          <li data-id="protein"><time>7:15 PM</time><div><strong>62 g protein to go today</strong><span>Ideas from what you eat: paneer bhurji (25 g).</span></div></li>
+        </ol>
+        <p class="empty" hidden>Nothing planned. You're on track.</p>
+        <p class="foot"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="rest" aria-labelledby="rest-title">
+  <div class="wrap">
+    <div class="rest-panel reveal">
+      <div>
+        <span class="eyebrow">Rest timer</span>
+        <h2 id="rest-title">Rest that rings on time, even on silent.</h2>
+        <p class="lead">When rest is over, your iPhone rings like a Clock timer, right on the second, locked or on silent. The countdown waits on your Lock Screen and in the Dynamic Island.</p>
+        <ul class="points">
+          <li><span class="ic"><svg><use href="#i-timer"/></svg></span><div><strong>−15 s, +15 s and Skip</strong><span>Change your rest from the Lock Screen, without unlocking.</span></div></li>
+          <li><span class="ic"><svg><use href="#i-weights"/></svg></span><div><strong>Rest that fits the lift</strong><span>Longer for heavy lifts, shorter for the rest, or a time for each exercise.</span></div></li>
+          <li><span class="ic"><svg><use href="#i-speaker"/></svg></span><div><strong>Your sound</strong><span>Five built-in sounds, or a clip of your own.</span></div></li>
+        </ul>
+        <div class="sounds">
+          <span class="sounds-label" id="sounds-label">Tap to hear</span>
+          <div class="sound-chips" role="group" aria-labelledby="sounds-label">
+            <button type="button" data-sound="done" aria-pressed="true"><svg><use href="#i-speaker"/></svg>Chime</button>
+            <button type="button" data-sound="bell" aria-pressed="false"><svg><use href="#i-speaker"/></svg>Bell</button>
+            <button type="button" data-sound="pulse" aria-pressed="false"><svg><use href="#i-speaker"/></svg>Pulse</button>
+            <button type="button" data-sound="rise" aria-pressed="false"><svg><use href="#i-speaker"/></svg>Rise</button>
+            <button type="button" data-sound="knock" aria-pressed="false"><svg><use href="#i-speaker"/></svg>Knock</button>
+            <span class="yours"><svg aria-hidden="true"><use href="#i-music"/></svg>Your own</span>
+          </div>
+        </div>
+      </div>
+      <div class="rest-demo" id="rest-demo">
+        <div class="lock" aria-label="A Lock Screen with the rest timer">
+          <div class="lock-screen">
+            <div class="island-live" aria-hidden="true">
+              <svg class="ring il-ring" viewBox="0 0 36 36"><circle class="bg" cx="18" cy="18" r="15"/><circle class="fg" cx="18" cy="18" r="15"/></svg>
+              <span class="il-time">0:20</span>
+            </div>
+            <span class="lock-status" aria-hidden="true"><svg viewBox="0 0 18 11" fill="#fff"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="6" rx="1"/><rect x="10" y="2.5" width="3" height="8.5" rx="1"/><rect x="15" y="0" width="3" height="11" rx="1"/></svg><svg viewBox="0 0 16 11" fill="#fff"><path d="M8 2.2c2.2 0 4.2.8 5.7 2.2l1.3-1.3A10 10 0 008 .4 10 10 0 001 3.1l1.3 1.3A8.2 8.2 0 018 2.2zm0 3.4c1.3 0 2.5.5 3.4 1.3l1.3-1.3A6.6 6.6 0 008 3.8a6.6 6.6 0 00-4.7 1.8l1.3 1.3c.9-.8 2.1-1.3 3.4-1.3zM8 9l1.8 1.9L8 12.7 6.2 10.9z"/></svg><svg viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3.5" stroke="#fff" opacity="0.5"/><rect x="2.5" y="2.5" width="18" height="7" rx="2" fill="#fff"/><path d="M24 4v4c.8-.3 1.3-1.1 1.3-2S24.8 4.3 24 4z" fill="#fff" opacity="0.5"/></svg></span>
+            <div class="lock-date">Tuesday, October 20</div>
+            <div class="lock-time">6:12</div>
+            <div class="live">
+              <div class="live-top">
+                <svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle class="bg" cx="18" cy="18" r="15"/><circle class="fg" cx="18" cy="18" r="15"/><path class="tick" d="M12 18.5l4 4 8-9"/></svg>
+                <div class="live-text"><b>Rest · Upper</b><span>Set 2 · Bench Press</span></div>
+                <div class="live-count" aria-live="off">0:20</div>
+              </div>
+              <div class="live-btns">
+                <button type="button" data-rest="minus" disabled>−15 s</button>
+                <button type="button" data-rest="plus" disabled>+15 s</button>
+                <button type="button" data-rest="skip" class="skip" disabled>Skip</button>
+              </div>
+            </div>
+            <div class="lock-bottom" aria-hidden="true"><span><svg><use href="#i-flash"/></svg></span><span><svg><use href="#i-camera"/></svg></span></div>
+            <span class="lock-home"></span>
+          </div>
+        </div>
+        <button type="button" class="btn btn-brand" id="rest-start"><svg width="18" height="18" aria-hidden="true"><use href="#i-play"/></svg>Start a 20-second rest</button>
+        <p class="rest-hint">Try −15 s and +15 s, just like on your Lock Screen. Turn your sound on to hear it ring.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="coach" aria-labelledby="coach-title">
+  <div class="wrap coach-grid">
+    <div class="reveal">
+      <span class="eyebrow">AI coach</span>
+      <h2 id="coach-title" class="h2">A coach that can make the change for you.</h2>
+      <p class="coach-lede">Ask about your food or training. It knows your targets, your last few weeks and your sleep. When a change would help, it proposes it, and nothing happens until you tap Apply.</p>
+      <ul class="points">
+        <li><span class="ic"><svg><use href="#i-target"/></svg></span><div><strong>Targets and goal</strong><span>New calories or protein, or a new goal, in one tap.</span></div></li>
+        <li><span class="ic"><svg><use href="#i-swap"/></svg></span><div><strong>Today's workout</strong><span>Swap, add or remove exercises, or change sets and rest.</span></div></li>
+        <li><span class="ic"><svg><use href="#i-chat"/></svg></span><div><strong>Log by chat</strong><span>Food, water and weight, straight from the conversation.</span></div></li>
+        <li><span class="ic"><svg><use href="#i-sun"/></svg></span><div><strong>A daily briefing</strong><span>Where your day stands, in a few lines each morning.</span></div></li>
+      </ul>
+    </div>
+    <div class="chat reveal" aria-label="An example conversation with the coach">
+      <div class="chat-head"><span class="ic"><svg><use href="#i-spark"/></svg></span><strong>Coach</strong></div>
+      <div class="bubble me">I've been stuck at 182 lb for two weeks. Should I eat less?</div>
+      <div class="bubble ai">Your weight's been flat for 14 days while your plan is −1.4 lb a week. A 200 kcal cut should get it moving, and keeping protein at 180 g protects your strength.</div>
+      <div class="proposal" data-applied="Done. Your target is now 1,750 kcal.">
+        <div class="proposal-top"><span class="ic"><svg><use href="#i-target"/></svg></span><div><b>Daily calories</b><span>1,950 → 1,750 kcal</span></div></div>
+        <div class="proposal-btns"><button type="button" class="later">Not now</button><button type="button" class="apply">Apply</button></div>
+        <div class="proposal-done"><span></span><button type="button" class="undo">Undo</button></div>
+      </div>
+      <div class="bubble me">And swap skull crushers today? My elbow's sore.</div>
+      <div class="bubble ai">Overhead cable extensions work the same muscle with less strain on the elbow.</div>
+      <div class="proposal" data-applied="Swapped in today's workout.">
+        <div class="proposal-top"><span class="ic"><svg><use href="#i-swap"/></svg></span><div><b>Today's workout</b><span>Skull Crushers → Overhead Cable Extension</span></div></div>
+        <div class="proposal-btns"><button type="button" class="later">Not now</button><button type="button" class="apply">Apply</button></div>
+        <div class="proposal-done"><span></span><button type="button" class="undo">Undo</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="screens" aria-labelledby="screens-title">
+  <div class="wrap gallery-head reveal">
+    <div class="section-head">
+      <span class="eyebrow">Screens</span>
+      <h2 id="screens-title">Take a closer look.</h2>
+    </div>
+    <div class="gallery-arrows">
+      <button type="button" class="round-btn" id="gallery-back" aria-label="Previous screens"><svg><use href="#i-left"/></svg></button>
+      <button type="button" class="round-btn" id="gallery-next" aria-label="More screens"><svg><use href="#i-right"/></svg></button>
+    </div>
+  </div>
+  <div class="gallery" tabindex="0" aria-label="App screens">
+    <figure class="g-item"><div class="phone"><span class="shot"><img class="l" src="images/today-light.webp" width="603" height="1311" alt="Today: Your day at a glance" loading="lazy" decoding="async"><img class="d" src="images/today-dark.webp" width="603" height="1311" alt="Today: Your day at a glance" loading="lazy" decoding="async"></span></div><figcaption><strong>Today</strong><span>Your day at a glance</span></figcaption></figure>
+    <figure class="g-item"><div class="phone"><span class="shot"><img class="l" src="images/quicklog-light.webp" width="603" height="1311" alt="Log anything: Food, water, weight or a workout" loading="lazy" decoding="async"><img class="d" src="images/quicklog-dark.webp" width="603" height="1311" alt="Log anything: Food, water, weight or a workout" loading="lazy" decoding="async"></span></div><figcaption><strong>Log anything</strong><span>Food, water, weight or a workout</span></figcaption></figure>
+    <figure class="g-item"><div class="phone"><span class="shot"><img class="l" src="images/search-light.webp" width="603" height="1311" alt="Food search: 12,774 foods, even offline" loading="lazy" decoding="async"><img class="d" src="images/search-dark.webp" width="603" height="1311" alt="Food search: 12,774 foods, even offline" loading="lazy" decoding="async"></span></div><figcaption><strong>Food search</strong><span>12,774 foods, even offline</span></figcaption></figure>
+    <figure class="g-item"><div class="phone"><span class="shot"><img class="l" src="images/food-light.webp" width="603" height="1311" alt="Your meals: Every food and macro" loading="lazy" decoding="async"><img class="d" src="images/food-dark.webp" width="603" height="1311" alt="Your meals: Every food and macro" loading="lazy" decoding="async"></span></div><figcaption><strong>Your meals</strong><span>Every food and macro</span></figcaption></figure>
+    <figure class="g-item"><div class="phone"><span class="shot"><img class="l" src="images/nutrients-light.webp" width="603" height="1311" alt="Vitamins &amp; minerals: What your day adds up to" loading="lazy" decoding="async"><img class="d" src="images/nutrients-dark.webp" width="603" height="1311" alt="Vitamins &amp; minerals: What your day adds up to" loading="lazy" decoding="async"></span></div><figcaption><strong>Vitamins &amp; minerals</strong><span>What your day adds up to</span></figcaption></figure>
+    <figure class="g-item"><div class="phone"><span class="shot"><img class="l" src="images/workout-light.webp" width="603" height="1311" alt="Logging a set: Last time, the target and your rest" loading="lazy" decoding="async"><img class="d" src="images/workout-dark.webp" width="603" height="1311" alt="Logging a set: Last time, the target and your rest" loading="lazy" decoding="async"></span></div><figcaption><strong>Logging a set</strong><span>Last time, the target and your rest</span></figcaption></figure>
+    <figure class="g-item"><div class="phone"><span class="shot"><img class="l" src="images/summary-light.webp" width="603" height="1311" alt="Workout done: New bests and next time&#x27;s targets" loading="lazy" decoding="async"><img class="d" src="images/summary-dark.webp" width="603" height="1311" alt="Workout done: New bests and next time&#x27;s targets" loading="lazy" decoding="async"></span></div><figcaption><strong>Workout done</strong><span>New bests and next time&#x27;s targets</span></figcaption></figure>
+    <figure class="g-item"><div class="phone"><span class="shot"><img class="l" src="images/train-light.webp" width="603" height="1311" alt="This week: Your plan, day by day" loading="lazy" decoding="async"><img class="d" src="images/train-dark.webp" width="603" height="1311" alt="This week: Your plan, day by day" loading="lazy" decoding="async"></span></div><figcaption><strong>This week</strong><span>Your plan, day by day</span></figcaption></figure>
+    <figure class="g-item"><div class="phone"><span class="shot"><img class="l" src="images/plan-light.webp" width="603" height="1311" alt="Training plan: Any split, any week" loading="lazy" decoding="async"><img class="d" src="images/plan-dark.webp" width="603" height="1311" alt="Training plan: Any split, any week" loading="lazy" decoding="async"></span></div><figcaption><strong>Training plan</strong><span>Any split, any week</span></figcaption></figure>
+    <figure class="g-item"><div class="phone"><span class="shot"><img class="l" src="images/progress-light.webp" width="603" height="1311" alt="Progress: Weight, strength and check-ins" loading="lazy" decoding="async"><img class="d" src="images/progress-dark.webp" width="603" height="1311" alt="Progress: Weight, strength and check-ins" loading="lazy" decoding="async"></span></div><figcaption><strong>Progress</strong><span>Weight, strength and check-ins</span></figcaption></figure>
+    <figure class="g-item"><div class="phone"><span class="shot"><img class="l" src="images/coach-light.webp" width="603" height="1311" alt="AI coach: Answers with your numbers" loading="lazy" decoding="async"><img class="d" src="images/coach-dark.webp" width="603" height="1311" alt="AI coach: Answers with your numbers" loading="lazy" decoding="async"></span></div><figcaption><strong>AI coach</strong><span>Answers with your numbers</span></figcaption></figure>
+    <figure class="g-item"><div class="phone"><span class="shot"><img class="l" src="images/skincare-light.webp" width="603" height="1311" alt="Skincare: Morning and night routines" loading="lazy" decoding="async"><img class="d" src="images/skincare-dark.webp" width="603" height="1311" alt="Skincare: Morning and night routines" loading="lazy" decoding="async"></span></div><figcaption><strong>Skincare</strong><span>Morning and night routines</span></figcaption></figure>
+    <figure class="g-item"><div class="phone"><span class="shot"><img class="l" src="images/sound-light.webp" width="603" height="1311" alt="Rest sound: Five sounds, or your own" loading="lazy" decoding="async"><img class="d" src="images/sound-dark.webp" width="603" height="1311" alt="Rest sound: Five sounds, or your own" loading="lazy" decoding="async"></span></div><figcaption><strong>Rest sound</strong><span>Five sounds, or your own</span></figcaption></figure>
+  </div>
+</section>
+
+<section class="section" id="features" aria-labelledby="features-title">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Everything in Repetite</span>
+      <h2 id="features-title">Built for every day, not just gym days.</h2>
+    </div>
+    <div class="cats">
+      <div class="cat reveal"><span class="ic"><svg><use href="#i-fork"/></svg></span><h3>Food</h3><ul>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>12,774 foods offline, Indian dishes included</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Typed amounts: &quot;2 eggs&quot;, &quot;rice 150 g&quot;</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Barcode scanning</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Meal photos and voice logging</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>AI estimates for anything else</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Saved foods, personal meals, meal plans</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Vitamins and minerals</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Water, with a one-tap glass</span></li>
+      </ul></div>
+      <div class="cat reveal"><span class="ic"><svg><use href="#i-weights"/></svg></span><h3>Training</h3><ul>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Any split, by weekday or as a rotation</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>A plan built for you from five questions</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Next-session targets</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Rest alarm on the Lock Screen and Dynamic Island</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Plates per side, warm-ups, drop sets, supersets</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Personal records and a shareable summary</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Workouts saved to Apple Health</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Import from Hevy or Strong</span></li>
+      </ul></div>
+      <div class="cat reveal"><span class="ic"><svg><use href="#i-trend"/></svg></span><h3>Progress</h3><ul>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Weight trend and goal date</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Weekly calorie check-ins</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Strength trends for every lift</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Every day on a calendar</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Workout frequency and weekly volume</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Calories and protein against your target</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Meal timing</span></li>
+      </ul></div>
+      <div class="cat reveal"><span class="ic"><svg><use href="#i-sun"/></svg></span><h3>Every day</h3><ul>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Smart reminders</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Widgets and Control Center</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Siri and Shortcuts</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Daily habits and skincare routines</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Your day can end at 3 AM</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Kilograms or pounds, light or dark</span></li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Backups on iPhone, in the cloud or as a file</span></li>
+      </ul></div>
+    </div>
+    <div class="highlights">
+      <div class="card widgets reveal">
+        <div>
+          <span class="ic"><svg><use href="#i-grid"/></svg></span>
+          <h3>Widgets for your Home Screen</h3>
+          <p>What's left to eat and what's next to train, on your Home Screen and Lock Screen, with water and logging in Control Center.</p>
+        </div>
+        <span class="shot"><img class="l" src="images/widgets-light.webp" width="560" height="520" alt="Small and medium Repetite widgets: 950 kcal left, macros and water" loading="lazy" decoding="async"><img class="d" src="images/widgets-dark.webp" width="560" height="520" alt="Small and medium Repetite widgets: 950 kcal left, macros and water" loading="lazy" decoding="async"></span>
+      </div>
+      <div class="card reveal">
         <span class="ic"><svg><use href="#i-wave"/></svg></span>
         <h3>Siri and Shortcuts</h3>
         <p>Log food, water or your usual meal, or ask how your day is going, without opening the app.</p>
         <p class="quote">"Hey Siri, log my usual breakfast in Repetite"</p>
       </div>
-      <div class="card">
+      <div class="card reveal">
         <span class="ic"><svg><use href="#i-heart"/></svg></span>
         <h3>Apple Health</h3>
-        <p>Sleep, heart rate, steps and calories from your watch or tracker. Weight, workouts and meals saved back.</p>
-      </div>
-      <div class="card">
-        <span class="ic"><svg><use href="#i-list"/></svg></span>
-        <h3>Habits and skincare</h3>
-        <p>Tick off creatine, vitamins or a morning and night skincare routine, each with its own schedule.</p>
-      </div>
-      <div class="card wide">
-        <div>
-          <span class="ic"><svg><use href="#i-grid"/></svg></span>
-          <h3>Your day at a glance</h3>
-          <p>Widgets that show what's left to eat and what's next to train, in light and dark.</p>
-        </div>
-        <picture><source srcset="images/widgets-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/widgets-light.webp" width="560" height="519" loading="lazy" alt="Small and medium Repetite widgets: 950 kcal left, 55 g protein to go, macros and water"></picture>
-      </div>
-      <div class="card">
-        <span class="ic"><svg><use href="#i-cloud"/></svg></span>
-        <h3>Backups you can trust</h3>
-        <p>Automatic backups on your iPhone, plus cloud backup if you sign in, or a file you keep yourself.</p>
-      </div>
-      <div class="card">
-        <span class="ic"><svg><use href="#i-moon"/></svg></span>
-        <h3>Made for real life</h3>
-        <p>Your day can end at 3 AM for late nights, in kilograms or pounds, light or dark.</p>
-      </div>
-      <div class="card">
-        <span class="ic"><svg><use href="#i-import"/></svg></span>
-        <h3>Ready to switch</h3>
-        <p>Bring your workout history from Hevy or Strong in a few taps.</p>
-      </div>
-      <div class="card">
-        <span class="ic"><svg><use href="#i-heart"/></svg></span>
-        <h3>Vitamins and minerals</h3>
-        <p>Foods from the database carry their vitamins and minerals, so you can see what your day adds up to, not just calories.</p>
+        <p>Sleep, heart rate, steps and calories from your Apple Watch, Fitbit, Garmin or Oura. Weight, workouts and meals saved back.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="privacy-band" id="privacy" aria-labelledby="privacy-title">
+<section class="section" id="privacy" aria-labelledby="privacy-title">
   <div class="wrap">
-    <div class="panel">
+    <div class="privacy-panel reveal">
       <div>
         <span class="eyebrow">Privacy</span>
         <h2 id="privacy-title">Your data is yours. It stays on your iPhone.</h2>
-        <p>Repetite works fully without an account, and keeps your logs on your phone. Read exactly what's collected in the <a href="privacy.html">Privacy Policy</a>.</p>
+        <p class="lead">Repetite works fully without an account, and keeps your logs on your phone. Read exactly what's collected in the <a href="privacy.html">Privacy Policy</a>.</p>
       </div>
       <ul class="privacy-list">
         <li><svg><use href="#i-phone"/></svg><div><strong>Logs stay on your iPhone</strong><span>Food, workouts, weight, habits and Health data are stored on your device.</span></div></li>
@@ -249,26 +483,26 @@
   </div>
 </section>
 
-<section class="compare" id="compare" aria-labelledby="compare-title">
+<section class="section" id="compare" aria-labelledby="compare-title">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="eyebrow">Compare</span>
       <h2 id="compare-title">What makes Repetite different.</h2>
       <p>Most people use one app for food and another for the gym, and give both their data. Repetite does both, on your phone.</p>
     </div>
-    <div class="table-wrap">
+    <div class="table-wrap reveal">
       <table class="cmp">
         <thead><tr><th scope="col"><span class="visually-hidden">Feature</span></th><th scope="col" class="us">Repetite</th><th scope="col">Many fitness apps</th></tr></thead>
         <tbody>
-          <tr><td>Food and training</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>In one app, sharing what they know</span></td><td class="them">Often two separate apps</td></tr>
-          <tr><td>Account</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>Optional, only for cloud backup</span></td><td class="them">Often required to start</td></tr>
-          <tr><td>Where your logs live</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>On your iPhone</span></td><td class="them">Usually on the company's servers</td></tr>
-          <tr><td>Ads and trackers</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>None, on Free or Pro</span></td><td class="them">Common on free plans</td></tr>
-          <tr><td>Food search without signal</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>12,700+ foods built in</span></td><td class="them">Often needs a connection</td></tr>
-          <tr><td>What to lift next</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>A target for every set</span></td><td class="them">Usually just your last numbers</td></tr>
-          <tr><td>Calorie targets</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>Adjust to your real weight trend</span></td><td class="them">Usually set once</td></tr>
-          <tr><td>Rest timer on a locked phone</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>Rings on time, even on silent</span></td><td class="them">Often a notification silent mode mutes</td></tr>
-          <tr><td>Reminders</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>Only when something's missing</span></td><td class="them">Usually the same time every day</td></tr>
+          <tr><td>Food and training</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>In one app, sharing what they know</span></td><td class="them">Often two separate apps</td></tr>
+          <tr><td>Account</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>Optional, only for cloud backup</span></td><td class="them">Often required to start</td></tr>
+          <tr><td>Where your logs live</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>On your iPhone</span></td><td class="them">Usually on the company's servers</td></tr>
+          <tr><td>Ads and trackers</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>None, on Free or Pro</span></td><td class="them">Common on free plans</td></tr>
+          <tr><td>Food search without signal</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>12,774 foods built in</span></td><td class="them">Often needs a connection</td></tr>
+          <tr><td>What to lift next</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>A target for every set</span></td><td class="them">Usually just your last numbers</td></tr>
+          <tr><td>Calorie targets</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>Adjust to your real weight trend</span></td><td class="them">Usually set once</td></tr>
+          <tr><td>Rest timer on a locked phone</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>Rings on time, even on silent</span></td><td class="them">Often a notification silent mode mutes</td></tr>
+          <tr><td>Reminders</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>Only when something's missing</span></td><td class="them">Usually the same time every day</td></tr>
         </tbody>
       </table>
     </div>
@@ -276,56 +510,58 @@
   </div>
 </section>
 
-<section class="pricing" id="pricing" aria-labelledby="pricing-title">
+<section class="section" id="pricing" aria-labelledby="pricing-title">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="eyebrow">Pricing</span>
       <h2 id="pricing-title">Free to use. Pro when you want more.</h2>
       <p>Everything you need to log food and train is free, with no ads. Pro adds targets that adapt and unlimited AI.</p>
     </div>
     <div class="plans">
-      <div class="plan">
+      <div class="plan reveal">
         <h3>Free</h3>
         <p class="price">Free forever</p>
         <ul>
-          <li><svg><use href="#i-check"/></svg><span><strong>Food and workout logging</strong>, with no limits</span></li>
-          <li><svg><use href="#i-check"/></svg><span><strong>12,700+ foods</strong>, barcode scanning, saved meals</span></li>
-          <li><svg><use href="#i-check"/></svg><span><strong>Rest timer and alarm</strong>, personal records, plates per side</span></li>
-          <li><svg><use href="#i-check"/></svg><span><strong>Widgets, Siri, Apple Health</strong> and smart reminders</span></li>
-          <li><svg><use href="#i-check"/></svg><span><strong>AI food logging</strong> and <strong>AI coach</strong>: 3 a day each</span></li>
-          <li><svg><use href="#i-check"/></svg><span><strong>History and trends</strong>: the last 30 days</span></li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg><span><strong>Food and workout logging</strong>, with no limits</span></li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg><span><strong>12,774 foods</strong>, barcode scanning, saved meals</span></li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg><span><strong>Rest alarm</strong>, personal records, plates per side</span></li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg><span><strong>Smart reminders</strong>, widgets, Siri and Apple Health</span></li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg><span><strong>AI food logging</strong> and the <strong>AI coach</strong>: 3 a day each</span></li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg><span><strong>History and trends</strong>: the last 30 days</span></li>
         </ul>
       </div>
-      <div class="plan pro">
+      <div class="plan pro reveal">
         <span class="tag">PRO</span>
         <h3>Repetite Pro</h3>
         <p class="price">Monthly or yearly. Prices are shown in the app, in your currency.</p>
         <ul>
-          <li><svg><use href="#i-check"/></svg><span>Everything in Free, plus:</span></li>
-          <li><svg><use href="#i-check"/></svg><span><strong>Next-session targets</strong>: the weight and reps to beat on every lift</span></li>
-          <li><svg><use href="#i-check"/></svg><span><strong>Weekly check-ins</strong>: calories that follow your real weight trend</span></li>
-          <li><svg><use href="#i-check"/></svg><span><strong>Unlimited</strong> AI food logging and AI coach</span></li>
-          <li><svg><use href="#i-check"/></svg><span><strong>Your full history</strong>, with trends beyond 30 days</span></li>
-          <li><svg><use href="#i-check"/></svg><span>Protein ideas from foods you eat, and a weekly recap</span></li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Everything in Free, plus:</span></li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg><span><strong>Next-session targets</strong>: the weight and reps to beat on every lift</span></li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg><span><strong>Weekly check-ins</strong>: calories that follow your real weight trend</span></li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg><span><strong>Unlimited</strong> AI food logging and AI coach</span></li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg><span><strong>Your full history</strong>, with trends beyond 30 days</span></li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Protein ideas from foods you eat, and a weekly recap</span></li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<section class="faq" id="faq" aria-labelledby="faq-title">
+<section class="section faq" id="faq" aria-labelledby="faq-title">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="eyebrow">FAQ</span>
       <h2 id="faq-title">Questions, answered.</h2>
     </div>
     <div class="faq-list">
-      <details><summary>Is Repetite free?</summary><p>Yes. Logging food and workouts, the food database, barcode scanning, the rest timer, widgets, Siri and Apple Health are all free, with no ads. Pro adds next-session targets, weekly calorie check-ins, unlimited AI and your full history. Pro is billed through your Apple ID and you can cancel any time in your iPhone's Settings.</p></details>
+      <details><summary>Is Repetite free?</summary><p>Yes. Logging food and workouts, the food database, barcode scanning, the rest alarm, smart reminders, widgets, Siri and Apple Health are all free, with no ads. Pro adds next-session targets, weekly calorie check-ins, unlimited AI and your full history. Pro is billed through your Apple ID and you can cancel any time in your iPhone's Settings.</p></details>
+      <details><summary>Will it spam me with notifications?</summary><p>No. Reminders only come when something's missing, at the times you usually eat and train. There are never more than three a day, nothing during your quiet hours, and you choose which kinds you get in Settings → Notifications.</p></details>
+      <details><summary>Does the rest timer work with my phone locked?</summary><p>Yes. When rest is over your iPhone rings like a Clock timer, even on silent, and the countdown sits on your Lock Screen and in the Dynamic Island with −15 s, +15 s and Skip.</p></details>
       <details><summary>Do I need an account?</summary><p>No. Everything works without one. You can sign in with your email if you'd like a cloud backup, so a new phone can get everything back.</p></details>
       <details><summary>Where is my data stored?</summary><p>On your iPhone. If you allow AI, only what each answer needs is sent to the AI service through Repetite's server. If you sign in, your backups are stored privately for your account. The <a href="privacy.html">Privacy Policy</a> lists everything.</p></details>
       <details><summary>Does it work with Apple Watch, Fitbit, Garmin or Oura?</summary><p>Yes, through Apple Health. Apple Watch works on its own; for other devices, turn on Apple Health in the device's app and Repetite picks up your sleep, heart rate, steps and calories burned.</p></details>
       <details><summary>Can I bring my workouts from another app?</summary><p>Yes. Export your history from Hevy or Strong and import it in Repetite. Your past weights and records carry over, so suggestions work from day one.</p></details>
-      <details><summary>Does it work for vegetarian and Indian diets?</summary><p>Yes. The food database includes Indian dishes, and you can tell Repetite you're vegetarian, vegan or eat eggs, so food ideas from the coach fit how you eat.</p></details>
+      <details><summary>Does it work for vegetarian and Indian diets?</summary><p>Yes. The food database includes Indian dishes, and you can tell Repetite you're vegetarian, vegan or eat eggs, so food ideas fit how you eat.</p></details>
       <details><summary>Is this medical advice?</summary><p>No. Repetite helps you track and plan, but it isn't medical, nutritional or fitness advice from a professional. Talk to a doctor before starting a new diet or training program. See the <a href="terms.html">Terms of Use</a>.</p></details>
       <details><summary>When can I download it?</summary><p>Repetite is coming soon to the App Store for iPhone. Questions or feedback in the meantime: <a href="mailto:repetiteapp@gmail.com">repetiteapp@gmail.com</a>.</p></details>
     </div>
@@ -333,8 +569,8 @@
 </section>
 
 <section class="closing" aria-labelledby="closing-title">
-  <div class="wrap">
-    <img src="images/icon-180.png" width="84" height="84" alt="">
+  <div class="wrap reveal">
+    <img src="images/icon-180.png" width="88" height="88" alt="">
     <h2 id="closing-title">Train smarter. Eat with purpose.</h2>
     <p>Coming soon to the App Store for iPhone.</p>
     <div class="cta-row">
@@ -344,10 +580,9 @@
 </section>
 
 </main>
-
 <footer class="site-footer">
   <div class="wrap">
-    <a class="brand" href="./"><img src="images/icon-64.png" alt="" width="30" height="30">Repetite</a>
+    <a class="brand" href="./"><img src="images/icon-64.png" alt="" width="28" height="28">Repetite</a>
     <nav aria-label="Footer">
       <a href="privacy.html">Privacy Policy</a>
       <a href="terms.html">Terms of Use</a>
@@ -356,6 +591,5 @@
     <small>© 2026 Mukund Mangla</small>
   </div>
 </footer>
-
 </body>
 </html>
