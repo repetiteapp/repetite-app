@@ -19,8 +19,10 @@
     return set === "light" || set === "dark" ? set : (systemDark.matches ? "dark" : "light");
   }
   function syncToggle() {
-    var dark = effectiveTheme() === "dark";
+    var theme = effectiveTheme();
+    var dark = theme === "dark";
     if (toggle) {
+      toggle.setAttribute("data-state", theme);
       toggle.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
       toggle.setAttribute("aria-pressed", dark ? "true" : "false");
     }
@@ -33,26 +35,56 @@
     store("repetite-theme", theme);
     syncToggle();
   }
+  // First the plate rolls to the other end of the bar, live; then the new
+  // theme spreads out in a circle from it. The page is captured for the
+  // circle with animations off, so the navbar (and everything else) is
+  // already in its final look: nothing jumps when the circle finishes.
+  var switching = false;
   if (toggle) {
     toggle.addEventListener("click", function () {
+      if (switching) return;
       var next = effectiveTheme() === "dark" ? "light" : "dark";
+      toggle.setAttribute("data-state", next);
       if (!document.startViewTransition || reduceMotion) { applyTheme(next); return; }
-      // The new theme spreads out in a circle from the switch.
-      var box = toggle.getBoundingClientRect();
-      var x = box.left + box.width / 2;
-      var y = box.top + box.height / 2;
-      var radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
-      var applied = false;
-      function apply() { if (!applied) { applied = true; applyTheme(next); } }
-      // If the browser can't run the animation, the theme still changes.
-      setTimeout(apply, 400);
-      var transition = document.startViewTransition(apply);
-      transition.ready.then(function () {
-        root.animate(
-          { clipPath: ["circle(0px at " + x + "px " + y + "px)", "circle(" + radius + "px at " + x + "px " + y + "px)"] },
-          { duration: 700, easing: "cubic-bezier(.4, 0, .2, 1)", pseudoElement: "::view-transition-new(root)" }
-        );
-      }).catch(function () {});
+      switching = true;
+      setTimeout(function () {
+        var box = toggle.getBoundingClientRect();
+        var x = box.left + box.width / 2;
+        var y = box.top + box.height / 2;
+        var radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+        var applied = false;
+        var finished = false;
+        function apply() {
+          if (applied) return;
+          applied = true;
+          root.classList.add("theme-swap");
+          applyTheme(next);
+        }
+        function finish() {
+          if (finished) return;
+          finished = true;
+          apply();
+          // A moment later, so turning animations back on can't animate the swap.
+          setTimeout(function () { root.classList.remove("theme-swap"); }, 60);
+          switching = false;
+        }
+        var transition;
+        try {
+          transition = document.startViewTransition(apply);
+        } catch (e) {
+          finish();
+          return;
+        }
+        transition.ready.then(function () {
+          root.animate(
+            { clipPath: ["circle(0px at " + x + "px " + y + "px)", "circle(" + radius + "px at " + x + "px " + y + "px)"] },
+            { duration: 650, easing: "cubic-bezier(.4, 0, .2, 1)", pseudoElement: "::view-transition-new(root)" }
+          );
+        }).catch(function () {});
+        transition.finished.then(finish, finish);
+        // If the browser never runs it, the theme still changes.
+        setTimeout(finish, 1500);
+      }, 380);
     });
   }
   if (systemDark.addEventListener) systemDark.addEventListener("change", syncToggle);

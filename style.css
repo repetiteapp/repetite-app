@@ -268,6 +268,19 @@ section { scroll-margin-top: 96px; }
   :root:not([data-theme="light"]) .theme-toggle .tt-moon { opacity: 1; transform: none; }
 }
 .theme-toggle:active .tt-plate { filter: brightness(0.95); }
+/* Once the script runs, the switch follows its own state, so the plate can
+   roll before the page changes theme (see site.js). */
+html:root .theme-toggle[data-state="dark"] .tt-plate { transform: translateX(28px); }
+html:root .theme-toggle[data-state="dark"] .tt-ring { transform: rotate(120deg); }
+html:root .theme-toggle[data-state="dark"] .tt-sun { opacity: 0; transform: scale(0.4) rotate(60deg); }
+html:root .theme-toggle[data-state="dark"] .tt-moon { opacity: 1; transform: none; }
+html:root .theme-toggle[data-state="light"] .tt-plate { transform: none; }
+html:root .theme-toggle[data-state="light"] .tt-ring { transform: none; }
+html:root .theme-toggle[data-state="light"] .tt-sun { opacity: 1; transform: none; }
+html:root .theme-toggle[data-state="light"] .tt-moon { opacity: 0; transform: scale(0.4) rotate(-60deg); }
+/* While the theme swaps, nothing animates, so the reveal shows the
+   finished page (the navbar's glass included), never a half-faded one. */
+html.theme-swap *, html.theme-swap *::before, html.theme-swap *::after { transition: none !important; }
 
 /* ============ Phone frame ============ */
 .phone { border-radius: 46px; padding: 9px; background: var(--bezel); box-shadow: var(--shadow); }
