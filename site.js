@@ -94,19 +94,72 @@
   var shell = $(".nav-shell");
   var links = $all(".nav-links a");
   var indicator = $(".nav-indicator");
+  var glassNav = $(".glass-nav");
+  var toTop = $(".to-top");
+  var scrollQueued = false;
   function onScroll() {
-    if (shell) shell.classList.toggle("scrolled", window.scrollY > 24);
+    scrollQueued = false;
+    var y = window.scrollY;
+    if (shell) shell.classList.toggle("scrolled", y > 24);
+    if (toTop) toTop.classList.toggle("show", y > window.innerHeight * 1.2);
+    if (glassNav) {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      glassNav.style.setProperty("--progress", max > 0 ? Math.min(1, y / max).toFixed(4) : "0");
+    }
   }
-  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("scroll", function () {
+    if (!scrollQueued) { scrollQueued = true; requestAnimationFrame(onScroll); }
+  }, { passive: true });
   onScroll();
 
+  // The light on the glass follows the pointer.
+  if (glassNav && !reduceMotion) {
+    glassNav.addEventListener("pointermove", function (e) {
+      var box = glassNav.getBoundingClientRect();
+      glassNav.style.setProperty("--mx", (e.clientX - box.left) + "px");
+      glassNav.style.setProperty("--my", (e.clientY - box.top) + "px");
+    });
+  }
+
+  // The capsule moves like a drop of liquid: it stretches across to the
+  // new link, then settles. It previews the link you point at, and goes
+  // back to the section you're reading when you leave.
   var activeLink = null;
-  function placeIndicator() {
+  var shownLink = null;
+  function moveIndicatorTo(link) {
     if (!indicator) return;
-    if (!activeLink || activeLink.offsetParent === null) { indicator.style.opacity = "0"; return; }
-    indicator.style.left = activeLink.offsetLeft + "px";
-    indicator.style.width = activeLink.offsetWidth + "px";
+    if (!link || link.offsetParent === null) {
+      indicator.style.opacity = "0";
+      shownLink = null;
+      return;
+    }
+    var toLeft = link.offsetLeft;
+    var toWidth = link.offsetWidth;
+    var wasHidden = indicator.style.opacity !== "1" || !shownLink;
+    var fromLeft = indicator.offsetLeft;
+    var fromWidth = indicator.offsetWidth;
+    indicator.style.left = toLeft + "px";
+    indicator.style.width = toWidth + "px";
     indicator.style.opacity = "1";
+    if (!wasHidden && link !== shownLink && !reduceMotion && indicator.animate) {
+      var spanLeft = Math.min(fromLeft, toLeft);
+      var spanWidth = Math.max(fromLeft + fromWidth, toLeft + toWidth) - spanLeft;
+      indicator.animate([
+        { left: fromLeft + "px", width: fromWidth + "px", transform: "scaleY(1)" },
+        { left: spanLeft + "px", width: spanWidth + "px", transform: "scaleY(0.82)", offset: 0.42 },
+        { left: toLeft + "px", width: toWidth + "px", transform: "scaleY(1.06)", offset: 0.78 },
+        { left: toLeft + "px", width: toWidth + "px", transform: "scaleY(1)" }
+      ], { duration: 560, easing: "cubic-bezier(.3, .9, .4, 1)" });
+    }
+    shownLink = link;
+  }
+  function placeIndicator() { moveIndicatorTo(activeLink); }
+  var linksBox = $(".nav-links");
+  if (linksBox) {
+    links.forEach(function (link) {
+      link.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") moveIndicatorTo(link); });
+    });
+    linksBox.addEventListener("pointerleave", function () { moveIndicatorTo(activeLink); });
   }
   function setActive(id) {
     activeLink = null;
@@ -151,8 +204,27 @@
     window.addEventListener("resize", function () { if (innerWidth > 1080) closeMenu(); });
   }
 
+  // ---------- Headings rise in word by word ----------
+  // Only plain-text headings; each word keeps its space for screen readers.
+  if (!reduceMotion) {
+    $all(".section-head h2, .coach-grid .h2, .plates-grid .h2, .rest-panel h2, .privacy-panel h2, .closing h2").forEach(function (heading) {
+      if (heading.children.length) return;
+      var words = heading.textContent.trim().split(/\s+/);
+      heading.textContent = "";
+      words.forEach(function (word, i) {
+        var span = document.createElement("span");
+        span.className = "w";
+        span.style.setProperty("--i", i);
+        span.textContent = word;
+        heading.appendChild(span);
+        if (i < words.length - 1) heading.appendChild(document.createTextNode(" "));
+      });
+      heading.classList.add("split");
+    });
+  }
+
   // ---------- Reveal on scroll ----------
-  var reveals = $all(".reveal");
+  var reveals = $all(".reveal, .split");
   if ("IntersectionObserver" in window && !reduceMotion) {
     var revealer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
@@ -468,5 +540,177 @@
     gallery.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update);
     update();
+  }
+  // ---------- Hero: phones tilt toward the pointer ----------
+  var hero = $(".hero");
+  var heroPhones = $(".hero-phones");
+  if (hero && heroPhones && !reduceMotion && window.matchMedia("(pointer: fine)").matches) {
+    hero.addEventListener("pointermove", function (e) {
+      var box = hero.getBoundingClientRect();
+      var px = (e.clientX - box.left) / box.width - 0.5;
+      var py = (e.clientY - box.top) / box.height - 0.5;
+      heroPhones.style.setProperty("--ry", (px * 10).toFixed(2) + "deg");
+      heroPhones.style.setProperty("--rx", (-py * 7).toFixed(2) + "deg");
+      heroPhones.style.setProperty("--px", px.toFixed(3));
+      heroPhones.style.setProperty("--py", py.toFixed(3));
+    });
+    hero.addEventListener("pointerleave", function () {
+      ["--rx", "--ry", "--px", "--py"].forEach(function (name) { heroPhones.style.removeProperty(name); });
+    });
+  }
+
+  // ---------- Cards light up where the pointer is ----------
+  $all(".cat, .card, .rules li, .fact, .plan").forEach(function (el) { el.classList.add("spot"); });
+  if (!reduceMotion) {
+    document.addEventListener("pointermove", function (e) {
+      var el = e.target && e.target.closest ? e.target.closest(".spot") : null;
+      if (!el) return;
+      var box = el.getBoundingClientRect();
+      el.style.setProperty("--sx", (e.clientX - box.left) + "px");
+      el.style.setProperty("--sy", (e.clientY - box.top) + "px");
+    }, { passive: true });
+  }
+
+  // ---------- Buttons lean toward the pointer ----------
+  if (!reduceMotion && window.matchMedia("(pointer: fine)").matches) {
+    $all(".btn, .nav-cta, .round-btn").forEach(function (button) {
+      button.addEventListener("pointermove", function (e) {
+        var box = button.getBoundingClientRect();
+        var dx = (e.clientX - (box.left + box.width / 2)) / box.width;
+        var dy = (e.clientY - (box.top + box.height / 2)) / box.height;
+        button.style.translate = (dx * 8).toFixed(1) + "px " + (dy * 6).toFixed(1) + "px";
+      });
+      button.addEventListener("pointerleave", function () { button.style.translate = ""; });
+    });
+  }
+
+  // ---------- Gallery: drag with the mouse ----------
+  if (gallery && window.matchMedia("(pointer: fine)").matches) {
+    var drag = null;
+    gallery.addEventListener("pointerdown", function (e) {
+      if (e.pointerType !== "mouse" || e.button !== 0) return;
+      drag = { x: e.clientX, left: gallery.scrollLeft, moved: false, id: e.pointerId };
+    });
+    gallery.addEventListener("pointermove", function (e) {
+      if (!drag) return;
+      var dx = e.clientX - drag.x;
+      if (!drag.moved && Math.abs(dx) > 5) {
+        drag.moved = true;
+        gallery.classList.add("dragging");
+        try { gallery.setPointerCapture(drag.id); } catch (err) {}
+      }
+      if (drag.moved) gallery.scrollLeft = drag.left - dx;
+    });
+    function endDrag() {
+      if (!drag) return;
+      var moved = drag.moved;
+      drag = null;
+      if (moved) gallery.classList.remove("dragging");
+    }
+    gallery.addEventListener("pointerup", endDrag);
+    gallery.addEventListener("pointercancel", endDrag);
+    gallery.addEventListener("dragstart", function (e) { e.preventDefault(); });
+  }
+
+  // ---------- Plate maths: load the bar ----------
+  var loader = $(".loader");
+  var weightInput = $("#plate-weight");
+  if (loader && weightInput) {
+    var SETS = {
+      lb: { bar: 45, min: 45, max: 495, step: 5, plates: [
+        { w: 45, h: "92%", width: 24, color: "#2E5BEA" },
+        { w: 35, h: "80%", width: 20, color: "#E9B308" },
+        { w: 25, h: "68%", width: 17, color: "#1F9D55" },
+        { w: 10, h: "50%", width: 13, color: "#F2EFEA" },
+        { w: 5, h: "40%", width: 11, color: "#3A332F" },
+        { w: 2.5, h: "32%", width: 9, color: "#D9412E" }
+      ] },
+      kg: { bar: 20, min: 20, max: 250, step: 2.5, plates: [
+        { w: 25, h: "92%", width: 26, color: "#D9412E" },
+        { w: 20, h: "92%", width: 23, color: "#2E5BEA" },
+        { w: 15, h: "92%", width: 19, color: "#E9B308" },
+        { w: 10, h: "92%", width: 15, color: "#1F9D55" },
+        { w: 5, h: "52%", width: 12, color: "#F2EFEA" },
+        { w: 2.5, h: "42%", width: 10, color: "#3A332F" },
+        { w: 1.25, h: "34%", width: 8, color: "#B9B3AE" }
+      ] }
+    };
+    var unit = "lb";
+    var leftStack = $("#plates-left");
+    var rightStack = $("#plates-right");
+    var unitControl = $("#plate-units");
+    function fmt(n) { return Number(n.toFixed(2)).toLocaleString("en-US"); }
+    function load(total, set) {
+      var remaining = (total - set.bar) / 2;
+      var out = [];
+      set.plates.forEach(function (plate) {
+        while (remaining >= plate.w - 1e-9) { out.push(plate); remaining -= plate.w; }
+      });
+      return { plates: out, rest: Math.max(0, Math.round(remaining * 100) / 100) };
+    }
+    function stack(container, plates) {
+      var current = Array.prototype.filter.call(container.children, function (c) { return !c.classList.contains("out"); });
+      var same = 0;
+      while (same < current.length && same < plates.length && current[same].getAttribute("data-w") === String(plates[same].w)) same++;
+      var leaving = current.slice(same);
+      leaving.forEach(function (el) {
+        el.classList.add("out");
+        setTimeout(function () { el.remove(); }, reduceMotion ? 0 : 200);
+      });
+      plates.slice(same).forEach(function (plate, i) {
+        var el = document.createElement("span");
+        el.className = "plate";
+        el.setAttribute("data-w", plate.w);
+        el.style.setProperty("--h", plate.h);
+        el.style.setProperty("--w", plate.width + "px");
+        el.style.setProperty("--pc", plate.color);
+        el.style.animationDelay = (i * 45) + "ms";
+        container.insertBefore(el, leaving[0] || null);
+      });
+    }
+    function render() {
+      var set = SETS[unit];
+      var total = Number(weightInput.value);
+      var result = load(total, set);
+      stack(leftStack, result.plates);
+      stack(rightStack, result.plates);
+      $("#plate-total").textContent = fmt(total);
+      $("#plate-unit").textContent = unit;
+      $("#plate-side").textContent = result.plates.length ? result.plates.map(function (p) { return fmt(p.w); }).join(" + ") : "just the bar";
+      $("#plate-note").textContent = result.rest > 0
+        ? "Each side is " + fmt(result.rest) + " " + unit + " short: no plate that small."
+        : "On a " + set.bar + " " + unit + " bar.";
+      weightInput.style.setProperty("--fill", ((total - set.min) / (set.max - set.min) * 100).toFixed(1) + "%");
+      weightInput.setAttribute("aria-valuetext", fmt(total) + " " + unit);
+    }
+    function setUnit(next) {
+      if (next === unit) return;
+      var set = SETS[next];
+      var value = Number(weightInput.value);
+      var converted = next === "kg" ? value * 0.45359237 : value / 0.45359237;
+      converted = Math.round(converted / set.step) * set.step;
+      unit = next;
+      weightInput.min = set.min;
+      weightInput.max = set.max;
+      weightInput.step = set.step;
+      weightInput.value = Math.min(set.max, Math.max(set.min, converted));
+      leftStack.textContent = "";
+      rightStack.textContent = "";
+      $all("[data-unit]", unitControl).forEach(function (b) {
+        var on = b.getAttribute("data-unit") === next;
+        b.setAttribute("aria-selected", on ? "true" : "false");
+        b.tabIndex = on ? 0 : -1;
+      });
+      placePill(unitControl);
+      render();
+    }
+    weightInput.addEventListener("input", render);
+    $all("[data-unit]", unitControl).forEach(function (b) {
+      b.addEventListener("click", function () { setUnit(b.getAttribute("data-unit")); });
+    });
+    placePill(unitControl);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { placePill(unitControl); });
+    window.addEventListener("resize", function () { placePill(unitControl); });
+    render();
   }
 })();

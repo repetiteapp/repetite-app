@@ -61,6 +61,7 @@
     <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M7 4.5v15a1 1 0 001.5.9l12-7.5a1 1 0 000-1.8l-12-7.5A1 1 0 007 4.5z"/></symbol>
     <symbol id="i-swap" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.5l3.5 3.5-3.5 3.5M20 7H8M7.5 20.5L4 17l3.5-3.5M4 17h12"/></g></symbol>
     <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 6.5A3 3 0 017 3.5h10a3 3 0 013 3v7a3 3 0 01-3 3h-6l-4.5 4v-4H7a3 3 0 01-3-3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-fork" viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9M5 3v5M9 3v5M16.5 21V3.5c-2 0-3.5 2.5-3.5 6.5v3h3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
@@ -68,6 +69,8 @@
 </svg>
 <div class="nav-shell">
   <nav class="glass-nav glass" aria-label="Main">
+    <span class="liquid-shine" aria-hidden="true"></span>
+    <span class="nav-progress" aria-hidden="true"></span>
     <a class="brand" href="#top"><img src="images/icon-64.png" alt="" width="28" height="28">Repetite</a>
     <div class="nav-links"><span class="nav-indicator" aria-hidden="true"></span><a href="#tour">Tour</a><a href="#reminders">Reminders</a><a href="#rest">Rest timer</a><a href="#coach">Coach</a><a href="#privacy">Privacy</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a></div>
     <div class="nav-actions">
@@ -77,19 +80,21 @@
     </div>
   </nav>
   <div class="nav-menu glass" id="nav-menu" hidden>
-    <a href="#tour">Tour</a>
-    <a href="#reminders">Reminders</a>
-    <a href="#rest">Rest timer</a>
-    <a href="#coach">Coach</a>
-    <a href="#privacy">Privacy</a>
-    <a href="#pricing">Pricing</a>
-    <a href="#faq">FAQ</a>
+    <a href="#tour" style="--i:0">Tour</a>
+    <a href="#reminders" style="--i:1">Reminders</a>
+    <a href="#rest" style="--i:2">Rest timer</a>
+    <a href="#coach" style="--i:3">Coach</a>
+    <a href="#privacy" style="--i:4">Privacy</a>
+    <a href="#pricing" style="--i:5">Pricing</a>
+    <a href="#faq" style="--i:6">FAQ</a>
   </div>
 </div>
 
 <main>
 
 <section class="hero" id="top" aria-labelledby="hero-title">
+  <span class="orb o1" aria-hidden="true"></span>
+  <span class="orb o2" aria-hidden="true"></span>
   <div class="wrap">
     <div>
       <span class="eyebrow">For iPhone · Coming soon to the App Store</span>
@@ -132,6 +137,10 @@
     <div class="fact reveal"><b data-count="1">1</b><span>app for food and training</span></div>
   </div>
 </section>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track"><span class="mq-chip"><svg><use href="#i-check"/></svg>12,774 foods offline</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Barcode scanning</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Meal photos</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Say what you ate</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Next-session targets</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Rest alarm on the Lock Screen</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Plates per side</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Supersets and drop sets</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Smart reminders</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Weekly check-ins</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Strength trends</span><span class="mq-chip"><svg><use href="#i-check"/></svg>AI coach</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Widgets</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Siri and Shortcuts</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Apple Health</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Skincare routines</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Import from Hevy or Strong</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Light and dark</span><span class="mq-chip"><svg><use href="#i-check"/></svg>12,774 foods offline</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Barcode scanning</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Meal photos</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Say what you ate</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Next-session targets</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Rest alarm on the Lock Screen</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Plates per side</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Supersets and drop sets</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Smart reminders</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Weekly check-ins</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Strength trends</span><span class="mq-chip"><svg><use href="#i-check"/></svg>AI coach</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Widgets</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Siri and Shortcuts</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Apple Health</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Skincare routines</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Import from Hevy or Strong</span><span class="mq-chip"><svg><use href="#i-check"/></svg>Light and dark</span></div>
+</div>
 
 <section class="section" id="tour" aria-labelledby="tour-title">
   <div class="wrap">
@@ -329,6 +338,37 @@
         <button type="button" class="btn btn-brand" id="rest-start"><svg width="18" height="18" aria-hidden="true"><use href="#i-play"/></svg>Start a 20-second rest</button>
         <p class="rest-hint">Try −15 s and +15 s, just like on your Lock Screen. Turn your sound on to hear it ring.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="plates" aria-labelledby="plates-title">
+  <div class="wrap plates-grid">
+    <div class="reveal">
+      <span class="eyebrow">Plate maths</span>
+      <h2 id="plates-title" class="h2">Know what goes on the bar.</h2>
+      <p class="plates-lede">Repetite works out the plates for each side of every barbell set, so you load the bar without stopping to count. Drag to try it.</p>
+      <div class="plate-controls">
+        <div class="segmented" role="tablist" aria-label="Units" id="plate-units">
+          <span class="seg-pill" aria-hidden="true"></span>
+          <button role="tab" data-unit="lb" aria-selected="true">lb</button>
+          <button role="tab" data-unit="kg" aria-selected="false" tabindex="-1">kg</button>
+        </div>
+        <label class="plate-slider" for="plate-weight">
+          <span class="visually-hidden">Weight on the bar</span>
+          <input type="range" id="plate-weight" min="45" max="495" step="5" value="225">
+        </label>
+      </div>
+    </div>
+    <div class="loader reveal" aria-live="polite">
+      <div class="loader-total"><span id="plate-total">225</span><small id="plate-unit">lb</small></div>
+      <div class="barbell" aria-hidden="true">
+        <span class="bb-shaft"></span>
+        <span class="bb-sleeve left"><span class="bb-collar"></span><span class="bb-plates" id="plates-left"></span></span>
+        <span class="bb-sleeve right"><span class="bb-collar"></span><span class="bb-plates" id="plates-right"></span></span>
+      </div>
+      <p class="loader-side">Each side: <strong id="plate-side">45 + 45</strong></p>
+      <p class="loader-note" id="plate-note">On a 45 lb bar.</p>
     </div>
   </div>
 </section>
@@ -580,6 +620,7 @@
 </section>
 
 </main>
+<a class="to-top glass" href="#top" aria-label="Back to top"><svg aria-hidden="true"><use href="#i-up"/></svg></a>
 <footer class="site-footer">
   <div class="wrap">
     <a class="brand" href="./"><img src="images/icon-64.png" alt="" width="28" height="28">Repetite</a>
