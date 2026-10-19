@@ -207,7 +207,7 @@
   // ---------- Headings rise in word by word ----------
   // Only plain-text headings; each word keeps its space for screen readers.
   if (!reduceMotion) {
-    $all(".section-head h2, .coach-grid .h2, .plates-grid .h2, .rest-panel h2, .privacy-panel h2, .closing h2").forEach(function (heading) {
+    $all(".section-head h2, .coach-grid .h2, .plates-grid .h2, .skin-grid .h2, .rest-panel h2, .privacy-panel h2, .closing h2").forEach(function (heading) {
       if (heading.children.length) return;
       var words = heading.textContent.trim().split(/\s+/);
       heading.textContent = "";
@@ -711,6 +711,132 @@
     placePill(unitControl);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { placePill(unitControl); });
     window.addEventListener("resize", function () { placePill(unitControl); });
+    render();
+  }
+
+  // ---------- Skincare: tick off a routine ----------
+  // Morning is already done; finish the night routine and today joins the
+  // streak, as in the app.
+  var skin = $("#skin-demo");
+  if (skin) {
+    var ROUTINES = {
+      morning: [
+        { name: "Cleanser", done: true },
+        { name: "Moisturizer", done: true },
+        { name: "Sunscreen", done: true, note: "Daily SPF 50 · 7 days left" }
+      ],
+      night: [
+        { name: "Cleanser", done: true },
+        { name: "Face wash after training", done: false, note: "Days you train" },
+        { name: "Exfoliant", done: false, note: "Mon, Wed, Fri" },
+        { name: "Moisturizer", done: false }
+      ]
+    };
+    var STREAK = 12;
+    var time = "night";
+    var timeControl = $("#skin-time");
+    var stepsList = $("#skin-steps");
+    var fill = $("#skin-fill");
+    var count = $("#skin-count");
+    var statusLine = $("#skin-status");
+    var streakBox = $(".skin-streak", skin);
+    var streakNumber = $("#skin-streak");
+    var burst = $("#skin-burst");
+    var week = $("#skin-week");
+    var CIRCUMFERENCE = 314.16;
+
+    function complete(list) { return list.every(function (step) { return step.done; }); }
+    function dayDone() { return complete(ROUTINES.morning) && complete(ROUTINES.night); }
+
+    // The last seven days, today last: the six before it all finished.
+    var today = new Date();
+    for (var back = 6; back >= 0; back--) {
+      var day = new Date(today.getFullYear(), today.getMonth(), today.getDate() - back);
+      var cell = document.createElement("span");
+      cell.className = back === 0 ? "today" : "done";
+      cell.innerHTML = '<i><svg aria-hidden="true"><use href="#i-check"/></svg></i>' +
+        day.toLocaleDateString(undefined, { weekday: "narrow" });
+      week.appendChild(cell);
+    }
+    var todayCell = $(".today", week);
+
+    function renderSteps() {
+      stepsList.textContent = "";
+      ROUTINES[time].forEach(function (step, index) {
+        var li = document.createElement("li");
+        var button = document.createElement("button");
+        button.type = "button";
+        button.setAttribute("aria-pressed", step.done ? "true" : "false");
+        button.innerHTML = '<span class="name"><b></b>' + (step.note ? "<small></small>" : "") + "</span>" +
+          '<span class="tick"><svg aria-hidden="true"><use href="#i-check"/></svg></span>';
+        $("b", button).textContent = step.name;
+        if (step.note) $("small", button).textContent = step.note;
+        button.addEventListener("click", function () { toggle(index); });
+        li.appendChild(button);
+        stepsList.appendChild(li);
+      });
+    }
+
+    function render() {
+      var list = ROUTINES[time];
+      var done = list.filter(function (step) { return step.done; }).length;
+      var left = list.length - done;
+      fill.style.strokeDashoffset = String(CIRCUMFERENCE * (1 - done / list.length));
+      var finished = left === 0;
+      count.classList.toggle("done", finished);
+      count.textContent = finished ? "\u2713" : done + "/" + list.length;
+      var other = time === "night" ? "morning" : "night";
+      if (!finished) {
+        statusLine.textContent = left + (left === 1 ? " step" : " steps") + " to go " + (time === "night" ? "tonight." : "this morning.");
+      } else if (dayDone()) {
+        statusLine.textContent = "Both routines done. Today counts toward your streak.";
+      } else {
+        statusLine.textContent = (time === "night" ? "Night" : "Morning") + " routine done. The " + other + " one is still open.";
+      }
+      todayCell.classList.toggle("done", dayDone());
+      streakNumber.textContent = String(STREAK + (dayDone() ? 1 : 0));
+    }
+
+    function toggle(index) {
+      var list = ROUTINES[time];
+      var wasComplete = complete(list);
+      var wasDay = dayDone();
+      list[index].done = !list[index].done;
+      var button = $all("button", stepsList)[index];
+      button.setAttribute("aria-pressed", list[index].done ? "true" : "false");
+      render();
+      if (!wasComplete && complete(list)) {
+        burst.classList.remove("go");
+        void burst.offsetWidth;
+        burst.classList.add("go");
+      }
+      if (!wasDay && dayDone()) {
+        streakBox.classList.remove("bump");
+        void streakBox.offsetWidth;
+        streakBox.classList.add("bump");
+      }
+    }
+
+    function setTime(next) {
+      time = next;
+      skin.setAttribute("data-time", next);
+      $all("[data-time]", timeControl).forEach(function (b) {
+        var on = b.getAttribute("data-time") === next;
+        b.setAttribute("aria-selected", on ? "true" : "false");
+        b.tabIndex = on ? 0 : -1;
+      });
+      placePill(timeControl);
+      renderSteps();
+      render();
+    }
+
+    $all("[data-time]", timeControl).forEach(function (b) {
+      b.addEventListener("click", function () { setTime(b.getAttribute("data-time")); });
+    });
+    placePill(timeControl);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { placePill(timeControl); });
+    window.addEventListener("resize", function () { placePill(timeControl); });
+    renderSteps();
     render();
   }
 })();
