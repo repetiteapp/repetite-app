@@ -2,25 +2,360 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Repetite · Know what to lift. Know what to eat.</title>
-<meta name="description" content="Repetite plans your next session and your daily targets, then adjusts both as you make progress.">
+<meta name="description" content="Repetite plans your next workout and your daily food targets, then adjusts both as you make progress. Food and training in one iPhone app, with your logs kept on your phone.">
+<meta name="theme-color" content="#FAF8F6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E0C0B" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="images/icon-64.png" type="image/png">
+<link rel="apple-touch-icon" href="images/icon-180.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Repetite · Know what to lift. Know what to eat.">
+<meta property="og:description" content="Food and training in one iPhone app. Targets that adapt as you progress, and your logs stay on your phone.">
+<meta property="og:image" content="https://repetiteapp.github.io/repetite-app/images/og.png">
+<meta property="og:url" content="https://repetiteapp.github.io/repetite-app/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></symbol>
+    <symbol id="i-barcode" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6v12M8 6v12M11 6v12M15 6v12M18 6v12M20.5 6v12"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 8h3l1.6-2.4h6.8L17 8h3v11H4z"/><circle cx="12" cy="13.2" r="3.4"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.8" fill="currentColor"/></symbol>
+    <symbol id="i-timer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9.5M9.5 2.5h5"/></symbol>
+    <symbol id="i-weights" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3.5 9.5v5M6.5 7.5v9M17.5 7.5v9M20.5 9.5v5M6.5 12h11"/></symbol>
+    <symbol id="i-trend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 17l5.5-5.5 3.5 3.5 7-7.5"/><path d="M15 7.5h4.5V12"/></symbol>
+    <symbol id="i-scale" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="4"/><path d="M9 10.5a3 3 0 016 0z"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9zM18.5 15.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 16.5V11a6 6 0 0112 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2 2 0 004 0" stroke-linecap="round"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="17" height="7" rx="2"/></symbol>
+    <symbol id="i-wave" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12h1M7 8v8M11 5v14M15 8.5v7M19 10.5v3"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.5l-1.3-1.2C6 15.1 3 12.4 3 9a4.6 4.6 0 018.2-2.9L12 7l.8-.9A4.6 4.6 0 0121 9c0 3.4-3 6.1-7.7 10.3z"/></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M7 18.5h10.5a4 4 0 00.6-7.95A6 6 0 006.6 9.7 4.4 4.4 0 007 18.5z"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9.5 6.5h11M9.5 12h11M9.5 17.5h11"/><path d="M3.5 6.5l1.2 1.2 2-2.4M3.5 12l1.2 1.2 2-2.4M3.5 17.5l1.2 1.2 2-2.4" stroke-linejoin="round"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19.5 14.5A8 8 0 019.5 4.5a8 8 0 1010 10z"/></symbol>
+    <symbol id="i-import" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M7.5 10l4.5 4.5 4.5-4.5M4.5 16.5v3h15v-3"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3l18 18M10.6 6.1A10 10 0 0112 6c5 0 8.5 4.5 9.5 6a17 17 0 01-2.7 3.2M6.4 7.6A16.7 16.7 0 002.5 12c1 1.5 4.5 6 9.5 6a9.3 9.3 0 004.2-1"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 6.5h15M9.5 6.5V4h5v2.5M6.5 6.5l1 14h9l1-14"/></symbol>
+  </defs>
+</svg>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="images/icon-64.png" alt="" width="30" height="30">Repetite</a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#food">Food</a>
+      <a href="#training">Training</a>
+      <a href="#progress">Progress</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#compare">Compare</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="pill-soon" href="#pricing"><svg><use href="#i-phone"/></svg>Coming soon</a>
+  </div>
+</header>
+
 <main>
-<header><a href="./"><span class="mark" aria-hidden="true"></span>Repetite</a></header>
 
-<h1>Know what to lift.<br>Know what to eat.</h1>
-<p>Repetite plans your next session and your daily targets, then adjusts both as you make progress. Log a meal in seconds, train with a target for every set, and keep your data on your iPhone.</p>
+<section class="hero" aria-labelledby="hero-title">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">For iPhone · Coming soon to the App Store</span>
+      <h1 id="hero-title">Know what to lift.<br><span>Know what to eat.</span></h1>
+      <p class="lede">Repetite plans your next workout and your daily food targets, then adjusts both as you make progress. Log a meal in seconds, train with a target for every set, and keep your data on your iPhone.</p>
+      <div class="cta-row">
+        <a class="btn btn-dark" href="#pricing" aria-label="Coming soon to the App Store">
+          <svg><use href="#i-phone"/></svg>
+          <span><small>Coming soon to the</small><strong>App Store</strong></span>
+        </a>
+        <a class="btn btn-ghost" href="#food">See what it does</a>
+      </div>
+      <div class="promises">
+        <span><svg><use href="#i-check"/></svg>No ads</span>
+        <span><svg><use href="#i-check"/></svg>No account needed</span>
+        <span><svg><use href="#i-check"/></svg>Your logs stay on your iPhone</span>
+      </div>
+    </div>
+    <div class="hero-phones" aria-label="Repetite on iPhone">
+      <div class="phone p2"><picture><source srcset="images/workout-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/workout-light.webp" width="603" height="1311" alt="A workout in progress: Back Squat, 237 lb for 8 reps, with the rest timer and last time's numbers"></picture></div>
+      <div class="phone p1"><picture><source srcset="images/today-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/today-light.webp" width="603" height="1311" alt="The Today screen: 831 kcal left, protein, carbs and fat, today's Upper workout, water, weight and sleep"></picture></div>
+      <div class="phone p3"><picture><source srcset="images/food-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/food-light.webp" width="603" height="1311" alt="The Food tab: calories and macros left today, then breakfast and lunch with each food"></picture></div>
+    </div>
+  </div>
+</section>
 
-<div class="cards">
-<a class="card" href="privacy.html">Privacy Policy<span>What Repetite collects, and what it never does.</span></a>
-<a class="card" href="terms.html">Terms of Use<span>Including Repetite Pro subscriptions.</span></a>
-<a class="card" href="mailto:repetiteapp@gmail.com">Support<span>repetiteapp@gmail.com</span></a>
-</div>
+<section class="facts" aria-label="At a glance">
+  <div class="wrap">
+    <div class="fact"><b>12,700+</b><span>foods built in, offline</span></div>
+    <div class="fact"><b>1 app</b><span>for food and training</span></div>
+    <div class="fact"><b>0</b><span>ads and trackers</span></div>
+    <div class="fact"><b>On time</b><span>rest alarm, even on silent</span></div>
+  </div>
+</section>
 
-<footer>© 2026 Mukund Mangla</footer>
+<section class="feature" id="food" aria-labelledby="food-title">
+  <div class="wrap">
+    <div class="copy">
+      <span class="eyebrow">Food</span>
+      <h2 id="food-title">Log a meal in the time it takes to eat a bite.</h2>
+      <p>Type it the way you'd say it, scan the packet or take a photo. Repetite finds the food, works out the portion and keeps a running count of what's left today.</p>
+      <ul class="points">
+        <li><span class="ic"><svg><use href="#i-search"/></svg></span><div><strong>Search 12,700+ foods, even offline</strong><span>Type "2 eggs" or "rice 150 g" and the amount is understood. Indian dishes included.</span></div></li>
+        <li><span class="ic"><svg><use href="#i-barcode"/></svg></span><div><strong>Scan a barcode</strong><span>Packaged food from Open Food Facts, saved for next time.</span></div></li>
+        <li><span class="ic"><svg><use href="#i-camera"/></svg></span><div><strong>Snap a meal, or say it</strong><span>AI reads the plate or what you said and fills in the numbers for you to check.</span></div></li>
+        <li><span class="ic"><svg><use href="#i-list"/></svg></span><div><strong>Your usual, in one tap</strong><span>Recent foods, saved meals, and meal plans you can put on any day.</span></div></li>
+      </ul>
+    </div>
+    <div class="shots">
+      <div class="phone"><picture><source srcset="images/search-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/search-light.webp" width="603" height="1311" loading="lazy" alt="Food search for chicken showing several chicken foods with calories and protein"></picture></div>
+      <div class="phone"><picture><source srcset="images/food-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/food-light.webp" width="603" height="1311" loading="lazy" alt="The day's meals with calories, protein, carbs and fat for each food"></picture></div>
+    </div>
+  </div>
+</section>
+
+<section class="feature flip" id="training" aria-labelledby="training-title">
+  <div class="wrap">
+    <div class="copy">
+      <span class="eyebrow">Training</span>
+      <h2 id="training-title">A target for every set.</h2>
+      <p>Repetite remembers what you lifted last time and suggests what to beat today, so every session moves you forward.</p>
+      <ul class="points">
+        <li><span class="ic"><svg><use href="#i-target"/></svg></span><div><strong>Next-session targets</strong><span>The weight and reps to aim for on every lift, from your own history.</span></div></li>
+        <li><span class="ic"><svg><use href="#i-timer"/></svg></span><div><strong>A rest timer that rings on time</strong><span>Even on silent and with the phone locked, with a countdown on the Lock Screen and in the Dynamic Island.</span></div></li>
+        <li><span class="ic"><svg><use href="#i-weights"/></svg></span><div><strong>Plates, supersets and drop sets</strong><span>The plates for each side of the bar, and the way you really train.</span></div></li>
+        <li><span class="ic"><svg><use href="#i-import"/></svg></span><div><strong>Bring your history</strong><span>Import your workouts from Hevy or Strong, and start where you left off.</span></div></li>
+      </ul>
+    </div>
+    <div class="shots">
+      <div class="phone"><picture><source srcset="images/workout-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/workout-light.webp" width="603" height="1311" loading="lazy" alt="Logging a set of Back Squat with the rest timer, minus and plus 15 seconds, and plates per side"></picture></div>
+      <div class="phone"><picture><source srcset="images/summary-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/summary-light.webp" width="603" height="1311" loading="lazy" alt="Workout done: 18 sets, two new bests, and next time's targets for each lift"></picture></div>
+    </div>
+  </div>
+</section>
+
+<section class="feature" id="progress" aria-labelledby="progress-title">
+  <div class="wrap">
+    <div class="copy">
+      <span class="eyebrow">Progress</span>
+      <h2 id="progress-title">Targets that follow your real results.</h2>
+      <p>Each week Repetite compares your weight trend with your plan and suggests new calories when you stall. You see where you're heading, and when you'll get there.</p>
+      <ul class="points">
+        <li><span class="ic"><svg><use href="#i-scale"/></svg></span><div><strong>Your weight trend and goal date</strong><span>A steady line through the daily ups and downs.</span></div></li>
+        <li><span class="ic"><svg><use href="#i-trend"/></svg></span><div><strong>Strength that adds up</strong><span>Your estimated best on every lift, and how it's moving.</span></div></li>
+        <li><span class="ic"><svg><use href="#i-spark"/></svg></span><div><strong>A coach that knows your numbers</strong><span>Ask about your food and training. It can suggest a change; nothing happens until you tap Apply.</span></div></li>
+      </ul>
+    </div>
+    <div class="shots">
+      <div class="phone"><picture><source srcset="images/progress-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/progress-light.webp" width="603" height="1311" loading="lazy" alt="Progress: body weight trend toward a goal, the weekly check-in, and strength trends"></picture></div>
+      <div class="phone"><picture><source srcset="images/coach-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/coach-light.webp" width="603" height="1311" loading="lazy" alt="The AI coach answering with a meal's calories, protein, carbs and fat, and why it works"></picture></div>
+    </div>
+  </div>
+</section>
+
+<section class="more" aria-labelledby="more-title">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">And everything around it</span>
+      <h2 id="more-title">Built for every day, not just gym days.</h2>
+    </div>
+    <div class="grid">
+      <div class="card wide">
+        <div>
+          <span class="ic"><svg><use href="#i-bell"/></svg></span>
+          <h3>Reminders that know your day</h3>
+          <p>A nudge only when something's missing: a meal you usually log, protein that's short before dinner, or the workout you planned. Never more than three a day, and never during your quiet hours.</p>
+        </div>
+        <picture><source srcset="images/reminders-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/reminders-light.webp" width="560" height="666" loading="lazy" alt="Coming up: an Upper day reminder at 5:30 PM, a protein reminder at 7:15 PM, and tomorrow's reminders"></picture>
+      </div>
+      <div class="card">
+        <span class="ic"><svg><use href="#i-grid"/></svg></span>
+        <h3>Widgets and controls</h3>
+        <p>Calories, macros, water and today's workout on your Home Screen and Lock Screen, with water and logging in Control Center.</p>
+      </div>
+      <div class="card">
+        <span class="ic"><svg><use href="#i-wave"/></svg></span>
+        <h3>Siri and Shortcuts</h3>
+        <p>Log food, water or your usual meal, or ask how your day is going, without opening the app.</p>
+        <p class="quote">"Hey Siri, log my usual breakfast in Repetite"</p>
+      </div>
+      <div class="card">
+        <span class="ic"><svg><use href="#i-heart"/></svg></span>
+        <h3>Apple Health</h3>
+        <p>Sleep, heart rate, steps and calories from your watch or tracker. Weight, workouts and meals saved back.</p>
+      </div>
+      <div class="card">
+        <span class="ic"><svg><use href="#i-list"/></svg></span>
+        <h3>Habits and skincare</h3>
+        <p>Tick off creatine, vitamins or a morning and night skincare routine, each with its own schedule.</p>
+      </div>
+      <div class="card wide">
+        <div>
+          <span class="ic"><svg><use href="#i-grid"/></svg></span>
+          <h3>Your day at a glance</h3>
+          <p>Widgets that show what's left to eat and what's next to train, in light and dark.</p>
+        </div>
+        <picture><source srcset="images/widgets-dark.webp" media="(prefers-color-scheme: dark)"><img src="images/widgets-light.webp" width="560" height="519" loading="lazy" alt="Small and medium Repetite widgets: 950 kcal left, 55 g protein to go, macros and water"></picture>
+      </div>
+      <div class="card">
+        <span class="ic"><svg><use href="#i-cloud"/></svg></span>
+        <h3>Backups you can trust</h3>
+        <p>Automatic backups on your iPhone, plus cloud backup if you sign in, or a file you keep yourself.</p>
+      </div>
+      <div class="card">
+        <span class="ic"><svg><use href="#i-moon"/></svg></span>
+        <h3>Made for real life</h3>
+        <p>Your day can end at 3 AM for late nights, in kilograms or pounds, light or dark.</p>
+      </div>
+      <div class="card">
+        <span class="ic"><svg><use href="#i-import"/></svg></span>
+        <h3>Ready to switch</h3>
+        <p>Bring your workout history from Hevy or Strong in a few taps.</p>
+      </div>
+      <div class="card">
+        <span class="ic"><svg><use href="#i-heart"/></svg></span>
+        <h3>Vitamins and minerals</h3>
+        <p>Foods from the database carry their vitamins and minerals, so you can see what your day adds up to, not just calories.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="privacy-band" id="privacy" aria-labelledby="privacy-title">
+  <div class="wrap">
+    <div class="panel">
+      <div>
+        <span class="eyebrow">Privacy</span>
+        <h2 id="privacy-title">Your data is yours. It stays on your iPhone.</h2>
+        <p>Repetite works fully without an account, and keeps your logs on your phone. Read exactly what's collected in the <a href="privacy.html">Privacy Policy</a>.</p>
+      </div>
+      <ul class="privacy-list">
+        <li><svg><use href="#i-phone"/></svg><div><strong>Logs stay on your iPhone</strong><span>Food, workouts, weight, habits and Health data are stored on your device.</span></div></li>
+        <li><svg><use href="#i-user"/></svg><div><strong>No account needed</strong><span>Sign in only if you want cloud backup.</span></div></li>
+        <li><svg><use href="#i-spark"/></svg><div><strong>AI only when you allow it</strong><span>Off until you say yes, and it sends only what each answer needs, never your email.</span></div></li>
+        <li><svg><use href="#i-eye-off"/></svg><div><strong>No ads, no tracking, never sold</strong><span>No ad or analytics trackers, and Health data is never used for advertising.</span></div></li>
+        <li><svg><use href="#i-trash"/></svg><div><strong>Delete any time</strong><span>Your account and its backups, from Settings, straight away.</span></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="compare" id="compare" aria-labelledby="compare-title">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Compare</span>
+      <h2 id="compare-title">What makes Repetite different.</h2>
+      <p>Most people use one app for food and another for the gym, and give both their data. Repetite does both, on your phone.</p>
+    </div>
+    <div class="table-wrap">
+      <table class="cmp">
+        <thead><tr><th scope="col"><span class="visually-hidden">Feature</span></th><th scope="col" class="us">Repetite</th><th scope="col">Many fitness apps</th></tr></thead>
+        <tbody>
+          <tr><td>Food and training</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>In one app, sharing what they know</span></td><td class="them">Often two separate apps</td></tr>
+          <tr><td>Account</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>Optional, only for cloud backup</span></td><td class="them">Often required to start</td></tr>
+          <tr><td>Where your logs live</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>On your iPhone</span></td><td class="them">Usually on the company's servers</td></tr>
+          <tr><td>Ads and trackers</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>None, on Free or Pro</span></td><td class="them">Common on free plans</td></tr>
+          <tr><td>Food search without signal</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>12,700+ foods built in</span></td><td class="them">Often needs a connection</td></tr>
+          <tr><td>What to lift next</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>A target for every set</span></td><td class="them">Usually just your last numbers</td></tr>
+          <tr><td>Calorie targets</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>Adjust to your real weight trend</span></td><td class="them">Usually set once</td></tr>
+          <tr><td>Rest timer on a locked phone</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>Rings on time, even on silent</span></td><td class="them">Often a notification silent mode mutes</td></tr>
+          <tr><td>Reminders</td><td class="us"><span class="yes"><svg><use href="#i-check"/></svg>Only when something's missing</span></td><td class="them">Usually the same time every day</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">Comparisons describe what's common among popular calorie counters and workout loggers; individual apps differ.</p>
+  </div>
+</section>
+
+<section class="pricing" id="pricing" aria-labelledby="pricing-title">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Pricing</span>
+      <h2 id="pricing-title">Free to use. Pro when you want more.</h2>
+      <p>Everything you need to log food and train is free, with no ads. Pro adds targets that adapt and unlimited AI.</p>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <h3>Free</h3>
+        <p class="price">Free forever</p>
+        <ul>
+          <li><svg><use href="#i-check"/></svg><span><strong>Food and workout logging</strong>, with no limits</span></li>
+          <li><svg><use href="#i-check"/></svg><span><strong>12,700+ foods</strong>, barcode scanning, saved meals</span></li>
+          <li><svg><use href="#i-check"/></svg><span><strong>Rest timer and alarm</strong>, personal records, plates per side</span></li>
+          <li><svg><use href="#i-check"/></svg><span><strong>Widgets, Siri, Apple Health</strong> and smart reminders</span></li>
+          <li><svg><use href="#i-check"/></svg><span><strong>AI food logging</strong> and <strong>AI coach</strong>: 3 a day each</span></li>
+          <li><svg><use href="#i-check"/></svg><span><strong>History and trends</strong>: the last 30 days</span></li>
+        </ul>
+      </div>
+      <div class="plan pro">
+        <span class="tag">PRO</span>
+        <h3>Repetite Pro</h3>
+        <p class="price">Monthly or yearly. Prices are shown in the app, in your currency.</p>
+        <ul>
+          <li><svg><use href="#i-check"/></svg><span>Everything in Free, plus:</span></li>
+          <li><svg><use href="#i-check"/></svg><span><strong>Next-session targets</strong>: the weight and reps to beat on every lift</span></li>
+          <li><svg><use href="#i-check"/></svg><span><strong>Weekly check-ins</strong>: calories that follow your real weight trend</span></li>
+          <li><svg><use href="#i-check"/></svg><span><strong>Unlimited</strong> AI food logging and AI coach</span></li>
+          <li><svg><use href="#i-check"/></svg><span><strong>Your full history</strong>, with trends beyond 30 days</span></li>
+          <li><svg><use href="#i-check"/></svg><span>Protein ideas from foods you eat, and a weekly recap</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="faq" aria-labelledby="faq-title">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">FAQ</span>
+      <h2 id="faq-title">Questions, answered.</h2>
+    </div>
+    <div class="faq-list">
+      <details><summary>Is Repetite free?</summary><p>Yes. Logging food and workouts, the food database, barcode scanning, the rest timer, widgets, Siri and Apple Health are all free, with no ads. Pro adds next-session targets, weekly calorie check-ins, unlimited AI and your full history. Pro is billed through your Apple ID and you can cancel any time in your iPhone's Settings.</p></details>
+      <details><summary>Do I need an account?</summary><p>No. Everything works without one. You can sign in with your email if you'd like a cloud backup, so a new phone can get everything back.</p></details>
+      <details><summary>Where is my data stored?</summary><p>On your iPhone. If you allow AI, only what each answer needs is sent to the AI service through Repetite's server. If you sign in, your backups are stored privately for your account. The <a href="privacy.html">Privacy Policy</a> lists everything.</p></details>
+      <details><summary>Does it work with Apple Watch, Fitbit, Garmin or Oura?</summary><p>Yes, through Apple Health. Apple Watch works on its own; for other devices, turn on Apple Health in the device's app and Repetite picks up your sleep, heart rate, steps and calories burned.</p></details>
+      <details><summary>Can I bring my workouts from another app?</summary><p>Yes. Export your history from Hevy or Strong and import it in Repetite. Your past weights and records carry over, so suggestions work from day one.</p></details>
+      <details><summary>Does it work for vegetarian and Indian diets?</summary><p>Yes. The food database includes Indian dishes, and you can tell Repetite you're vegetarian, vegan or eat eggs, so food ideas from the coach fit how you eat.</p></details>
+      <details><summary>Is this medical advice?</summary><p>No. Repetite helps you track and plan, but it isn't medical, nutritional or fitness advice from a professional. Talk to a doctor before starting a new diet or training program. See the <a href="terms.html">Terms of Use</a>.</p></details>
+      <details><summary>When can I download it?</summary><p>Repetite is coming soon to the App Store for iPhone. Questions or feedback in the meantime: <a href="mailto:repetiteapp@gmail.com">repetiteapp@gmail.com</a>.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="closing" aria-labelledby="closing-title">
+  <div class="wrap">
+    <img src="images/icon-180.png" width="84" height="84" alt="">
+    <h2 id="closing-title">Train smarter. Eat with purpose.</h2>
+    <p>Coming soon to the App Store for iPhone.</p>
+    <div class="cta-row">
+      <a class="btn btn-ghost" href="mailto:repetiteapp@gmail.com">Contact us</a>
+    </div>
+  </div>
+</section>
+
 </main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="images/icon-64.png" alt="" width="30" height="30">Repetite</a>
+    <nav aria-label="Footer">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Use</a>
+      <a href="mailto:repetiteapp@gmail.com">Support</a>
+    </nav>
+    <small>© 2026 Mukund Mangla</small>
+  </div>
+</footer>
+
 </body>
 </html>
