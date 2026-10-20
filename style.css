@@ -95,6 +95,9 @@ body {
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
+/* Glows and tilted phones may reach past the screen's edge; on a phone
+   that would let the page pan sideways, so they're clipped. */
+main { overflow-x: clip; }
 img { max-width: 100%; height: auto; display: block; }
 a { color: var(--brand); text-decoration-thickness: 1px; text-underline-offset: 3px; }
 a:hover { text-decoration-thickness: 2px; }
