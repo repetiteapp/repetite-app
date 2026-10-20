@@ -132,15 +132,34 @@
     }
   }
 
-  function showSpot(spot) {
-    if (!nowIn || spot === shownSpot) return;
-    shownSpot = spot;
+  function setLabel(spot) {
     if (spot) {
       nowIn.innerHTML = '<svg aria-hidden="true"><use href="' + spot.icon + '"/></svg><span></span>';
       nowIn.lastChild.textContent = spot.label;
     } else {
       nowIn.innerHTML = restLabel;
     }
+  }
+
+  // The label's slot is as wide as the longest label, so the pill keeps one
+  // size while the section changes and only the words slide.
+  function fitLabelSlot() {
+    if (!nowIn) return;
+    var slot = nowIn.parentNode;
+    slot.style.minWidth = "";
+    var widest = 0;
+    [null].concat(spots).forEach(function (spot) {
+      setLabel(spot);
+      widest = Math.max(widest, slot.getBoundingClientRect().width);
+    });
+    setLabel(shownSpot);
+    slot.style.minWidth = Math.ceil(widest) + "px";
+  }
+
+  function showSpot(spot) {
+    if (!nowIn || spot === shownSpot) return;
+    shownSpot = spot;
+    setLabel(spot);
     if (where) where.textContent = spot ? spot.label : restWhere;
     islLinks.forEach(function (link) {
       var on = !!spot && link === spot.link;
@@ -193,7 +212,8 @@
       hoverTimer = setTimeout(function () { setIsland(false); }, 320);
     });
     window.addEventListener("resize", sizeIsland);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(sizeIsland);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { fitLabelSlot(); sizeIsland(); });
+    fitLabelSlot();
     sizeIsland();
   }
 
