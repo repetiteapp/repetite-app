@@ -1070,26 +1070,58 @@ html.js .split.in .w { opacity: 1; transform: none; }
 .slide.active { cursor: grab; }
 .slide.active .phone::after { opacity: 0; }
 .slide.active .phone { box-shadow: 0 50px 90px -36px rgba(80, 36, 12, 0.5), var(--shadow); }
+/* Pins: a dot on the screen's edge, level with what it points at, a line
+   out past the phone and the label beyond it, so nothing on the screen is
+   covered. Under 900 px there's no room beside the phone: the dots show
+   numbers and the labels are listed under it (.showcase-notes). */
 .pins { position: absolute; inset: 9px; pointer-events: none; }
-.pin {
-  position: absolute; left: var(--x); top: var(--y); display: flex; align-items: center; gap: 8px;
-  transform: translate(-7px, -50%) scale(0.6); transform-origin: 7px 50%; opacity: 0;
-  transition: opacity 250ms ease, transform 300ms ease;
+.pin { position: absolute; top: var(--y); display: flex; align-items: center; transform: translateY(-50%); }
+.pin.r { left: calc(100% - 6.5px); }
+.pin.l { right: calc(100% - 6.5px); flex-direction: row-reverse; }
+.pin i {
+  position: relative; flex: none; width: 13px; height: 13px; border-radius: 50%; background: var(--brand);
+  box-shadow: 0 0 0 2.5px #fff, 0 3px 8px rgba(0, 0, 0, 0.35);
+  font: 700 0/13px var(--mono); font-style: normal; color: #fff; text-align: center;
+  transform: scale(0); transition: transform 250ms ease;
 }
-.pin.left { flex-direction: row-reverse; transform: translate(calc(-100% + 7px), -50%) scale(0.6); transform-origin: calc(100% - 7px) 50%; }
-.pin i { position: relative; flex: none; width: 14px; height: 14px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 3px #fff, 0 4px 10px rgba(0, 0, 0, 0.3); }
-.pin i::after { content: ""; position: absolute; inset: -7px; border-radius: 50%; border: 2px solid var(--brand); opacity: 0; }
+.pin i::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--brand); opacity: 0; }
+.pin s { flex: none; width: 46px; height: 1.5px; background: var(--brand); transform: scaleX(0); transition: transform 250ms ease; }
+.pin.r s { transform-origin: left center; }
+.pin.l s { transform-origin: right center; }
 .pin b {
   font: 600 12.5px/1.2 var(--font); white-space: nowrap; padding: 7px 11px; border-radius: 999px;
   background: var(--note); color: var(--note-text); box-shadow: var(--shadow-sm), inset 0 0 0 1px var(--glass-edge-2);
   -webkit-backdrop-filter: blur(14px) saturate(180%); backdrop-filter: blur(14px) saturate(180%);
+  opacity: 0; transform: translateX(-8px); transition: opacity 200ms ease, transform 250ms ease;
 }
-.slide.settled .pin { opacity: 1; transform: translate(-7px, -50%) scale(1); transition: opacity 300ms ease calc(var(--n) * 160ms), transform 500ms cubic-bezier(.3,1.5,.5,1) calc(var(--n) * 160ms); }
-.slide.settled .pin.left { transform: translate(calc(-100% + 7px), -50%) scale(1); }
+.pin.l b { transform: translateX(8px); }
+.slide.settled .pin i { transform: scale(1); transition: transform 450ms cubic-bezier(.3,1.5,.5,1) calc(var(--n) * 160ms); }
+.slide.settled .pin s { transform: scaleX(1); transition: transform 380ms cubic-bezier(.2,.8,.2,1) calc(var(--n) * 160ms + 120ms); }
+.slide.settled .pin b {
+  opacity: 1; transform: none;
+  transition: opacity 300ms ease calc(var(--n) * 160ms + 260ms), transform 420ms cubic-bezier(.2,.8,.2,1) calc(var(--n) * 160ms + 260ms);
+}
 @media (prefers-reduced-motion: no-preference) {
   .slide.settled .pin i::after { animation: pin-pulse 1.8s ease-out infinite; animation-delay: calc(var(--n) * 160ms + 400ms); }
 }
 @keyframes pin-pulse { 0% { opacity: 0.8; transform: scale(0.6); } 100% { opacity: 0; transform: scale(1.6); } }
+.showcase-notes { display: none; }
+@media (max-width: 899px) {
+  .pin s, .pin b { display: none; }
+  .pin.r { left: calc(100% - 9px); }
+  .pin.l { right: calc(100% - 9px); }
+  .pin i { width: 18px; height: 18px; font-size: 10.5px; line-height: 18px; }
+  .showcase-notes {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; margin: -6px 0 0; padding: 0; list-style: none;
+    max-width: min(520px, calc(100% - 32px)); transition: opacity 220ms ease, transform 320ms ease;
+  }
+  .showcase-notes li { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 500; color: var(--text-2); }
+  .showcase-notes i {
+    flex: none; width: 20px; height: 20px; border-radius: 50%; background: var(--brand); color: #fff;
+    font: 700 11px/20px var(--mono); font-style: normal; text-align: center;
+  }
+  .showcase-notes.swap { opacity: 0; transform: translateY(6px); }
+}
 .showcase-foot { display: grid; grid-template-columns: auto minmax(0, 380px) auto; align-items: center; gap: 18px; width: min(560px, calc(100% - 32px)); }
 .showcase-caption { display: grid; gap: 2px; text-align: center; min-height: 54px; align-content: center; transition: opacity 220ms ease, transform 320ms ease; }
 .showcase-caption strong { font-size: 20px; letter-spacing: -0.02em; }
@@ -1103,7 +1135,6 @@ html.js .split.in .w { opacity: 1; transform: none; }
 @keyframes showcase-timer { to { transform: scaleX(1); } }
 @media (max-width: 640px) {
   .showcase { --pw: 214px; } .showcase-foot { gap: 10px; } .showcase-caption strong { font-size: 18px; }
-  .pin b { white-space: normal; max-width: 128px; font-size: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .slide { transition: opacity 300ms ease; } }
 

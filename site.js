@@ -612,6 +612,7 @@
     var showTabs = $(".showcase-tabs", showcase);
     var showCaption = $(".showcase-caption", showcase);
     var showCount = $(".showcase-count", showcase);
+    var showNotes = $(".showcase-notes", showcase);
     var showCurrent = 0;
     var settleTimer = null;
     var playTimer = null;
@@ -655,12 +656,29 @@
         $("strong", showCaption).textContent = active.getAttribute("data-title");
         $("span", showCaption).textContent = active.getAttribute("data-sub");
         showCount.textContent = pad(showCurrent + 1) + " / " + pad(total);
+        // Where the labels don't fit beside the phone, they're listed under it.
+        if (showNotes) {
+          showNotes.textContent = "";
+          $all(".pin b", active).forEach(function (label, i) {
+            var item = document.createElement("li");
+            var number = document.createElement("i");
+            number.textContent = String(i + 1);
+            item.appendChild(number);
+            item.appendChild(document.createTextNode(label.textContent));
+            showNotes.appendChild(item);
+          });
+        }
       }
       if (captionToo === false) {
         writeCaption();
       } else {
         showCaption.classList.add("swap");
-        setTimeout(function () { writeCaption(); showCaption.classList.remove("swap"); }, 180);
+        if (showNotes) showNotes.classList.add("swap");
+        setTimeout(function () {
+          writeCaption();
+          showCaption.classList.remove("swap");
+          if (showNotes) showNotes.classList.remove("swap");
+        }, 180);
       }
       var group = active.getAttribute("data-group");
       $all("[data-group]", showTabs).forEach(function (tab) {
