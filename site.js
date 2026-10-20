@@ -1,4 +1,4 @@
-// Repetite's website: the theme switch, the floating navbar, and the live
+// Repetite's website: the theme switch, the navbar island, and the live
 // demos (tour, Lock Screen reminders, "Try it", rest timer, coach). Every
 // part checks its elements exist, so the legal pages can load it too.
 (function () {
@@ -90,119 +90,133 @@
   if (systemDark.addEventListener) systemDark.addEventListener("change", syncToggle);
   syncToggle();
 
-  // ---------- Navbar: shrinks on scroll, a capsule follows the section ----------
-  var shell = $(".nav-shell");
-  var links = $all(".nav-links a");
-  var indicator = $(".nav-indicator");
-  var glassNav = $(".glass-nav");
+  // ---------- Navbar: the island ----------
+  // A black pill like the iPhone's Dynamic Island. It names the section
+  // you're reading and fills a ring as you scroll; pointing at it (with a
+  // mouse) or tapping it grows it into the menu. Its size is set here as
+  // --w and --h so the CSS can spring between them.
+  var isl = $(".isl");
+  var islShell = $(".isl-shell");
+  var pill = $(".isl-pill");
+  var panel = $(".isl-panel");
+  var nowIn = $(".isl-now-in");
+  var ring = $(".isl-ring .f");
+  var where = $(".isl-where b");
+  var islLinks = $all(".isl-link");
   var toTop = $(".to-top");
+  var islOpen = false;
+  // What the pill says above the first section (on another page: its name).
+  var restLabel = nowIn ? nowIn.innerHTML : "";
+  var restWhere = where ? where.textContent : "";
+  // The sections the menu links to, in page order.
+  var spots = islLinks.map(function (link) {
+    var href = link.getAttribute("href") || "";
+    var section = href.charAt(0) === "#" ? document.getElementById(href.slice(1)) : null;
+    var use = link.querySelector("use");
+    return section ? { el: section, link: link, label: link.textContent.trim(), icon: use ? use.getAttribute("href") : "" } : null;
+  }).filter(Boolean);
+  var shownSpot = null;
+
+  function sizeIsland() {
+    if (!isl) return;
+    if (islOpen) {
+      var width = Math.min(760, root.clientWidth - 24);
+      var room = window.innerHeight - isl.getBoundingClientRect().top - 12;
+      isl.style.setProperty("--pw", width + "px");
+      isl.style.setProperty("--ph", room + "px");
+      isl.style.setProperty("--w", width + "px");
+      isl.style.setProperty("--h", Math.min(panel.scrollHeight, room) + "px");
+    } else {
+      isl.style.setProperty("--w", pill.offsetWidth + "px");
+      isl.style.setProperty("--h", pill.offsetHeight + "px");
+    }
+  }
+
+  function showSpot(spot) {
+    if (!nowIn || spot === shownSpot) return;
+    shownSpot = spot;
+    if (spot) {
+      nowIn.innerHTML = '<svg aria-hidden="true"><use href="' + spot.icon + '"/></svg><span></span>';
+      nowIn.lastChild.textContent = spot.label;
+    } else {
+      nowIn.innerHTML = restLabel;
+    }
+    if (where) where.textContent = spot ? spot.label : restWhere;
+    islLinks.forEach(function (link) {
+      var on = !!spot && link === spot.link;
+      link.classList.toggle("on", on);
+      if (on) link.setAttribute("aria-current", "true"); else link.removeAttribute("aria-current");
+    });
+    if (!reduceMotion && nowIn.animate) {
+      nowIn.animate([
+        { transform: "translateY(80%)", opacity: 0, filter: "blur(3px)" },
+        { transform: "none", opacity: 1, filter: "none" }
+      ], { duration: 420, easing: "cubic-bezier(.2, .8, .2, 1)" });
+    }
+    if (!islOpen) sizeIsland();
+  }
+
+  function setIsland(open) {
+    if (!isl || open === islOpen) return;
+    islOpen = open;
+    isl.classList.toggle("open", open);
+    islShell.classList.toggle("open", open);
+    pill.setAttribute("aria-expanded", open ? "true" : "false");
+    pill.tabIndex = open ? -1 : 0;
+    panel.inert = !open;
+    if (!open && panel.contains(document.activeElement)) pill.focus({ preventScroll: true });
+    sizeIsland();
+  }
+
+  if (isl && pill && panel) {
+    panel.inert = true;
+    // A click from the keyboard (Enter or Space) moves focus into the menu.
+    pill.addEventListener("click", function (e) {
+      setIsland(true);
+      if (e.detail === 0 && islLinks[0]) islLinks[0].focus({ preventScroll: true });
+    });
+    $(".isl-close").addEventListener("click", function () { setIsland(false); });
+    $all("a", panel).forEach(function (a) { a.addEventListener("click", function () { setIsland(false); }); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && islOpen) { setIsland(false); pill.focus({ preventScroll: true }); } });
+    document.addEventListener("pointerdown", function (e) { if (islOpen && !isl.contains(e.target)) setIsland(false); });
+    isl.addEventListener("focusout", function (e) { if (islOpen && e.relatedTarget && !isl.contains(e.relatedTarget)) setIsland(false); });
+    // With a mouse it opens on hover, after a beat so passing over it doesn't.
+    var hoverTimer;
+    isl.addEventListener("pointerenter", function (e) {
+      if (e.pointerType !== "mouse") return;
+      clearTimeout(hoverTimer);
+      hoverTimer = setTimeout(function () { setIsland(true); }, 90);
+    });
+    isl.addEventListener("pointerleave", function (e) {
+      if (e.pointerType !== "mouse") return;
+      clearTimeout(hoverTimer);
+      hoverTimer = setTimeout(function () { setIsland(false); }, 320);
+    });
+    window.addEventListener("resize", sizeIsland);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(sizeIsland);
+    sizeIsland();
+  }
+
   var scrollQueued = false;
   function onScroll() {
     scrollQueued = false;
     var y = window.scrollY;
-    if (shell) shell.classList.toggle("scrolled", y > 24);
     if (toTop) toTop.classList.toggle("show", y > window.innerHeight * 1.2);
-    if (glassNav) {
-      var max = document.documentElement.scrollHeight - window.innerHeight;
-      glassNav.style.setProperty("--progress", max > 0 ? Math.min(1, y / max).toFixed(4) : "0");
+    if (ring) {
+      var max = root.scrollHeight - window.innerHeight;
+      ring.style.strokeDashoffset = (100 - (max > 0 ? Math.min(1, y / max) : 0) * 100).toFixed(2);
+    }
+    if (spots.length) {
+      var line = window.innerHeight * 0.42;
+      var current = null;
+      spots.forEach(function (spot) { if (spot.el.getBoundingClientRect().top <= line) current = spot; });
+      showSpot(current);
     }
   }
   window.addEventListener("scroll", function () {
     if (!scrollQueued) { scrollQueued = true; requestAnimationFrame(onScroll); }
   }, { passive: true });
   onScroll();
-
-  // The light on the glass follows the pointer.
-  if (glassNav && !reduceMotion) {
-    glassNav.addEventListener("pointermove", function (e) {
-      var box = glassNav.getBoundingClientRect();
-      glassNav.style.setProperty("--mx", (e.clientX - box.left) + "px");
-      glassNav.style.setProperty("--my", (e.clientY - box.top) + "px");
-    });
-  }
-
-  // The capsule moves like a drop of liquid: it stretches across to the
-  // new link, then settles. It previews the link you point at, and goes
-  // back to the section you're reading when you leave.
-  var activeLink = null;
-  var shownLink = null;
-  function moveIndicatorTo(link) {
-    if (!indicator) return;
-    if (!link || link.offsetParent === null) {
-      indicator.style.opacity = "0";
-      shownLink = null;
-      return;
-    }
-    var toLeft = link.offsetLeft;
-    var toWidth = link.offsetWidth;
-    var wasHidden = indicator.style.opacity !== "1" || !shownLink;
-    var fromLeft = indicator.offsetLeft;
-    var fromWidth = indicator.offsetWidth;
-    indicator.style.left = toLeft + "px";
-    indicator.style.width = toWidth + "px";
-    indicator.style.opacity = "1";
-    if (!wasHidden && link !== shownLink && !reduceMotion && indicator.animate) {
-      var spanLeft = Math.min(fromLeft, toLeft);
-      var spanWidth = Math.max(fromLeft + fromWidth, toLeft + toWidth) - spanLeft;
-      indicator.animate([
-        { left: fromLeft + "px", width: fromWidth + "px", transform: "scaleY(1)" },
-        { left: spanLeft + "px", width: spanWidth + "px", transform: "scaleY(0.82)", offset: 0.42 },
-        { left: toLeft + "px", width: toWidth + "px", transform: "scaleY(1.06)", offset: 0.78 },
-        { left: toLeft + "px", width: toWidth + "px", transform: "scaleY(1)" }
-      ], { duration: 560, easing: "cubic-bezier(.3, .9, .4, 1)" });
-    }
-    shownLink = link;
-  }
-  function placeIndicator() { moveIndicatorTo(activeLink); }
-  var linksBox = $(".nav-links");
-  if (linksBox) {
-    links.forEach(function (link) {
-      link.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") moveIndicatorTo(link); });
-    });
-    linksBox.addEventListener("pointerleave", function () { moveIndicatorTo(activeLink); });
-  }
-  function setActive(id) {
-    activeLink = null;
-    links.forEach(function (link) {
-      var on = link.getAttribute("href") === "#" + id;
-      link.classList.toggle("active", on);
-      if (on) { activeLink = link; link.setAttribute("aria-current", "true"); } else { link.removeAttribute("aria-current"); }
-    });
-    placeIndicator();
-  }
-  var spied = links.map(function (link) {
-    var href = link.getAttribute("href");
-    return href && href.charAt(0) === "#" ? document.getElementById(href.slice(1)) : null;
-  }).filter(Boolean);
-  if (spied.length && "IntersectionObserver" in window) {
-    var visible = {};
-    var spy = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) { visible[entry.target.id] = entry.isIntersecting; });
-      var current = null;
-      spied.forEach(function (section) { if (visible[section.id]) current = section.id; });
-      setActive(current);
-    }, { rootMargin: "-40% 0px -55% 0px" });
-    spied.forEach(function (section) { spy.observe(section); });
-  }
-  window.addEventListener("resize", placeIndicator);
-
-  var menuButton = $(".menu-btn");
-  var menu = $("#nav-menu");
-  function closeMenu() {
-    if (!menu || !menuButton) return;
-    menu.hidden = true;
-    menuButton.setAttribute("aria-expanded", "false");
-  }
-  if (menuButton && menu) {
-    menuButton.addEventListener("click", function () {
-      var open = menu.hidden;
-      menu.hidden = !open;
-      menuButton.setAttribute("aria-expanded", open ? "true" : "false");
-    });
-    $all("a", menu).forEach(function (a) { a.addEventListener("click", closeMenu); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeMenu(); });
-    window.addEventListener("resize", function () { if (innerWidth > 1080) closeMenu(); });
-  }
 
   // ---------- Headings rise in word by word ----------
   // Only plain-text headings; each word keeps its space for screen readers.
@@ -296,7 +310,7 @@
       });
     });
     window.addEventListener("resize", function () { placePill(control); });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { placePill(control); placeIndicator(); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { placePill(control); });
     placePill(control);
   }
 
@@ -555,7 +569,7 @@
 
   // ---------- Buttons lean toward the pointer ----------
   if (!reduceMotion && window.matchMedia("(pointer: fine)").matches) {
-    $all(".btn, .nav-cta, .round-btn").forEach(function (button) {
+    $all(".btn, .round-btn").forEach(function (button) {
       button.addEventListener("pointermove", function (e) {
         var box = button.getBoundingClientRect();
         var dx = (e.clientX - (box.left + box.width / 2)) / box.width;

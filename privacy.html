@@ -63,28 +63,27 @@
     <symbol id="i-fork" viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 002 2v9M5 3v5M9 3v5M16.5 21V3.5c-2 0-3.5 2.5-3.5 6.5v3h3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   </defs>
 </svg>
-<div class="nav-shell">
-  <nav class="glass-nav glass" aria-label="Main">
-    <span class="liquid-shine" aria-hidden="true"></span>
-    <span class="nav-progress" aria-hidden="true"></span>
-    <a class="brand" href="./"><img src="images/icon-64.png" alt="" width="28" height="28">Repetite</a>
-    <div class="nav-links"><span class="nav-indicator" aria-hidden="true"></span><a href="./#tour">Tour</a><a href="./#reminders">Reminders</a><a href="./#rest">Rest timer</a><a href="./#skincare">Skincare</a><a href="./#coach">Coach</a><a href="./#privacy">Privacy</a><a href="./#pricing">Pricing</a><a href="./#faq">FAQ</a></div>
-    <div class="nav-actions">
-      <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span class="tt-bar"></span><span class="tt-plate"><span class="tt-ring"></span><svg class="tt-sun" aria-hidden="true"><use href="#i-sun"/></svg><svg class="tt-moon" aria-hidden="true"><use href="#i-moon"/></svg></span></button>
-      <a class="nav-cta" href="./#pricing"><svg aria-hidden="true"><use href="#i-phone"/></svg>Coming soon</a>
-      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Menu"><span></span></button>
+<div class="isl-shell">
+  <nav class="isl" aria-label="Main">
+    <button class="isl-pill" type="button" aria-expanded="false" aria-controls="isl-panel">
+      <img class="isl-icon" src="images/icon-64.png" alt="" width="26" height="26">
+      <span class="isl-name">Repetite</span>
+      <span class="isl-now"><span class="isl-now-in"><svg aria-hidden="true"><use href="#i-list"/></svg><span>Privacy Policy</span></span></span>
+      <svg class="isl-ring" viewBox="0 0 24 24" aria-hidden="true"><circle class="t" cx="12" cy="12" r="9"/><circle class="f" cx="12" cy="12" r="9" pathLength="100"/></svg>
+      <span class="visually-hidden">, menu</span>
+    </button>
+    <div class="isl-panel" id="isl-panel">
+      <div class="isl-top">
+        <a class="isl-brand" href="./"><img src="images/icon-64.png" alt="" width="28" height="28">Repetite</a>
+        <span class="isl-where" aria-hidden="true">You're on <b>Privacy Policy</b></span>
+        <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span class="tt-bar"></span><span class="tt-plate"><span class="tt-ring"></span><svg class="tt-sun" aria-hidden="true"><use href="#i-sun"/></svg><svg class="tt-moon" aria-hidden="true"><use href="#i-moon"/></svg></span></button>
+        <button class="isl-close" type="button" aria-label="Close the menu"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6"/></svg></button>
+      </div>
+      <div class="isl-cols"><div class="isl-col app"><p class="isl-h">The app</p><div class="isl-list"><a class="isl-link" href="./#tour" style="--i:0"><svg aria-hidden="true"><use href="#i-tap"/></svg><span>Tour</span></a><a class="isl-link" href="./#reminders" style="--i:1"><svg aria-hidden="true"><use href="#i-bell"/></svg><span>Reminders</span></a><a class="isl-link" href="./#rest" style="--i:2"><svg aria-hidden="true"><use href="#i-timer"/></svg><span>Rest timer</span></a><a class="isl-link" href="./#plates" style="--i:3"><svg aria-hidden="true"><use href="#i-weights"/></svg><span>Plates</span></a><a class="isl-link" href="./#skincare" style="--i:4"><svg aria-hidden="true"><use href="#i-drop"/></svg><span>Skincare</span></a><a class="isl-link" href="./#coach" style="--i:5"><svg aria-hidden="true"><use href="#i-chat"/></svg><span>AI coach</span></a><a class="isl-link" href="./#screens" style="--i:6"><svg aria-hidden="true"><use href="#i-grid"/></svg><span>Screens</span></a><a class="isl-link" href="./#features" style="--i:7"><svg aria-hidden="true"><use href="#i-layers"/></svg><span>Everything</span></a></div></div><div class="isl-col"><p class="isl-h">Trust</p><div class="isl-list"><a class="isl-link" href="./#privacy" style="--i:8"><svg aria-hidden="true"><use href="#i-lock"/></svg><span>Privacy</span></a><a class="isl-link" href="./#compare" style="--i:9"><svg aria-hidden="true"><use href="#i-swap"/></svg><span>Compare</span></a></div></div><div class="isl-col"><p class="isl-h">Get it</p><div class="isl-list"><a class="isl-link" href="./#pricing" style="--i:10"><svg aria-hidden="true"><use href="#i-spark"/></svg><span>Pricing</span></a><a class="isl-link" href="./#faq" style="--i:11"><svg aria-hidden="true"><use href="#i-list"/></svg><span>FAQ</span></a></div><a class="isl-big" href="./#pricing"><svg aria-hidden="true"><use href="#i-phone"/></svg><span><small>Coming soon to the</small><strong>App Store</strong></span></a></div></div>
+      <a class="isl-big wide" href="./#pricing"><svg aria-hidden="true"><use href="#i-phone"/></svg><span><small>Coming soon to the</small><strong>App Store</strong></span></a>
     </div>
   </nav>
-  <div class="nav-menu glass" id="nav-menu" hidden>
-    <a href="./#tour" style="--i:0">Tour</a>
-    <a href="./#reminders" style="--i:1">Reminders</a>
-    <a href="./#rest" style="--i:2">Rest timer</a>
-    <a href="./#skincare" style="--i:3">Skincare</a>
-    <a href="./#coach" style="--i:4">Coach</a>
-    <a href="./#privacy" style="--i:5">Privacy</a>
-    <a href="./#pricing" style="--i:6">Pricing</a>
-    <a href="./#faq" style="--i:7">FAQ</a>
-  </div>
+  <a class="isl-cta" href="./#pricing" aria-label="Coming soon to the App Store"><svg aria-hidden="true"><use href="#i-phone"/></svg><span>Coming soon</span></a>
 </div>
 <main class="legal">
 <div class="wrap">
