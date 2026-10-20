@@ -523,24 +523,6 @@
     });
   });
 
-  // ---------- Gallery arrows ----------
-  var gallery = $(".gallery");
-  if (gallery) {
-    var back = $("#gallery-back");
-    var next = $("#gallery-next");
-    function update() {
-      back.disabled = gallery.scrollLeft < 8;
-      next.disabled = gallery.scrollLeft + gallery.clientWidth > gallery.scrollWidth - 8;
-    }
-    function scrollBy(direction) {
-      gallery.scrollBy({ left: direction * gallery.clientWidth * 0.8, behavior: reduceMotion ? "auto" : "smooth" });
-    }
-    back.addEventListener("click", function () { scrollBy(-1); });
-    next.addEventListener("click", function () { scrollBy(1); });
-    gallery.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    update();
-  }
   // ---------- Hero: phones tilt toward the pointer ----------
   var hero = $(".hero");
   var heroPhones = $(".hero-phones");
@@ -584,32 +566,246 @@
     });
   }
 
-  // ---------- Gallery: drag with the mouse ----------
-  if (gallery && window.matchMedia("(pointer: fine)").matches) {
-    var drag = null;
-    gallery.addEventListener("pointerdown", function (e) {
-      if (e.pointerType !== "mouse" || e.button !== 0) return;
-      drag = { x: e.clientX, left: gallery.scrollLeft, moved: false, id: e.pointerId };
-    });
-    gallery.addEventListener("pointermove", function (e) {
-      if (!drag) return;
-      var dx = e.clientX - drag.x;
-      if (!drag.moved && Math.abs(dx) > 5) {
-        drag.moved = true;
-        gallery.classList.add("dragging");
-        try { gallery.setPointerCapture(drag.id); } catch (err) {}
+  // ---------- Screens: a carousel of phones ----------
+  // The one in front is big and tilts toward the pointer; its pins pop up
+  // once it settles. Swipe, drag, the arrows, the keys or the area tabs move
+  // it; on its own it moves every 5 s while it's on screen and nobody's
+  // touching it. With Reduce Motion it doesn't move by itself or in 3D.
+  var showcase = $("#showcase");
+  if (showcase) {
+    var stage = $(".stage", showcase);
+    var slides = $all(".slide", showcase);
+    var showTabs = $(".showcase-tabs", showcase);
+    var showCaption = $(".showcase-caption", showcase);
+    var showCount = $(".showcase-count", showcase);
+    var showCurrent = 0;
+    var settleTimer = null;
+    var playTimer = null;
+    var heldUntil = 0;
+    var hovering = false;
+    var onScreen = false;
+    var PLAY_MS = 5000;
+    var total = slides.length;
+    function pad(n) { return (n < 10 ? "0" : "") + n; }
+
+    function layout(captionToo) {
+      // On a phone the side ones only peek in, flatter and fainter.
+      var narrow = window.innerWidth < 640;
+      var step = narrow ? 0.82 : 0.64;
+      var tilt = narrow ? 14 : 24;
+      slides.forEach(function (slide, i) {
+        var d = i - showCurrent;
+        if (d > total / 2) d -= total;
+        if (d < -total / 2) d += total;
+        var a = Math.abs(d);
+        var sign = d < 0 ? -1 : 1;
+        var x = a === 0 ? 0 : sign * (step + (a - 1) * 0.42) * 100;
+        var rotate = reduceMotion ? 0 : -sign * Math.min(a, 2) * tilt;
+        var scale = 1 - Math.min(a, 3) * 0.14;
+        slide.style.transform = "translateX(" + x.toFixed(1) + "%) rotateY(" + rotate + "deg) scale(" + scale.toFixed(2) + ")";
+        slide.style.opacity = a > 2 || (narrow && a > 1) ? "0" : String(1 - a * (narrow ? 0.45 : 0.2));
+        slide.style.zIndex = String(20 - a);
+        slide.style.pointerEvents = a > 2 ? "none" : "";
+        slide.classList.toggle("active", a === 0);
+        slide.classList.remove("settled");
+        slide.setAttribute("aria-hidden", a === 0 ? "false" : "true");
+        var phone = $(".phone", slide);
+        phone.style.removeProperty("--tx");
+        phone.style.removeProperty("--ty");
+      });
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(function () { slides[showCurrent].classList.add("settled"); }, reduceMotion ? 50 : 520);
+
+      var active = slides[showCurrent];
+      function writeCaption() {
+        $("strong", showCaption).textContent = active.getAttribute("data-title");
+        $("span", showCaption).textContent = active.getAttribute("data-sub");
+        showCount.textContent = pad(showCurrent + 1) + " / " + pad(total);
       }
-      if (drag.moved) gallery.scrollLeft = drag.left - dx;
-    });
-    function endDrag() {
-      if (!drag) return;
-      var moved = drag.moved;
-      drag = null;
-      if (moved) gallery.classList.remove("dragging");
+      if (captionToo === false) {
+        writeCaption();
+      } else {
+        showCaption.classList.add("swap");
+        setTimeout(function () { writeCaption(); showCaption.classList.remove("swap"); }, 180);
+      }
+      var group = active.getAttribute("data-group");
+      $all("[data-group]", showTabs).forEach(function (tab) {
+        var on = tab.getAttribute("data-group") === group;
+        tab.setAttribute("aria-selected", on ? "true" : "false");
+        tab.tabIndex = on ? 0 : -1;
+      });
+      placePill(showTabs);
+      schedule();
     }
-    gallery.addEventListener("pointerup", endDrag);
-    gallery.addEventListener("pointercancel", endDrag);
-    gallery.addEventListener("dragstart", function (e) { e.preventDefault(); });
+
+    function go(index, byPerson) {
+      showCurrent = (index + total) % total;
+      if (byPerson) heldUntil = Date.now() + 9000;
+      layout();
+    }
+
+    // Plays when it's on screen, not hovered, the page is showing, and
+    // nobody moved it in the last few seconds.
+    function canPlay() { return !reduceMotion && onScreen && !hovering && !document.hidden && Date.now() >= heldUntil; }
+    function schedule() {
+      clearTimeout(playTimer);
+      showcase.classList.remove("playing");
+      if (reduceMotion) return;
+      void showcase.offsetWidth;
+      showcase.classList.add("playing");
+      showcase.classList.toggle("held", !canPlay());
+      playTimer = setTimeout(function () {
+        if (canPlay()) go(showCurrent + 1, false); else schedule();
+      }, Math.max(PLAY_MS, heldUntil - Date.now()));
+    }
+    function refreshHold() { showcase.classList.toggle("held", !canPlay()); }
+
+    $("#showcase-back").addEventListener("click", function () { go(showCurrent - 1, true); });
+    $("#showcase-next").addEventListener("click", function () { go(showCurrent + 1, true); });
+    $all("[data-group]", showTabs).forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        var group = tab.getAttribute("data-group");
+        var first = slides.findIndex(function (s) { return s.getAttribute("data-group") === group; });
+        if (first >= 0) go(first, true);
+      });
+    });
+    showTabs.addEventListener("keydown", function (e) {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      var tabs = $all("[data-group]", showTabs);
+      var at = tabs.findIndex(function (t) { return t.getAttribute("aria-selected") === "true"; });
+      var next = tabs[(at + (e.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length];
+      next.click();
+      next.focus();
+      e.preventDefault();
+    });
+    stage.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") { go(showCurrent + 1, true); e.preventDefault(); }
+      if (e.key === "ArrowLeft") { go(showCurrent - 1, true); e.preventDefault(); }
+    });
+
+    // Tap a phone at the side to bring it to the front; swipe or drag to move.
+    var press = null;
+    var dragged = false;
+    stage.addEventListener("pointerdown", function (e) {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      press = { x: e.clientX, y: e.clientY };
+      dragged = false;
+    });
+    stage.addEventListener("pointerup", function (e) {
+      if (!press) return;
+      var dx = e.clientX - press.x;
+      var dy = e.clientY - press.y;
+      press = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+        dragged = true;
+        go(showCurrent + (dx < 0 ? 1 : -1), true);
+      }
+    });
+    stage.addEventListener("pointercancel", function () { press = null; });
+    slides.forEach(function (slide, i) {
+      slide.addEventListener("click", function () {
+        if (dragged) { dragged = false; return; }
+        if (i !== showCurrent) go(i, true);
+      });
+    });
+
+    // The phone in front leans toward the pointer.
+    if (!reduceMotion && window.matchMedia("(pointer: fine)").matches) {
+      stage.addEventListener("pointermove", function (e) {
+        var phone = $(".phone", slides[showCurrent]);
+        var r = phone.getBoundingClientRect();
+        var px = (e.clientX - (r.left + r.width / 2)) / r.width;
+        var py = (e.clientY - (r.top + r.height / 2)) / r.height;
+        phone.style.setProperty("--tx", Math.max(-1, Math.min(1, px)) * 8 + "deg");
+        phone.style.setProperty("--ty", Math.max(-1, Math.min(1, py)) * -6 + "deg");
+      });
+    }
+    stage.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") { hovering = true; refreshHold(); } });
+    stage.addEventListener("pointerleave", function () {
+      hovering = false;
+      refreshHold();
+      var phone = $(".phone", slides[showCurrent]);
+      phone.style.removeProperty("--tx");
+      phone.style.removeProperty("--ty");
+    });
+    document.addEventListener("visibilitychange", refreshHold);
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        onScreen = entries[0].isIntersecting;
+        refreshHold();
+      }, { threshold: 0.35 }).observe(stage);
+    }
+    window.addEventListener("resize", function () { layout(false); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { placePill(showTabs); });
+    layout(false);
+  }
+
+  // ---------- Pricing: monthly or yearly, and which plan fits ----------
+  var billing = $("#billing");
+  var plansBox = $("#plans");
+  if (billing && plansBox) {
+    var proAmount = $("#pro-amount");
+    var proSub = $("#pro-sub");
+    function rollTo(el, to) {
+      var from = parseFloat(el.textContent) || 0;
+      if (reduceMotion) { el.textContent = to.toFixed(2); return; }
+      var start = performance.now();
+      function frame(now) {
+        var t = Math.min(1, (now - start) / 480);
+        var eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = (from + (to - from) * eased).toFixed(2);
+        if (t < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+      // Lands on the exact price even if frames were skipped (a hidden tab).
+      setTimeout(function () { el.textContent = to.toFixed(2); }, 520);
+    }
+    function setBilling(mode) {
+      plansBox.setAttribute("data-billing", mode);
+      $all("[data-billing]", billing).forEach(function (b) {
+        var on = b.getAttribute("data-billing") === mode;
+        b.setAttribute("aria-selected", on ? "true" : "false");
+        b.tabIndex = on ? 0 : -1;
+      });
+      placePill(billing);
+      rollTo(proAmount, parseFloat(proAmount.getAttribute("data-" + mode)));
+      proSub.classList.add("swap");
+      setTimeout(function () { proSub.textContent = proSub.getAttribute("data-" + mode); proSub.classList.remove("swap"); }, 160);
+    }
+    $all("[data-billing]", billing).forEach(function (b) {
+      b.addEventListener("click", function () { setBilling(b.getAttribute("data-billing")); });
+    });
+    placePill(billing);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { placePill(billing); });
+    window.addEventListener("resize", function () { placePill(billing); });
+    // The ticks draw in one after another.
+    $all(".plan", plansBox).forEach(function (plan) {
+      $all("li", plan).forEach(function (li, i) { li.style.setProperty("--i", i); });
+    });
+
+    var fitInput = $("#fit-meals");
+    var fitAnswer = $("#fit-answer");
+    var fitBox = $("#fit");
+    if (fitInput && fitAnswer) {
+      function renderFit() {
+        var meals = parseInt(fitInput.value, 10);
+        var pro = meals > 3;
+        fitBox.style.setProperty("--fill", (meals / 6 * 100) + "%");
+        fitBox.style.setProperty("--fit-color", pro ? "var(--brand)" : "var(--ok)");
+        if (meals === 0) {
+          fitAnswer.innerHTML = "<b>Free</b> is all you need. Searching the 12,774 built-in foods and scanning barcodes never runs out.";
+        } else if (!pro) {
+          fitAnswer.innerHTML = "<b>Free</b> covers you: 3 AI food logs a day" + (meals === 3 ? ", exactly what you'd use" : "") + ", plus 3 coach messages.";
+        } else {
+          fitAnswer.innerHTML = "<b>Pro</b> fits better: " + meals + " a day is more than Free's 3, and Pro makes AI logging unlimited.";
+        }
+        $all(".plan", plansBox).forEach(function (plan) {
+          plan.classList.toggle("pick", plan.getAttribute("data-plan") === (pro ? "pro" : "free"));
+        });
+      }
+      fitInput.addEventListener("input", renderFit);
+      renderFit();
+    }
   }
 
   // ---------- Plate maths: load the bar ----------
