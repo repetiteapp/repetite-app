@@ -1553,3 +1553,40 @@ h1[tabindex="-1"]:focus-visible, h2[tabindex="-1"]:focus-visible { outline: 2px 
   .day-head p { margin-top: 12px; }
   .day-card { width: 260px; }
 }
+
+/* ============ Tour: screens bloom from their first dot ============ */
+/* The screenshot opens out from the new screen's first dot (--ox, --oy);
+   the old one sinks back behind it; an ember light sweeps across the glass.
+   The reveal is on the images, so the dots on the phone's edge stay whole. */
+#tour .tour-phone .stack .shot {
+  opacity: 1; visibility: hidden; z-index: 0; transform: none; filter: none;
+  transition: transform 780ms cubic-bezier(.2, .8, .2, 1), filter 780ms ease, visibility 0s linear 780ms;
+}
+#tour .tour-phone .stack .shot img {
+  clip-path: circle(0% at var(--ox, 50%) var(--oy, 50%));
+  transition: clip-path 780ms cubic-bezier(.7, 0, .18, 1);
+}
+#tour .tour-phone .stack .shot.on { visibility: visible; z-index: 2; transition-delay: 0s; }
+#tour .tour-phone .stack .shot.on img { clip-path: circle(160% at var(--ox, 50%) var(--oy, 50%)); }
+#tour .tour-phone .stack .shot.was {
+  visibility: visible; z-index: 1; transform: scale(0.9) translateY(2%); filter: brightness(0.55) saturate(0.8) blur(3px);
+  transition: transform 780ms cubic-bezier(.2, .8, .2, 1), filter 780ms ease;
+}
+#tour .tour-phone .stack .shot.was img { clip-path: circle(160% at 50% 50%); transition: none; }
+.tour-phone .stack::after {
+  content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: 38px;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 138, 76, 0.42) 48%, rgba(255, 240, 225, 0.55) 50%, rgba(255, 138, 76, 0.42) 52%, transparent 60%) no-repeat;
+  background-size: 300% 100%; background-position: 100% 0; opacity: 0; mix-blend-mode: screen;
+}
+.tour-phone .stack.sweep::after { animation: tour-sweep 820ms cubic-bezier(.6, 0, .25, 1); }
+@keyframes tour-sweep {
+  0% { background-position: 100% 0; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { background-position: 0% 0; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #tour .tour-phone .stack .shot, #tour .tour-phone .stack .shot img { transition: none; clip-path: none; transform: none; filter: none; }
+  #tour .tour-phone .stack .shot.was { visibility: hidden; }
+  .tour-phone .stack.sweep::after { animation: none; }
+}

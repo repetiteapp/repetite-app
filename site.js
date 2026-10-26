@@ -396,15 +396,26 @@
         var panel = document.getElementById(t.getAttribute("aria-controls"));
         if (panel) panel.hidden = !on;
       });
+      // The new screen opens out from its first dot; the old one sinks back.
       $all(".stack .shot", tour).forEach(function (shot) {
         var wasOn = shot.classList.contains("on");
         var on = shot.getAttribute("data-tab") === name;
+        if (on && !wasOn) {
+          var first = $(".tpin", shot);
+          shot.style.setProperty("--ox", first && first.classList.contains("right") ? "100%" : "0%");
+          shot.style.setProperty("--oy", first ? first.style.getPropertyValue("--y") : "50%");
+        }
         shot.classList.toggle("on", on);
         if (wasOn && !on) {
           shot.classList.add("was");
-          setTimeout(function () { shot.classList.remove("was"); }, 520);
+          setTimeout(function () { shot.classList.remove("was"); }, 820);
         }
       });
+      if (stack && !reduceMotion) {
+        stack.classList.remove("sweep");
+        void stack.offsetWidth;
+        stack.classList.add("sweep");
+      }
       $all(".tpin.lit, .points li.lit", tour).forEach(function (el) { el.classList.remove("lit"); });
       placePill(control);
       if (focus) tab.focus();
