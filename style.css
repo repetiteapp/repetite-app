@@ -1377,3 +1377,12 @@ h1, h2, h3 { font-family: var(--display); font-stretch: 78%; font-weight: 800; l
   border-radius: 50%; border: 2px solid var(--text-3);
 }
 #tour .points li[data-pin] + li:not([data-pin]) { margin-top: 4px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+/* Tour tabs sit above the text they switch, beside the phone, so they're
+   never up under the navbar. */
+#tour .tour-tabs { margin: 0 0 28px; }
+#tour .tour-body { margin-top: 56px; }
+.tour-text { min-width: 0; }
+@media (max-width: 480px) {
+  #tour .segmented button { padding-left: 10px; padding-right: 10px; font-size: 14px; }
+}

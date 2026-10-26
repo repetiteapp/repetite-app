@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Instrument+Sans:wght@400..700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="style.css?v=d4f9462f23">
+<link rel="stylesheet" href="style.css?v=cfec9af2f4">
 <script src="site.js?v=fbe08ee7ed" defer></script>
 </head>
 <body>
@@ -143,17 +143,6 @@
       <h2 id="tour-title">Breakfast to last set, same app</h2>
       <p>You probably track food in one app and lifts in another, and neither has a clue about the other. Repetite puts both in one place, so you can see what's left to eat and what you're training without switching apps.</p>
     </div>
-    <div class="tour-tabs reveal">
-      <div class="segmented" role="tablist" aria-label="App tour">
-        <span class="seg-pill" aria-hidden="true"></span>
-        <button role="tab" id="tab-today" data-tab="today" aria-controls="panel-today" aria-selected="true">Today</button>
-        <button role="tab" id="tab-log" data-tab="log" aria-controls="panel-log" aria-selected="false" tabindex="-1">Log food</button>
-        <button role="tab" id="tab-meals" data-tab="meals" aria-controls="panel-meals" aria-selected="false" tabindex="-1">Meals</button>
-        <button role="tab" id="tab-train" data-tab="train" aria-controls="panel-train" aria-selected="false" tabindex="-1">Train</button>
-        <button role="tab" id="tab-progress" data-tab="progress" aria-controls="panel-progress" aria-selected="false" tabindex="-1">Progress</button>
-      </div>
-      <span class="tour-timer" aria-hidden="true"><i></i></span>
-    </div>
     <div class="tour-body reveal">
       <div class="tour-phone">
         <div class="phone"><div class="stack">
@@ -164,7 +153,18 @@
           <span class="shot" data-tab="progress"><img class="l" src="images/progress-light.webp" width="603" height="1311" alt="Progress: weight trend toward a goal, the weekly check-in and strength trends" loading="lazy" decoding="async"><img class="d" src="images/progress-dark.webp" width="603" height="1311" alt="Progress: weight trend toward a goal, the weekly check-in and strength trends" loading="lazy" decoding="async"><span class="tpins" aria-hidden="true"><span class="tpin right" data-pin="1" style="--y:31%;--n:0">1</span><span class="tpin left" data-pin="2" style="--y:53%;--n:1">2</span><span class="tpin right" data-pin="3" style="--y:72%;--n:2">3</span></span></span>
         </div></div>
       </div>
-      <div>
+      <div class="tour-text">
+        <div class="tour-tabs">
+          <div class="segmented" role="tablist" aria-label="App tour">
+            <span class="seg-pill" aria-hidden="true"></span>
+            <button role="tab" id="tab-today" data-tab="today" aria-controls="panel-today" aria-selected="true">Today</button>
+            <button role="tab" id="tab-log" data-tab="log" aria-controls="panel-log" aria-selected="false" tabindex="-1">Log food</button>
+            <button role="tab" id="tab-meals" data-tab="meals" aria-controls="panel-meals" aria-selected="false" tabindex="-1">Meals</button>
+            <button role="tab" id="tab-train" data-tab="train" aria-controls="panel-train" aria-selected="false" tabindex="-1">Train</button>
+            <button role="tab" id="tab-progress" data-tab="progress" aria-controls="panel-progress" aria-selected="false" tabindex="-1">Progress</button>
+          </div>
+          <span class="tour-timer" aria-hidden="true"><i></i></span>
+        </div>
         <div class="tour-panel" role="tabpanel" id="panel-today" aria-labelledby="tab-today">
           <h3>Open it and you know where you stand</h3>
           <p>Calories left, today's workout and last night's sleep are all on the first screen. No digging around.</p>
