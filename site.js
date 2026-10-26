@@ -409,41 +409,61 @@
     tourSchedule();
   }
 
-  // ---------- Lock Screen: a day of smart reminders ----------
+  // ---------- Lock Screen: a day of reminders, in the tone you pick ----------
+  // The wording comes from the app's own reminder lines (NudgeVoice). The
+  // three arrive one by one; picking a tone rewrites the ones on screen.
   var lock = $("#lock-demo");
   if (lock) {
-    var days = [
-      { date: "Monday, October 19", notes: [
-        { time: "9:00", label: "9:00 AM", title: "No breakfast logged yet", body: "Your usual: oats, banana and whey (520 kcal). Log it in one tap, or add something else.", actions: ["Log my usual", "Something else"] },
-        { time: "5:30", label: "5:30 PM", title: "Upper day today", body: "7 exercises, about 55 min. Last time: Bench Press 80 kg × 8.", actions: ["Start workout"] },
-        { time: "7:15", label: "7:15 PM", title: "62 g protein to go today", body: "Ideas from what you eat: paneer bhurji (25 g) or Greek yogurt (20 g).", actions: ["Log food"] }
-      ] },
-      { date: "Tuesday, October 20", notes: [
-        { time: "9:00", label: "9:00 AM", title: "Yesterday's Upper got skipped", body: "Today's a rest day, so there's room to fit it in. Or pick up with the next one.", actions: ["Start workout"] },
-        { time: "3:00", label: "3:00 PM", title: "Water check", body: "1.2 of 3 L so far today. A glass now keeps you on pace.", actions: ["+1 glass"] },
-        { time: "8:30", label: "8:30 PM", title: "Your 14-day streak ends tonight", body: "Log anything before 3:00 AM to keep it going.", actions: [] }
-      ] }
+    var usual = "oats, banana and whey";
+    var ideas = "Ideas from what you eat: paneer bhurji (25 g) or Greek yogurt (20 g).";
+    var tones = {
+      playful: [
+        ["Rise and dine, Alex ☀️", "Your usual: " + usual + ". One tap and breakfast is logged."],
+        ["Leg day is calling 🦵", "It's not taking no for an answer. 6 exercises, about 55 min."],
+        ["Protein called. You didn't pick up 💪", "62 g to go, Alex. " + ideas]
+      ],
+      friendly: [
+        ["How was breakfast, Alex?", "If it was your usual (" + usual + "), one tap logs it."],
+        ["Lower day today, Alex", "6 exercises, about 55 min. Last time: Squat 100 kg × 6."],
+        ["62 g protein left today", "You're on your way, Alex. " + ideas]
+      ],
+      straight: [
+        ["No breakfast logged", "Usual: " + usual + ". Log it in one tap."],
+        ["Lower today", "6 exercises, about 55 min. Last time: Squat 100 kg × 6."],
+        ["62 g protein to go", ideas]
+      ],
+      tough: [
+        ["Alex, breakfast won't log itself", "Your usual: " + usual + ". One tap. Do it now."],
+        ["Alex, it's Lower day", "6 exercises, about 55 min. Last time: Squat 100 kg × 6. Beat it."],
+        ["62 g protein still missing", "Muscle doesn't grow on good intentions, Alex. Paneer bhurji (25 g) or Greek yogurt (20 g)."]
+      ]
+    };
+    var slots = [
+      { time: "9:00", label: "9:00 AM", actions: ["Log my usual"] },
+      { time: "5:30", label: "5:30 PM", actions: ["Start workout"] },
+      { time: "7:15", label: "7:15 PM", actions: ["Log food"] }
     ];
+    var tone = "playful";
     var list = $(".notes", lock);
     var clock = $(".lock-time", lock);
-    var date = $(".lock-date", lock);
-    var dayIndex = 0;
-    var noteIndex = -1;
+    var shown = 0;
     var timer = null;
 
-    function makeNote(note, isNew) {
+    function makeNote(i, isNew) {
+      var line = tones[tone][i];
       var li = document.createElement("li");
       li.className = "note" + (isNew ? " enter" : "");
+      li.setAttribute("data-slot", String(i));
       li.innerHTML =
         '<img src="images/icon-64.png" alt="" width="34" height="34">' +
         '<div><div class="note-head"><b>REPETITE</b><span></span></div><strong></strong><p></p></div>';
-      $(".note-head span", li).textContent = isNew ? "now" : note.label;
-      $("strong", li).textContent = note.title;
-      $("p", li).textContent = note.body;
-      if (isNew && note.actions.length) {
+      $(".note-head span", li).textContent = isNew ? "now" : slots[i].label;
+      $("strong", li).textContent = line[0];
+      $("p", li).textContent = line[1];
+      if (isNew) {
         var actions = document.createElement("div");
         actions.className = "note-actions";
-        note.actions.forEach(function (label) {
+        slots[i].actions.forEach(function (label) {
           var span = document.createElement("span");
           span.textContent = label;
           actions.appendChild(span);
@@ -452,40 +472,80 @@
       }
       return li;
     }
+    // Shows the first n reminders, newest on top, without animating.
+    function render(n) {
+      list.textContent = "";
+      for (var i = 0; i < n; i++) list.insertBefore(makeNote(i, i === n - 1), list.firstChild);
+      if (n) clock.textContent = slots[n - 1].time;
+    }
     function step() {
-      noteIndex += 1;
-      if (noteIndex >= days[dayIndex].notes.length) {
-        // A new day: the stack clears, at most three again.
-        dayIndex = (dayIndex + 1) % days.length;
-        noteIndex = 0;
-        list.innerHTML = "";
-        date.textContent = days[dayIndex].date;
+      if (shown >= slots.length) {
+        shown = 0;
+        list.textContent = "";
       }
-      var note = days[dayIndex].notes[noteIndex];
+      var i = shown;
+      shown += 1;
       clock.classList.add("tick");
       setTimeout(function () {
-        clock.textContent = note.time;
+        clock.textContent = slots[i].time;
         clock.classList.remove("tick");
-        // Older notes lose their buttons and show their time.
-        $all(".note", list).forEach(function (old, i) {
-          var previous = days[dayIndex].notes[noteIndex - 1 - i];
+        $all(".note", list).forEach(function (old) {
           var actions = $(".note-actions", old);
           if (actions) actions.remove();
-          if (previous) $(".note-head span", old).textContent = previous.label;
+          $(".note-head span", old).textContent = slots[Number(old.getAttribute("data-slot"))].label;
           old.classList.remove("enter");
         });
-        list.insertBefore(makeNote(note, true), list.firstChild);
+        list.insertBefore(makeNote(i, true), list.firstChild);
       }, 260);
     }
     function play() {
       if (timer) return;
-      step();
       timer = setInterval(step, 3400);
+      if (!shown) step();
     }
     function pause() { clearInterval(timer); timer = null; }
 
-    if (!reduceMotion && "IntersectionObserver" in window) {
-      list.innerHTML = "";
+    var toneSwitch = $("#tone-switch");
+    if (toneSwitch) {
+      var toneTabs = $all("[data-tone]", toneSwitch);
+      var pickTone = function (tab, focus) {
+        tone = tab.getAttribute("data-tone");
+        toneTabs.forEach(function (t) {
+          var on = t === tab;
+          t.setAttribute("aria-selected", on ? "true" : "false");
+          t.tabIndex = on ? 0 : -1;
+        });
+        placePill(toneSwitch);
+        if (focus) tab.focus();
+        // Rewrite what's on screen in the new voice.
+        render(Math.max(shown, 1));
+        if (!shown) shown = 1;
+        if (!reduceMotion) {
+          $all(".note", list).forEach(function (note, k) {
+            note.animate([{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }],
+              { duration: 360, delay: k * 60, easing: "cubic-bezier(.2,.8,.2,1)", fill: "backwards" });
+          });
+        }
+      };
+      toneTabs.forEach(function (tab, i) {
+        tab.addEventListener("click", function () { pickTone(tab); });
+        tab.addEventListener("keydown", function (e) {
+          var step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+          if (!step) return;
+          e.preventDefault();
+          pickTone(toneTabs[(i + step + toneTabs.length) % toneTabs.length], true);
+        });
+      });
+      window.addEventListener("resize", function () { placePill(toneSwitch); });
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { placePill(toneSwitch); });
+      placePill(toneSwitch);
+    }
+
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      render(slots.length);
+      shown = slots.length;
+    } else {
+      list.textContent = "";
       clock.textContent = "8:41";
       new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) { if (entry.isIntersecting) play(); else pause(); });

@@ -19,8 +19,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Instrument+Sans:wght@400..700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="style.css?v=cfec9af2f4">
-<script src="site.js?v=fbe08ee7ed" defer></script>
+<link rel="stylesheet" href="style.css?v=6a2d3b4747">
+<script src="site.js?v=db0631d6b3" defer></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -225,10 +225,10 @@
     <div class="section-head reveal">
       <span class="eyebrow">Smart reminders</span>
       <h2 id="reminders-title">It won't remind you about a lunch you already ate</h2>
-      <p>Reminders are planned from what you log, and planned again every time you log something new. Do the thing and its reminder simply never shows up.</p>
+      <p>Reminders come from what you log. Log it first and the reminder never shows up. And you get to pick how they talk to you.</p>
     </div>
     <div class="reminders-grid">
-      <div class="lock reveal" id="lock-demo" aria-label="A Lock Screen showing a day of Repetite reminders">
+      <div class="lock reveal" id="lock-demo" aria-label="A Lock Screen showing a day of Repetite reminders, in the tone you pick">
         <div class="lock-screen">
           <span class="lock-island"></span>
           <span class="lock-status" aria-hidden="true"><svg viewBox="0 0 18 11" fill="#fff"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="6" rx="1"/><rect x="10" y="2.5" width="3" height="8.5" rx="1"/><rect x="15" y="0" width="3" height="11" rx="1"/></svg><svg viewBox="0 0 16 11" fill="#fff"><path d="M8 2.2c2.2 0 4.2.8 5.7 2.2l1.3-1.3A10 10 0 008 .4 10 10 0 001 3.1l1.3 1.3A8.2 8.2 0 018 2.2zm0 3.4c1.3 0 2.5.5 3.4 1.3l1.3-1.3A6.6 6.6 0 008 3.8a6.6 6.6 0 00-4.7 1.8l1.3 1.3c.9-.8 2.1-1.3 3.4-1.3zM8 9l1.8 1.9L8 12.7 6.2 10.9z"/></svg><svg viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3.5" stroke="#fff" opacity="0.5"/><rect x="2.5" y="2.5" width="18" height="7" rx="2" fill="#fff"/><path d="M24 4v4c.8-.3 1.3-1.1 1.3-2S24.8 4.3 24 4z" fill="#fff" opacity="0.5"/></svg></span>
@@ -243,14 +243,24 @@
           <span class="lock-home"></span>
         </div>
       </div>
-      <ul class="rules">
-        <li class="reveal"><span class="ic"><svg><use href="#i-clock"/></svg></span><strong>It learns your routine</strong><span>Eat lunch around 1? That's when it checks in. No alarms to set.</span></li>
-        <li class="reveal"><span class="ic"><svg><use href="#i-check"/></svg></span><strong>Gone once it's done</strong><span>Log lunch and you'll never see the lunch reminder.</span></li>
-        <li class="reveal"><span class="ic"><svg><use href="#i-bell"/></svg></span><strong>Your name, your tone</strong><span>"Lunch o'clock 🍛" or "Mukund, 38 g protein to go." Pick playful, friendly, straight or tough love. Your quiet hours stay quiet.</span></li>
-        <li class="reveal"><span class="ic"><svg><use href="#i-moon"/></svg></span><strong>Rest days are rest days</strong><span>No "go lift" on a rest day. Maybe a nudge to go for a walk.</span></li>
-        <li class="reveal"><span class="ic"><svg><use href="#i-tap"/></svg></span><strong>Act from the notification</strong><span>Log my usual, +1 glass, Start workout. No need to open the app.</span></li>
-        <li class="reveal"><span class="ic"><svg><use href="#i-lock"/></svg></span><strong>Planned on your device</strong><span>Nothing gets sent anywhere to plan them. Ignore one kind for a few days and it backs off.</span></li>
-      </ul>
+      <div class="rem-side">
+        <div class="tone reveal">
+          <h3 id="tone-title">Pick how it talks to you</h3>
+          <div class="segmented" role="tablist" aria-labelledby="tone-title" id="tone-switch">
+            <span class="seg-pill" aria-hidden="true"></span>
+            <button role="tab" type="button" data-tone="playful" aria-selected="true">Playful</button>
+            <button role="tab" type="button" data-tone="friendly" aria-selected="false" tabindex="-1">Friendly</button>
+            <button role="tab" type="button" data-tone="straight" aria-selected="false" tabindex="-1">Straight</button>
+            <button role="tab" type="button" data-tone="tough" aria-selected="false" tabindex="-1">Tough love</button>
+          </div>
+          <p class="tone-note">Same reminders, same times. Only the voice changes.</p>
+        </div>
+        <ul class="rem-points">
+          <li class="reveal"><strong>It learns your times</strong><span>Eat lunch around 1? That's when it checks in. No alarms to set.</span></li>
+          <li class="reveal"><strong>Gone once it's done</strong><span>Log lunch and you'll never see the lunch reminder. Rest days and quiet hours stay quiet.</span></li>
+          <li class="reveal"><strong>One tap from the notification</strong><span>Log my usual, +1 glass or Start workout, without opening the app.</span></li>
+        </ul>
+      </div>
     </div>  </div>
 </section>
 
