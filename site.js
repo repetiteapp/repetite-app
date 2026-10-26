@@ -22,13 +22,46 @@
   // and trackpad and handles #links (sections keep room for the navbar with
   // scroll-margin-top, which Lenis respects); touch keeps
   // the phone's own scrolling. Off with Reduce Motion.
+  // How scrolling feels: lerp is how quickly it catches up with the wheel
+  // (lower glides longer), wheel how far a notch moves, jump how long a
+  // #link takes (seconds).
+  var FEEL = { lerp: 0.085, wheel: 1, jump: 1.3 };
   var lenis = null;
+  var snap = null;
   if (!reduceMotion && window.Lenis) {
-    lenis = new window.Lenis({ lerp: 0.1, wheelMultiplier: 1, autoRaf: true, anchors: true });
+    lenis = new window.Lenis({ lerp: FEEL.lerp, wheelMultiplier: FEEL.wheel, autoRaf: true, stopInertiaOnNavigate: true });
+    root.classList.add("has-lenis");
+    // Snap points (the tour's screens) pull the scroll in when it stops near one.
+    if (window.Snap) snap = new window.Snap(lenis, { type: "proximity", distanceThreshold: "30%", duration: 0.7, debounce: 180 });
   }
+  function easeInOutQuart(t) { return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2; }
   function scrollToY(y) {
-    if (lenis) lenis.scrollTo(y);
+    if (lenis) lenis.scrollTo(y, { duration: FEEL.jump * 0.7, easing: easeInOutQuart });
     else window.scrollTo({ top: y, behavior: "smooth" });
+  }
+  // # links glide with a slower ease that can't be interrupted, and keyboard
+  // focus lands on the section's heading so screen readers follow.
+  if (lenis) {
+    document.addEventListener("click", function (e) {
+      var link = e.target.closest && e.target.closest('a[href^="#"]');
+      if (!link || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      var id = link.getAttribute("href").slice(1);
+      var target = id === "top" || id === "" ? 0 : document.getElementById(id);
+      if (target === null) return;
+      e.preventDefault();
+      // Lenis keeps the section's scroll-margin-top (room for the navbar) itself.
+      lenis.scrollTo(target, {
+        duration: FEEL.jump, easing: easeInOutQuart, lock: true,
+        onComplete: function () {
+          var heading = target === 0 ? document.querySelector("h1") : target.querySelector("h1, h2");
+          if (heading) {
+            if (!heading.hasAttribute("tabindex")) heading.setAttribute("tabindex", "-1");
+            heading.focus({ preventScroll: true });
+          }
+        }
+      });
+      if (history.replaceState) history.replaceState(null, "", id === "top" ? location.pathname : "#" + id);
+    });
   }
   function clamp01(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
   function progressOf(el, start, end) {
@@ -207,6 +240,7 @@
     pill.setAttribute("aria-expanded", open ? "true" : "false");
     pill.tabIndex = open ? -1 : 0;
     panel.inert = !open;
+    if (!open && lenis) lenis.start();
     if (!open && panel.contains(document.activeElement)) pill.focus({ preventScroll: true });
     sizeIsland();
   }
@@ -216,6 +250,7 @@
     // A click from the keyboard (Enter or Space) moves focus into the menu.
     pill.addEventListener("click", function (e) {
       setIsland(true);
+      if (lenis) lenis.stop();
       if (e.detail === 0 && islLinks[0]) islLinks[0].focus({ preventScroll: true });
     });
     $(".isl-close").addEventListener("click", function () { setIsland(false); });
@@ -387,11 +422,22 @@
       var top = tourBody.getBoundingClientRect().top + window.scrollY - STICK_TOP + tourDistance() * (i + 0.5) / tabs.length;
       scrollToY(top);
     }
+    var unsnap = [];
+    function setTourSnaps() {
+      unsnap.forEach(function (remove) { remove(); });
+      unsnap = [];
+      if (!snap || !pinned) return;
+      var top = tourBody.getBoundingClientRect().top + window.scrollY - STICK_TOP;
+      tabs.forEach(function (tab, i) { unsnap.push(snap.add(top + tourDistance() * (i + 0.5) / tabs.length)); });
+    }
     function setPinned() {
       pinned = !reduceMotion && pinQuery.matches && !!tourStick;
       if (tourBody) tourBody.classList.toggle("pinned", pinned);
       tourSchedule();
+      setTourSnaps();
     }
+    window.addEventListener("resize", function () { setTimeout(setTourSnaps, 120); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(setTourSnaps);
     function tourCanPlay() { return !pinned && !reduceMotion && tourOnScreen && !tourHover && !document.hidden && Date.now() >= tourHeldUntil; }
     function tourSchedule() {
       clearTimeout(tourTimer);
@@ -1320,7 +1366,79 @@
     });
   }
 
+  // ---------- A day, hour by hour: sideways as you scroll down ----------
+  // On big screens the day pins and moves sideways with the scroll, the
+  // card in the middle lit; elsewhere it's a strip you swipe.
+  var dayScroller = $("#day-scroller");
+  if (dayScroller) {
+    var dayTrack = $(".day-track", dayScroller);
+    var daySticky = $(".day-sticky", dayScroller);
+    var dayCards = $all(".day-card", dayScroller);
+    var dayQuery = window.matchMedia("(min-width: 901px) and (min-height: 640px)");
+    var dayPinned = false;
+    var dayLayout = function () {
+      dayPinned = !reduceMotion && dayQuery.matches;
+      dayScroller.classList.toggle("pinned", dayPinned);
+      if (dayPinned) {
+        var extra = Math.max(0, dayTrack.scrollWidth - dayTrack.clientWidth);
+        dayScroller.style.height = Math.round(daySticky.offsetHeight + extra * 1.1) + "px";
+      } else {
+        dayScroller.style.height = "";
+        dayTrack.style.transform = "";
+      }
+    };
+    dayLayout();
+    window.addEventListener("resize", dayLayout);
+    if (dayQuery.addEventListener) dayQuery.addEventListener("change", dayLayout);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(dayLayout);
+    scrollFx.push(function () {
+      if (!dayPinned) return;
+      var distance = Math.max(1, dayScroller.offsetHeight - daySticky.offsetHeight);
+      var p = clamp01((84 - dayScroller.getBoundingClientRect().top) / distance);
+      dayTrack.style.transform = "translateX(" + (-p * Math.max(0, dayTrack.scrollWidth - dayTrack.clientWidth)).toFixed(1) + "px)";
+      var now = Math.round(p * (dayCards.length - 1));
+      dayCards.forEach(function (card, i) { card.classList.toggle("now", i === now); });
+    });
+  }
+
+  // ---------- Speed: the strip and headings answer how fast you scroll ----------
+  if (lenis) {
+    var mq = $(".marquee");
+    var mqTrack = $(".marquee-track");
+    if (mq && mqTrack) {
+      var mqPos = 0, mqLast = 0, mqDir = 1, mqOn = true, mqHover = false;
+      var mqTick = function (now) {
+        var dt = mqLast ? Math.min(0.05, (now - mqLast) / 1000) : 0;
+        mqLast = now;
+        var v = lenis.velocity || 0;
+        if (Math.abs(v) > 0.5) mqDir = v > 0 ? 1 : -1;
+        var speed = mqHover ? 0 : 42 + Math.min(900, Math.abs(v) * 26);
+        var half = mqTrack.scrollWidth / 2 + 5;
+        mqPos -= speed * mqDir * dt;
+        if (mqPos <= -half) mqPos += half;
+        if (mqPos > 0) mqPos -= half;
+        mqTrack.style.transform = "translate3d(" + mqPos.toFixed(1) + "px, 0, 0)";
+        if (mqOn) requestAnimationFrame(mqTick); else mqLast = 0;
+      };
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (entries) {
+          var was = mqOn;
+          mqOn = entries[0].isIntersecting;
+          if (mqOn && !was) requestAnimationFrame(mqTick);
+        }).observe(mq);
+      }
+      mq.addEventListener("pointerenter", function () { mqHover = true; });
+      mq.addEventListener("pointerleave", function () { mqHover = false; });
+      requestAnimationFrame(mqTick);
+    }
+    lenis.on("scroll", function () {
+      var lean = Math.max(-3, Math.min(3, (lenis.velocity || 0) * 0.08));
+      root.style.setProperty("--lean", lean.toFixed(2));
+    });
+  }
+
   // ---------- Run the scroll motion ----------
+  // With Lenis it runs on Lenis's own frames, in step with the glide.
   if (!reduceMotion && scrollFx.length) {
     var fxQueued = false;
     var runFx = function () {
@@ -1330,7 +1448,8 @@
     var queueFx = function () {
       if (!fxQueued) { fxQueued = true; requestAnimationFrame(runFx); }
     };
-    window.addEventListener("scroll", queueFx, { passive: true });
+    if (lenis) lenis.on("scroll", runFx);
+    else window.addEventListener("scroll", queueFx, { passive: true });
     window.addEventListener("resize", queueFx);
     runFx();
   }

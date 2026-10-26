@@ -19,9 +19,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Instrument+Sans:wght@400..700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="style.css?v=b496263498">
+<link rel="stylesheet" href="style.css?v=b680313bc7">
 <script src="vendor/lenis.min.js" defer></script>
-<script src="site.js?v=05d8f524de" defer></script>
+<script src="vendor/lenis-snap.min.js" defer></script>
+<script src="site.js?v=448717b2ff" defer></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -265,6 +266,25 @@
         </ul>
       </div>
     </div>  </div>
+<div class="day-scroller" id="day-scroller">
+    <div class="day-sticky">
+      <div class="wrap day-head">
+        <h3>One day, hour by hour</h3>
+        <p>A training day, start to finish. Reminders come when something's missing, and drop out once it isn't.</p>
+      </div>
+      <ol class="day-track" aria-label="A day of reminders">
+        <li class="day-card"><time>7:15 AM</time><span class="day-kind">Morning check-in</span><strong>Yesterday: protein hit, Upper done</strong><span>Today: Lower, about 55 min. You've got this, Alex.</span></li>
+        <li class="day-card done"><time>8:40 AM</time><span class="day-kind">You logged breakfast</span><strong>Oats, banana and whey</strong><span>So the 9:00 breakfast reminder never comes.</span></li>
+        <li class="day-card"><time>1:30 PM</time><span class="day-kind">Lunch</span><strong>Lunch o'clock 🍛</strong><span>Your usual: chicken burrito bowl. One tap logs it.</span></li>
+        <li class="day-card"><time>3:00 PM</time><span class="day-kind">Water</span><strong>Water check</strong><span>1.2 of 3 L so far today. +1 glass right from the notification.</span></li>
+        <li class="day-card"><time>5:30 PM</time><span class="day-kind">Workout</span><strong>Leg day is calling 🦵</strong><span>6 exercises, about 55 min. Last time: Squat 100 kg × 6.</span></li>
+        <li class="day-card done"><time>6:45 PM</time><span class="day-kind">You finished Lower</span><strong>New best: Squat 102.5 kg × 6</strong><span>So there's no workout nudge tonight.</span></li>
+        <li class="day-card"><time>7:15 PM</time><span class="day-kind">Protein</span><strong>Protein called. You didn't pick up 💪</strong><span>38 g to go, Alex. Paneer bhurji (25 g) would nearly close it.</span></li>
+        <li class="day-card"><time>9:30 PM</time><span class="day-kind">Skincare</span><strong>Night routine</strong><span>4 steps, about 5 minutes. Done ticks them all off.</span></li>
+        <li class="day-card quiet"><time>10:30 PM</time><span class="day-kind">Quiet hours</span><strong>Nothing until morning</strong><span>Your phone stays quiet until 7:00.</span></li>
+      </ol>
+    </div>
+  </div>
 </section>
 
 <section class="section" id="rest" aria-labelledby="rest-title">
