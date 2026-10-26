@@ -12,6 +12,17 @@
   function $all(selector, scope) { return Array.prototype.slice.call((scope || document).querySelectorAll(selector)); }
   function store(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
 
+  // Scroll motion: parts register a function here and it runs once a frame
+  // while the page scrolls (never with Reduce Motion). progressOf gives 0
+  // when an element's top is at `start` of the screen's height and 1 when
+  // it reaches `end` (0.9 = near the bottom, 0.3 = near the top).
+  var scrollFx = [];
+  function clamp01(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
+  function progressOf(el, start, end) {
+    var vh = window.innerHeight;
+    return clamp01((start * vh - el.getBoundingClientRect().top) / ((start - end) * vh));
+  }
+
   // ---------- Theme: the plate rolls along the bar ----------
   var toggle = $(".theme-toggle");
   function effectiveTheme() {
@@ -255,6 +266,15 @@
       });
       heading.classList.add("split");
     });
+    $all(".split").forEach(function (heading) {
+      var words = $all(".w", heading);
+      var closing = !!heading.closest(".closing");
+      scrollFx.push(function () {
+        var p = closing ? progressOf(heading, 0.95, 0.6) : progressOf(heading, 0.88, 0.42);
+        var lit = closing ? p * (words.length + 0.3) - 0.15 : p * words.length;
+        words.forEach(function (w, i) { w.classList.toggle(closing ? "land" : "lit", i < lit); });
+      });
+    });
   }
 
   // ---------- Reveal on scroll ----------
@@ -342,11 +362,28 @@
       if (focus) tab.focus();
       tourSchedule();
     }
-    function tourCanPlay() { return !reduceMotion && tourOnScreen && !tourHover && !document.hidden && Date.now() >= tourHeldUntil; }
+    // On a big enough screen the tour pins in place and scrolling moves it
+    // through the screens; the tabs then scroll to their screen.
+    var tourBody = $(".tour-body", tour);
+    var tourStick = $(".tour-stick", tour);
+    var pinQuery = window.matchMedia("(min-width: 901px) and (min-height: 640px)");
+    var pinned = false;
+    var STICK_TOP = 84;
+    function tourDistance() { return Math.max(1, tourBody.offsetHeight - tourStick.offsetHeight); }
+    function scrollToStep(i) {
+      var top = tourBody.getBoundingClientRect().top + window.scrollY - STICK_TOP + tourDistance() * (i + 0.5) / tabs.length;
+      window.scrollTo({ top: top, behavior: "smooth" });
+    }
+    function setPinned() {
+      pinned = !reduceMotion && pinQuery.matches && !!tourStick;
+      if (tourBody) tourBody.classList.toggle("pinned", pinned);
+      tourSchedule();
+    }
+    function tourCanPlay() { return !pinned && !reduceMotion && tourOnScreen && !tourHover && !document.hidden && Date.now() >= tourHeldUntil; }
     function tourSchedule() {
       clearTimeout(tourTimer);
       tour.classList.remove("playing");
-      if (reduceMotion) return;
+      if (reduceMotion || pinned) return;
       void tour.offsetWidth;
       tour.classList.add("playing");
       tour.classList.toggle("held", !tourCanPlay());
@@ -357,13 +394,19 @@
     function tourHold() { tourHeldUntil = Date.now() + 12000; }
     function tourRefresh() { tour.classList.toggle("held", !tourCanPlay()); }
     tabs.forEach(function (tab, i) {
-      tab.addEventListener("click", function () { tourHold(); select(tab); });
+      tab.addEventListener("click", function () {
+        if (pinned) { scrollToStep(i); return; }
+        tourHold();
+        select(tab);
+      });
       tab.addEventListener("keydown", function (e) {
         var step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
         if (!step) return;
         e.preventDefault();
+        var next = (i + step + tabs.length) % tabs.length;
+        if (pinned) { scrollToStep(next); tabs[next].focus(); return; }
         tourHold();
-        select(tabs[(i + step + tabs.length) % tabs.length], true);
+        select(tabs[next], true);
       });
     });
     // A point lights its dot on the phone.
@@ -378,7 +421,6 @@
       li.addEventListener("pointerleave", function () { light(false); });
       li.addEventListener("click", function () { tourHold(); light(!li.classList.contains("lit")); });
     });
-    var tourBody = $(".tour-body", tour);
     if (tourBody) {
       tourBody.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") { tourHover = true; tourRefresh(); } });
       tourBody.addEventListener("pointerleave", function () { tourHover = false; tourRefresh(); });
@@ -392,6 +434,7 @@
         var dx = e.clientX - swipeX;
         swipeX = null;
         if (Math.abs(dx) < 40) return;
+        if (pinned) { scrollToStep((tourIndex + (dx < 0 ? 1 : -1) + tabs.length) % tabs.length); return; }
         tourHold();
         select(tabs[(tourIndex + (dx < 0 ? 1 : -1) + tabs.length) % tabs.length]);
       });
@@ -406,7 +449,15 @@
     window.addEventListener("resize", function () { placePill(control); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { placePill(control); });
     placePill(control);
-    tourSchedule();
+    if (pinQuery.addEventListener) pinQuery.addEventListener("change", setPinned);
+    setPinned();
+    scrollFx.push(function () {
+      if (!pinned) return;
+      var p = clamp01((STICK_TOP - tourBody.getBoundingClientRect().top) / tourDistance());
+      tour.style.setProperty("--tp", p.toFixed(3));
+      var i = Math.min(tabs.length - 1, Math.floor(p * tabs.length));
+      if (i !== tourIndex) select(tabs[i]);
+    });
   }
 
   // ---------- Lock Screen: a day of reminders, in the tone you pick ----------
@@ -447,7 +498,6 @@
     var list = $(".notes", lock);
     var clock = $(".lock-time", lock);
     var shown = 0;
-    var timer = null;
 
     function makeNote(i, isNew) {
       var line = tones[tone][i];
@@ -479,10 +529,7 @@
       if (n) clock.textContent = slots[n - 1].time;
     }
     function step() {
-      if (shown >= slots.length) {
-        shown = 0;
-        list.textContent = "";
-      }
+      if (shown >= slots.length) return;
       var i = shown;
       shown += 1;
       clock.classList.add("tick");
@@ -498,12 +545,14 @@
         list.insertBefore(makeNote(i, true), list.firstChild);
       }, 260);
     }
-    function play() {
-      if (timer) return;
-      timer = setInterval(step, 3400);
-      if (!shown) step();
+    // Scrolling down brings the next one in; scrolling back takes it away.
+    function showCount(n) {
+      if (n === shown) return;
+      if (n === shown + 1) { step(); return; }
+      shown = n;
+      render(n);
+      if (!n) clock.textContent = "8:41";
     }
-    function pause() { clearInterval(timer); timer = null; }
 
     var toneSwitch = $("#tone-switch");
     if (toneSwitch) {
@@ -547,9 +596,10 @@
     } else {
       list.textContent = "";
       clock.textContent = "8:41";
-      new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) { if (entry.isIntersecting) play(); else pause(); });
-      }, { threshold: 0.35 }).observe(lock);
+      scrollFx.push(function () {
+        var p = progressOf(lock, 0.7, 0.05);
+        showCount(p < 0.04 ? 0 : p < 0.36 ? 1 : p < 0.68 ? 2 : 3);
+      });
     }
   }
 
@@ -651,7 +701,26 @@
       state = { total: 20, endsAt: 0, running: false, over: false };
       draw();
     }
-    startButton.addEventListener("click", function () { start(20); });
+    // Until someone starts a rest themselves, scrolling runs the countdown:
+    // 0:20 as it comes into view, "Go" (and the buzz) once it's well in.
+    var byHand = false;
+    var scrollOver = false;
+    if (!reduceMotion) {
+      scrollFx.push(function () {
+        if (byHand || state.running) return;
+        var p = progressOf(rest, 0.85, 0.25);
+        if (p >= 1) {
+          if (!scrollOver) { scrollOver = true; state.over = true; draw(); }
+          return;
+        }
+        if (scrollOver) { scrollOver = false; state.over = false; draw(); }
+        var remaining = Math.ceil(20 * (1 - p));
+        rings.forEach(function (ring) { ring.style.strokeDashoffset = CIRC * (1 - remaining / 20); });
+        countEl.textContent = format(remaining);
+        islandTime.textContent = format(remaining);
+      });
+    }
+    startButton.addEventListener("click", function () { byHand = true; start(20); });
     plus.addEventListener("click", function () {
       if (state.over) { start(15); return; }
       state.endsAt += 15000;
@@ -1221,5 +1290,35 @@
     window.addEventListener("resize", function () { placePill(timeControl); });
     renderSteps();
     render();
+  }
+  // ---------- Hero: the phones fan out as you scroll away ----------
+  var hero = $(".hero");
+  if (hero) {
+    scrollFx.push(function () {
+      hero.style.setProperty("--hp", clamp01(window.scrollY / (hero.offsetHeight * 0.85)).toFixed(3));
+    });
+  }
+
+  // ---------- Pricing: the plans slide in from either side ----------
+  var plansRow = $("#plans");
+  if (plansRow) {
+    scrollFx.push(function () {
+      plansRow.style.setProperty("--pp", progressOf(plansRow, 1, 0.6).toFixed(3));
+    });
+  }
+
+  // ---------- Run the scroll motion ----------
+  if (!reduceMotion && scrollFx.length) {
+    var fxQueued = false;
+    var runFx = function () {
+      fxQueued = false;
+      scrollFx.forEach(function (fn) { fn(); });
+    };
+    var queueFx = function () {
+      if (!fxQueued) { fxQueued = true; requestAnimationFrame(runFx); }
+    };
+    window.addEventListener("scroll", queueFx, { passive: true });
+    window.addEventListener("resize", queueFx);
+    runFx();
   }
 })();

@@ -484,7 +484,7 @@ html.theme-swap *, html.theme-swap *::before, html.theme-swap *::after { transit
 .points li > div > span { display: block; color: var(--text-2); font-size: 15px; }
 @media (max-width: 900px) {
   .tour-tabs { justify-content: flex-start; }
-  .tour-body { grid-template-columns: 1fr; gap: 40px; }
+  .tour-body, .tour-stick { grid-template-columns: 1fr; gap: 40px; }
   .tour-phone { width: 270px; }
 }
 
@@ -1406,3 +1406,38 @@ h1, h2, h3 { font-family: var(--display); font-stretch: 78%; font-weight: 800; l
   .reminders-grid .lock { order: 2; }
   .reminders-grid .rem-points { order: 3; }
 }
+
+/* ============ Scroll motion ============
+   Driven by site.js (scrollFx); none of it runs with Reduce Motion. */
+
+/* Tour: the grid lives in .tour-stick; on big screens it pins while you
+   scroll through the five screens. */
+.tour-body { display: block; }
+.tour-stick { display: grid; grid-template-columns: 340px 1fr; gap: 72px; align-items: center; }
+.tour-body.pinned { height: calc(100vh + 5 * 62vh); }
+.tour-body.pinned .tour-stick { position: sticky; top: 84px; height: calc(100vh - 100px); }
+.tour-body.pinned .tour-phone { width: min(320px, calc((100vh - 150px) / 2.25)); }
+.tour-body.pinned ~ * { position: relative; }
+#tour .tour-body.pinned .tour-timer i { animation: none; transform: scaleX(var(--tp, 0)); }
+
+/* Hero: the side phones fan out, the words drift and fade. */
+.hero-phones .p1 { translate: 0 calc(var(--hp, 0) * -30px); scale: calc(1 - var(--hp, 0) * 0.05); }
+.hero-phones .p2 { translate: calc(var(--hp, 0) * -80px) calc(var(--hp, 0) * 50px); rotate: calc(var(--hp, 0) * -10deg); }
+.hero-phones .p3 { translate: calc(var(--hp, 0) * 80px) calc(var(--hp, 0) * 50px); rotate: calc(var(--hp, 0) * 10deg); }
+.hero .wrap > div:first-child { translate: 0 calc(var(--hp, 0) * 90px); opacity: calc(1 - var(--hp, 0) * 0.8); }
+
+/* Headings: words start faint and fill in as you scroll through them. */
+html.js .split.in .w { transition: opacity 260ms ease, transform 800ms cubic-bezier(.2,.8,.2,1); transition-delay: 0s; }
+html.js .split.in .w:not(.lit) { opacity: 0.16; }
+/* Closing: each word punches in. */
+html.js .closing .split.in .w { opacity: 1; transition: opacity 200ms ease, scale 520ms cubic-bezier(.3,1.7,.5,1), translate 520ms cubic-bezier(.3,1.7,.5,1); }
+html.js .closing .split.in .w:not(.land) { opacity: 0; scale: 1.7; translate: 0 -0.25em; }
+
+/* Pricing: Free from the left, Pro from the right. */
+.plan.free { translate: calc((1 - var(--pp, 1)) * -110px) 0; }
+.plan.pro { translate: calc((1 - var(--pp, 1)) * 110px) 0; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-phones .p1, .hero-phones .p2, .hero-phones .p3, .hero .wrap > div:first-child, .plan.free, .plan.pro { translate: none; rotate: none; scale: none; opacity: 1; }
+}
+
+.billing { justify-content: flex-start; }
