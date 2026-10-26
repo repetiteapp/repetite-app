@@ -435,14 +435,14 @@
       var done = {};
       $all("input[data-done]", tryit).forEach(function (input) { done[input.getAttribute("data-done")] = input.checked; });
       var pending = plan.filter(function (item) { return !done[item.id]; });
-      // At most three a day; the most useful win.
-      var kept = pending.slice().sort(function (a, b) { return b.priority - a.priority; }).slice(0, 3);
+      // There's no daily cap: everything still missing gets its reminder.
+      var kept = pending;
       var keptIds = kept.map(function (item) { return item.id; });
       $all("li[data-id]", tryit).forEach(function (li) {
         li.classList.toggle("gone", keptIds.indexOf(li.getAttribute("data-id")) === -1);
       });
       var held = pending.filter(function (item) { return keptIds.indexOf(item.id) === -1; });
-      foot.textContent = held.length ? names[held[0].id] + " is held back: never more than 3 a day." : "";
+      foot.textContent = held.length ? names[held[0].id] + " is held back." : "";
       empty.hidden = kept.length > 0;
       count.textContent = kept.length + (kept.length === 1 ? " reminder" : " reminders");
     }
@@ -845,11 +845,11 @@
         fitBox.style.setProperty("--fill", (meals / 6 * 100) + "%");
         fitBox.style.setProperty("--fit-color", pro ? "var(--brand)" : "var(--ok)");
         if (meals === 0) {
-          fitAnswer.innerHTML = "<b>Free</b> is all you need. Searching the 12,774 built-in foods and scanning barcodes never runs out.";
+          fitAnswer.innerHTML = "<b>Free</b> is all you need. The 12,774 built-in foods and the barcode scanner have no limits.";
         } else if (!pro) {
-          fitAnswer.innerHTML = "<b>Free</b> covers you: 3 AI food logs a day" + (meals === 3 ? ", exactly what you'd use" : "") + ", plus 3 coach messages.";
+          fitAnswer.innerHTML = "<b>Free</b> has you covered: 3 AI food logs a day" + (meals === 3 ? ", which is exactly your 3" : "") + ", plus 3 coach messages.";
         } else {
-          fitAnswer.innerHTML = "<b>Pro</b> fits better: " + meals + " a day is more than Free's 3, and Pro makes AI logging unlimited.";
+          fitAnswer.innerHTML = "<b>Pro</b> makes more sense. " + meals + " a day is more than Free's 3, and Pro has no limit.";
         }
         $all(".plan", plansBox).forEach(function (plan) {
           plan.classList.toggle("pick", plan.getAttribute("data-plan") === (pro ? "pro" : "free"));
