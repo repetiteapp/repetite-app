@@ -17,6 +17,19 @@
   // when an element's top is at `start` of the screen's height and 1 when
   // it reaches `end` (0.9 = near the bottom, 0.3 = near the top).
   var scrollFx = [];
+
+  // Smooth scrolling (Lenis, vendor/lenis.min.js, MIT). It eases the wheel
+  // and trackpad and handles #links (sections keep room for the navbar with
+  // scroll-margin-top, which Lenis respects); touch keeps
+  // the phone's own scrolling. Off with Reduce Motion.
+  var lenis = null;
+  if (!reduceMotion && window.Lenis) {
+    lenis = new window.Lenis({ lerp: 0.1, wheelMultiplier: 1, autoRaf: true, anchors: true });
+  }
+  function scrollToY(y) {
+    if (lenis) lenis.scrollTo(y);
+    else window.scrollTo({ top: y, behavior: "smooth" });
+  }
   function clamp01(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
   function progressOf(el, start, end) {
     var vh = window.innerHeight;
@@ -372,7 +385,7 @@
     function tourDistance() { return Math.max(1, tourBody.offsetHeight - tourStick.offsetHeight); }
     function scrollToStep(i) {
       var top = tourBody.getBoundingClientRect().top + window.scrollY - STICK_TOP + tourDistance() * (i + 0.5) / tabs.length;
-      window.scrollTo({ top: top, behavior: "smooth" });
+      scrollToY(top);
     }
     function setPinned() {
       pinned = !reduceMotion && pinQuery.matches && !!tourStick;
