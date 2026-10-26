@@ -845,7 +845,7 @@
         fitBox.style.setProperty("--fill", (meals / 6 * 100) + "%");
         fitBox.style.setProperty("--fit-color", pro ? "var(--brand)" : "var(--ok)");
         if (meals === 0) {
-          fitAnswer.innerHTML = "<b>Free</b> is all you need. The 12,774 built-in foods and the barcode scanner have no limits.";
+          fitAnswer.innerHTML = "<b>Free</b> is all you need. The 12,000+ built-in foods and the barcode scanner have no limits.";
         } else if (!pro) {
           fitAnswer.innerHTML = "<b>Free</b> has you covered: 3 AI food logs a day" + (meals === 3 ? ", which is exactly your 3" : "") + ", plus 3 coach messages.";
         } else {
