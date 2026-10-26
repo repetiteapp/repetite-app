@@ -1369,3 +1369,11 @@ h1, h2, h3 { font-family: var(--display); font-stretch: 78%; font-weight: 800; l
 .faq-page { margin-top: 8px; }
 .legal .faq-page .faq-list { margin-top: 0; }
 .legal .faq-page summary { color: var(--text); }
+
+/* Tour points with nothing to point at on that screen come last, after a
+   thin line, with a hollow ring where the number would be. */
+#tour .points li:not([data-pin]) strong::before {
+  content: ""; display: inline-block; width: 12px; height: 12px; margin: 0 12px 0 -24px; vertical-align: 0;
+  border-radius: 50%; border: 2px solid var(--text-3);
+}
+#tour .points li[data-pin] + li:not([data-pin]) { margin-top: 4px; padding-top: 20px; border-top: 1px solid var(--border); }
