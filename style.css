@@ -233,7 +233,7 @@ section { scroll-margin-top: 96px; }
 }
 .isl-close:hover { background: rgba(255, 255, 255, 0.15); }
 .isl-close svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
-.isl-cols { display: grid; grid-template-columns: 1.7fr 1fr 1.15fr; gap: 8px 18px; padding: 0 2px; }
+.isl-cols { display: grid; grid-template-columns: 1.7fr 1fr; gap: 8px 18px; padding: 0 2px; }
 .isl-h {
   margin: 4px 0 6px; padding-left: 10px;
   font: 600 11px/1 var(--mono); letter-spacing: 0.09em; text-transform: uppercase; color: rgba(245, 239, 234, 0.42);
@@ -1317,4 +1317,46 @@ h1, h2, h3 { font-family: var(--display); font-stretch: 78%; font-weight: 800; l
   .faq .wrap { grid-template-columns: 1fr; }
   .faq .section-head { position: static; }
   .facts .wrap { gap: 24px 20px; }
+}
+
+/* ============ Tour: numbered dots, autoplay, swipe ============
+   Each numbered point beside the phone has a dot on the phone's edge,
+   level with what it describes; pointing at the point lights its dot. The
+   tabs move on by themselves while the tour is on screen and untouched. */
+.tour-tabs { align-items: center; gap: 18px; flex-wrap: wrap; }
+.tour-timer { width: 96px; height: 3px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+.tour-timer i { display: block; width: 100%; height: 100%; background: var(--brand); transform: scaleX(0); transform-origin: left; }
+#tour.playing .tour-timer i { animation: tour-timer 6s linear forwards; }
+#tour.playing.held .tour-timer i { animation-play-state: paused; }
+@keyframes tour-timer { to { transform: scaleX(1); } }
+.tour-phone { touch-action: pan-y; }
+.tour-phone .stack .shot { transform: translateX(calc(var(--dir, 1) * 28px)) scale(0.98); }
+.tour-phone .stack .shot.was { transform: translateX(calc(var(--dir, 1) * -28px)) scale(0.98); }
+.tour-phone .stack .shot.on { transform: none; }
+.tpins { position: absolute; inset: 0; pointer-events: none; }
+.tpin {
+  position: absolute; top: var(--y); width: 24px; height: 24px; border-radius: 50%;
+  background: var(--brand); color: #fff; font: 700 12px/24px var(--mono); text-align: center;
+  box-shadow: 0 0 0 3px var(--bezel), 0 6px 14px rgba(0, 0, 0, 0.3);
+  transform: translate(-50%, -50%) scale(0); transition: transform 300ms ease;
+}
+.tpin.l { left: -4px; }
+.tpin.r { left: calc(100% + 4px); }
+.tpin::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--brand); opacity: 0; }
+.shot.on .tpin { transform: translate(-50%, -50%) scale(1); transition: transform 500ms cubic-bezier(.3,1.5,.5,1) calc(var(--n) * 120ms + 300ms); }
+.shot.on .tpin.lit { transform: translate(-50%, -50%) scale(1.3); transition-delay: 0s; }
+.shot.on .tpin.lit::after { animation: pin-pulse 1.4s ease-out infinite; }
+.tnum {
+  display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 8px; vertical-align: 2px;
+  border-radius: 50%; background: var(--brand); color: #fff; font: 700 11px/1 var(--mono); font-style: normal;
+}
+.points li[data-pin] { cursor: default; }
+/* In the tour the numbers stand in for the icons; text lines up either way. */
+#tour .points .ic { display: none; }
+#tour .points li { display: block; padding-left: 28px; }
+#tour .points .tnum { margin-left: -28px; }
+.points li.lit strong { color: var(--brand); }
+@media (prefers-reduced-motion: reduce) {
+  .tour-phone .stack .shot, .tour-phone .stack .shot.was { transform: none; }
+  .shot.on .tpin.lit::after { animation: none; }
 }

@@ -301,11 +301,26 @@
   }
 
   // ---------- Tour ----------
+  // Tabs with a phone that slides between screens. Numbered points beside
+  // it light their dot on the phone. It moves on every 6 s while it's on
+  // screen and nobody's touching it; a swipe on the phone changes tab.
   var tour = $("#tour");
   if (tour) {
     var tabs = $all('[role="tab"]', tour);
     var control = $(".segmented", tour);
+    var stack = $(".tour-phone .stack", tour);
+    var tourPhone = $(".tour-phone", tour);
+    var tourIndex = 0;
+    var tourTimer = null;
+    var tourHeldUntil = 0;
+    var tourHover = false;
+    var tourOnScreen = false;
+    var TOUR_MS = 6000;
     function select(tab, focus) {
+      var next = tabs.indexOf(tab);
+      if (stack) stack.style.setProperty("--dir", next >= tourIndex ? "1" : "-1");
+      tourIndex = next;
+      var name = tab.getAttribute("data-tab");
       tabs.forEach(function (t) {
         var on = t === tab;
         t.setAttribute("aria-selected", on ? "true" : "false");
@@ -313,25 +328,85 @@
         var panel = document.getElementById(t.getAttribute("aria-controls"));
         if (panel) panel.hidden = !on;
       });
-      var name = tab.getAttribute("data-tab");
       $all(".stack .shot", tour).forEach(function (shot) {
-        shot.classList.toggle("on", shot.getAttribute("data-tab") === name);
+        var wasOn = shot.classList.contains("on");
+        var on = shot.getAttribute("data-tab") === name;
+        shot.classList.toggle("on", on);
+        if (wasOn && !on) {
+          shot.classList.add("was");
+          setTimeout(function () { shot.classList.remove("was"); }, 520);
+        }
       });
+      $all(".tpin.lit, .points li.lit", tour).forEach(function (el) { el.classList.remove("lit"); });
       placePill(control);
       if (focus) tab.focus();
+      tourSchedule();
     }
+    function tourCanPlay() { return !reduceMotion && tourOnScreen && !tourHover && !document.hidden && Date.now() >= tourHeldUntil; }
+    function tourSchedule() {
+      clearTimeout(tourTimer);
+      tour.classList.remove("playing");
+      if (reduceMotion) return;
+      void tour.offsetWidth;
+      tour.classList.add("playing");
+      tour.classList.toggle("held", !tourCanPlay());
+      tourTimer = setTimeout(function () {
+        if (tourCanPlay()) select(tabs[(tourIndex + 1) % tabs.length]); else tourSchedule();
+      }, Math.max(TOUR_MS, tourHeldUntil - Date.now()));
+    }
+    function tourHold() { tourHeldUntil = Date.now() + 12000; }
+    function tourRefresh() { tour.classList.toggle("held", !tourCanPlay()); }
     tabs.forEach(function (tab, i) {
-      tab.addEventListener("click", function () { select(tab); });
+      tab.addEventListener("click", function () { tourHold(); select(tab); });
       tab.addEventListener("keydown", function (e) {
         var step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
         if (!step) return;
         e.preventDefault();
+        tourHold();
         select(tabs[(i + step + tabs.length) % tabs.length], true);
       });
     });
+    // A point lights its dot on the phone.
+    $all(".points li[data-pin]", tour).forEach(function (li) {
+      function light(on) {
+        var shot = $(".stack .shot.on", tour);
+        var pin = shot && $('.tpin[data-pin="' + li.getAttribute("data-pin") + '"]', shot);
+        li.classList.toggle("lit", on);
+        if (pin) pin.classList.toggle("lit", on);
+      }
+      li.addEventListener("pointerenter", function () { light(true); });
+      li.addEventListener("pointerleave", function () { light(false); });
+      li.addEventListener("click", function () { tourHold(); light(!li.classList.contains("lit")); });
+    });
+    var tourBody = $(".tour-body", tour);
+    if (tourBody) {
+      tourBody.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") { tourHover = true; tourRefresh(); } });
+      tourBody.addEventListener("pointerleave", function () { tourHover = false; tourRefresh(); });
+    }
+    // Swipe the phone to change tab.
+    if (tourPhone) {
+      var swipeX = null;
+      tourPhone.addEventListener("pointerdown", function (e) { swipeX = e.clientX; });
+      tourPhone.addEventListener("pointerup", function (e) {
+        if (swipeX === null) return;
+        var dx = e.clientX - swipeX;
+        swipeX = null;
+        if (Math.abs(dx) < 40) return;
+        tourHold();
+        select(tabs[(tourIndex + (dx < 0 ? 1 : -1) + tabs.length) % tabs.length]);
+      });
+    }
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        tourOnScreen = entries[0].isIntersecting;
+        tourRefresh();
+      }, { threshold: 0.35 }).observe(tourBody || tour);
+    }
+    document.addEventListener("visibilitychange", tourRefresh);
     window.addEventListener("resize", function () { placePill(control); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { placePill(control); });
     placePill(control);
+    tourSchedule();
   }
 
   // ---------- Lock Screen: a day of smart reminders ----------

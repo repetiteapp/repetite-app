@@ -19,8 +19,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Instrument+Sans:wght@400..700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="style.css?v=d23eeb9b23">
-<script src="site.js?v=708544c792" defer></script>
+<link rel="stylesheet" href="style.css?v=d179d1b012">
+<script src="site.js?v=fbe08ee7ed" defer></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -85,7 +85,7 @@
         <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span class="tt-bar"></span><span class="tt-plate"><span class="tt-ring"></span><svg class="tt-sun" aria-hidden="true"><use href="#i-sun"/></svg><svg class="tt-moon" aria-hidden="true"><use href="#i-moon"/></svg></span></button>
         <button class="isl-close" type="button" aria-label="Close the menu"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6"/></svg></button>
       </div>
-      <div class="isl-cols"><div class="isl-col app"><p class="isl-h">The app</p><div class="isl-list"><a class="isl-link" href="#tour" style="--i:0"><svg aria-hidden="true"><use href="#i-tap"/></svg><span>Tour</span></a><a class="isl-link" href="#reminders" style="--i:1"><svg aria-hidden="true"><use href="#i-bell"/></svg><span>Reminders</span></a><a class="isl-link" href="#rest" style="--i:2"><svg aria-hidden="true"><use href="#i-timer"/></svg><span>Rest timer</span></a><a class="isl-link" href="#plates" style="--i:3"><svg aria-hidden="true"><use href="#i-weights"/></svg><span>Plates</span></a><a class="isl-link" href="#skincare" style="--i:4"><svg aria-hidden="true"><use href="#i-drop"/></svg><span>Skincare</span></a><a class="isl-link" href="#coach" style="--i:5"><svg aria-hidden="true"><use href="#i-chat"/></svg><span>AI coach</span></a><a class="isl-link" href="#screens" style="--i:6"><svg aria-hidden="true"><use href="#i-grid"/></svg><span>Screens</span></a><a class="isl-link" href="#features" style="--i:7"><svg aria-hidden="true"><use href="#i-layers"/></svg><span>Everything</span></a></div></div><div class="isl-col"><p class="isl-h">Trust</p><div class="isl-list"><a class="isl-link" href="#privacy" style="--i:8"><svg aria-hidden="true"><use href="#i-lock"/></svg><span>Privacy</span></a><a class="isl-link" href="#compare" style="--i:9"><svg aria-hidden="true"><use href="#i-swap"/></svg><span>Compare</span></a></div></div><div class="isl-col"><p class="isl-h">Get it</p><div class="isl-list"><a class="isl-link" href="#pricing" style="--i:10"><svg aria-hidden="true"><use href="#i-spark"/></svg><span>Pricing</span></a><a class="isl-link" href="#faq" style="--i:11"><svg aria-hidden="true"><use href="#i-list"/></svg><span>FAQ</span></a></div><a class="isl-big" href="#pricing"><svg aria-hidden="true"><use href="#i-phone"/></svg><span><small>Coming soon to the</small><strong>App Store</strong></span></a></div></div>
+      <div class="isl-cols"><div class="isl-col app"><p class="isl-h">The app</p><div class="isl-list"><a class="isl-link" href="#tour" style="--i:0"><svg aria-hidden="true"><use href="#i-tap"/></svg><span>Tour</span></a><a class="isl-link" href="#reminders" style="--i:1"><svg aria-hidden="true"><use href="#i-bell"/></svg><span>Reminders</span></a><a class="isl-link" href="#rest" style="--i:2"><svg aria-hidden="true"><use href="#i-timer"/></svg><span>Rest timer</span></a><a class="isl-link" href="#skincare" style="--i:3"><svg aria-hidden="true"><use href="#i-drop"/></svg><span>Skincare</span></a><a class="isl-link" href="#coach" style="--i:4"><svg aria-hidden="true"><use href="#i-chat"/></svg><span>AI coach</span></a><a class="isl-link" href="#privacy" style="--i:5"><svg aria-hidden="true"><use href="#i-lock"/></svg><span>Privacy</span></a></div></div><div class="isl-col"><p class="isl-h">Get it</p><div class="isl-list"><a class="isl-link" href="#pricing" style="--i:6"><svg aria-hidden="true"><use href="#i-spark"/></svg><span>Pricing</span></a><a class="isl-link" href="#faq" style="--i:7"><svg aria-hidden="true"><use href="#i-list"/></svg><span>FAQ</span></a></div><a class="isl-big" href="#pricing"><svg aria-hidden="true"><use href="#i-phone"/></svg><span><small>Coming soon to the</small><strong>App Store</strong></span></a></div></div>
       <a class="isl-big wide" href="#pricing"><svg aria-hidden="true"><use href="#i-phone"/></svg><span><small>Coming soon to the</small><strong>App Store</strong></span></a>
     </div>
   </nav>
@@ -152,15 +152,16 @@
         <button role="tab" id="tab-train" data-tab="train" aria-controls="panel-train" aria-selected="false" tabindex="-1">Train</button>
         <button role="tab" id="tab-progress" data-tab="progress" aria-controls="panel-progress" aria-selected="false" tabindex="-1">Progress</button>
       </div>
+      <span class="tour-timer" aria-hidden="true"><i></i></span>
     </div>
     <div class="tour-body reveal">
       <div class="tour-phone">
         <div class="phone"><div class="stack">
-          <span class="shot on" data-tab="today"><img class="l" src="images/today-light.webp" width="603" height="1311" alt="The Today screen with calories left, today&#x27;s workout, water, weight and sleep" loading="lazy" decoding="async"><img class="d" src="images/today-dark.webp" width="603" height="1311" alt="The Today screen with calories left, today&#x27;s workout, water, weight and sleep" loading="lazy" decoding="async"></span>
-          <span class="shot" data-tab="log"><img class="l" src="images/search-light.webp" width="603" height="1311" alt="Food search for chicken, with calories and protein for each result" loading="lazy" decoding="async"><img class="d" src="images/search-dark.webp" width="603" height="1311" alt="Food search for chicken, with calories and protein for each result" loading="lazy" decoding="async"></span>
-          <span class="shot" data-tab="meals"><img class="l" src="images/food-light.webp" width="603" height="1311" alt="The day&#x27;s meals with calories, protein, carbs and fat for each food" loading="lazy" decoding="async"><img class="d" src="images/food-dark.webp" width="603" height="1311" alt="The day&#x27;s meals with calories, protein, carbs and fat for each food" loading="lazy" decoding="async"></span>
-          <span class="shot" data-tab="train"><img class="l" src="images/workout-light.webp" width="603" height="1311" alt="Logging a set of Back Squat, with the rest timer and plates per side" loading="lazy" decoding="async"><img class="d" src="images/workout-dark.webp" width="603" height="1311" alt="Logging a set of Back Squat, with the rest timer and plates per side" loading="lazy" decoding="async"></span>
-          <span class="shot" data-tab="progress"><img class="l" src="images/progress-light.webp" width="603" height="1311" alt="Progress: weight trend toward a goal, the weekly check-in and strength trends" loading="lazy" decoding="async"><img class="d" src="images/progress-dark.webp" width="603" height="1311" alt="Progress: weight trend toward a goal, the weekly check-in and strength trends" loading="lazy" decoding="async"></span>
+          <span class="shot on" data-tab="today"><img class="l" src="images/today-light.webp" width="603" height="1311" alt="The Today screen with calories left, today&#x27;s workout, water, weight and sleep" loading="lazy" decoding="async"><img class="d" src="images/today-dark.webp" width="603" height="1311" alt="The Today screen with calories left, today&#x27;s workout, water, weight and sleep" loading="lazy" decoding="async"><span class="tpins" aria-hidden="true"><span class="tpin l" data-pin="1" style="--y:28%;--n:0">1</span><span class="tpin r" data-pin="2" style="--y:41%;--n:1">2</span><span class="tpin l" data-pin="3" style="--y:69%;--n:2">3</span><span class="tpin l" data-pin="4" style="--y:9%;--n:3">4</span></span></span>
+          <span class="shot" data-tab="log"><img class="l" src="images/search-light.webp" width="603" height="1311" alt="Food search for chicken, with calories and protein for each result" loading="lazy" decoding="async"><img class="d" src="images/search-dark.webp" width="603" height="1311" alt="Food search for chicken, with calories and protein for each result" loading="lazy" decoding="async"><span class="tpins" aria-hidden="true"><span class="tpin l" data-pin="1" style="--y:33%;--n:0">1</span><span class="tpin r" data-pin="2" style="--y:17%;--n:1">2</span></span></span>
+          <span class="shot" data-tab="meals"><img class="l" src="images/food-light.webp" width="603" height="1311" alt="The day&#x27;s meals with calories, protein, carbs and fat for each food" loading="lazy" decoding="async"><img class="d" src="images/food-dark.webp" width="603" height="1311" alt="The day&#x27;s meals with calories, protein, carbs and fat for each food" loading="lazy" decoding="async"><span class="tpins" aria-hidden="true"><span class="tpin l" data-pin="1" style="--y:49%;--n:0">1</span><span class="tpin r" data-pin="2" style="--y:42%;--n:1">2</span></span></span>
+          <span class="shot" data-tab="train"><img class="l" src="images/workout-light.webp" width="603" height="1311" alt="Logging a set of Back Squat, with the rest timer and plates per side" loading="lazy" decoding="async"><img class="d" src="images/workout-dark.webp" width="603" height="1311" alt="Logging a set of Back Squat, with the rest timer and plates per side" loading="lazy" decoding="async"><span class="tpins" aria-hidden="true"><span class="tpin r" data-pin="1" style="--y:36%;--n:0">1</span><span class="tpin l" data-pin="2" style="--y:44%;--n:1">2</span><span class="tpin l" data-pin="3" style="--y:64%;--n:2">3</span><span class="tpin r" data-pin="4" style="--y:71%;--n:3">4</span></span></span>
+          <span class="shot" data-tab="progress"><img class="l" src="images/progress-light.webp" width="603" height="1311" alt="Progress: weight trend toward a goal, the weekly check-in and strength trends" loading="lazy" decoding="async"><img class="d" src="images/progress-dark.webp" width="603" height="1311" alt="Progress: weight trend toward a goal, the weekly check-in and strength trends" loading="lazy" decoding="async"><span class="tpins" aria-hidden="true"><span class="tpin r" data-pin="1" style="--y:31%;--n:0">1</span><span class="tpin l" data-pin="2" style="--y:53%;--n:1">2</span><span class="tpin r" data-pin="3" style="--y:72%;--n:2">3</span></span></span>
         </div></div>
       </div>
       <div>
@@ -168,19 +169,19 @@
           <h3>Open it and you know where you stand</h3>
           <p>Calories left, today's workout and last night's sleep are all on the first screen. No digging around.</p>
           <ul class="points">
-            <li><span class="ic"><svg><use href="#i-target"/></svg></span><div><strong>What's left to eat</strong><span>Calories, protein, carbs and fat. The numbers drop as you log.</span></div></li>
-            <li><span class="ic"><svg><use href="#i-weights"/></svg></span><div><strong>Today's workout</strong><span>Start it right here, or check when the next one is.</span></div></li>
-            <li><span class="ic"><svg><use href="#i-heart"/></svg></span><div><strong>Numbers from your watch</strong><span>Sleep, resting heart rate, steps and calories burned, pulled in from Apple Health.</span></div></li>
-            <li><span class="ic"><svg><use href="#i-flame"/></svg></span><div><strong>Your streak</strong><span>How many days in a row you've logged. Try not to break it.</span></div></li>
+            <li data-pin="1"><span class="ic"><svg><use href="#i-target"/></svg></span><div><strong><i class="tnum" aria-hidden="true">1</i>What's left to eat</strong><span>Calories, protein, carbs and fat. The numbers drop as you log.</span></div></li>
+            <li data-pin="2"><span class="ic"><svg><use href="#i-weights"/></svg></span><div><strong><i class="tnum" aria-hidden="true">2</i>Today's workout</strong><span>Start it right here, or check when the next one is.</span></div></li>
+            <li data-pin="3"><span class="ic"><svg><use href="#i-heart"/></svg></span><div><strong><i class="tnum" aria-hidden="true">3</i>Numbers from your watch</strong><span>Sleep, resting heart rate, steps and calories burned, pulled in from Apple Health.</span></div></li>
+            <li data-pin="4"><span class="ic"><svg><use href="#i-flame"/></svg></span><div><strong><i class="tnum" aria-hidden="true">4</i>Your streak</strong><span>How many days in a row you've logged. Try not to break it.</span></div></li>
           </ul>
         </div>
         <div class="tour-panel" role="tabpanel" id="panel-log" aria-labelledby="tab-log" hidden>
           <h3>Logging food shouldn't take longer than eating it</h3>
           <p>Type it like you'd text a friend, scan the packet, or take a photo of your plate. Repetite finds the food and works out the portion.</p>
           <ul class="points">
-            <li><span class="ic"><svg><use href="#i-search"/></svg></span><div><strong>12,000+ foods, works offline</strong><span>Type "2 eggs" or "rice 150 g" and it gets the amount. Indian dishes are in there too.</span></div></li>
+            <li data-pin="1"><span class="ic"><svg><use href="#i-search"/></svg></span><div><strong><i class="tnum" aria-hidden="true">1</i>12,000+ foods, works offline</strong><span>Type "2 eggs" or "rice 150 g" and it gets the amount. Indian dishes are in there too.</span></div></li>
             <li><span class="ic"><svg><use href="#i-barcode"/></svg></span><div><strong>Barcode scanner</strong><span>Looks up packaged food on Open Food Facts and remembers it for next time.</span></div></li>
-            <li><span class="ic"><svg><use href="#i-camera"/></svg></span><div><strong>Photo or voice</strong><span>AI reads your plate or what you said. You check the numbers before anything's saved.</span></div></li>
+            <li data-pin="2"><span class="ic"><svg><use href="#i-camera"/></svg></span><div><strong><i class="tnum" aria-hidden="true">2</i>Photo or voice</strong><span>AI reads your plate or what you said. You check the numbers before anything's saved.</span></div></li>
             <li><span class="ic"><svg><use href="#i-spark"/></svg></span><div><strong>Something unusual?</strong><span>AI makes an estimate and saves it, so next time it's already in your list.</span></div></li>
           </ul>
         </div>
@@ -188,8 +189,8 @@
           <h3>Your day, meal by meal</h3>
           <p>See what each food added. Fix a portion with a tap, or copy yesterday's lunch.</p>
           <ul class="points">
-            <li><span class="ic"><svg><use href="#i-list"/></svg></span><div><strong>In the order you ate</strong><span>Breakfast through dinner, with times and totals.</span></div></li>
-            <li><span class="ic"><svg><use href="#i-leaf"/></svg></span><div><strong>Vitamins and minerals</strong><span>Iron, calcium, vitamin D and the rest, added up for the day.</span></div></li>
+            <li data-pin="1"><span class="ic"><svg><use href="#i-list"/></svg></span><div><strong><i class="tnum" aria-hidden="true">1</i>In the order you ate</strong><span>Breakfast through dinner, with times and totals.</span></div></li>
+            <li data-pin="2"><span class="ic"><svg><use href="#i-leaf"/></svg></span><div><strong><i class="tnum" aria-hidden="true">2</i>Vitamins and minerals</strong><span>Iron, calcium, vitamin D and the rest, added up for the day.</span></div></li>
             <li><span class="ic"><svg><use href="#i-calendar"/></svg></span><div><strong>Meal plans</strong><span>Had a good day? Save it and reuse it whenever you like.</span></div></li>
             <li><span class="ic"><svg><use href="#i-repeat"/></svg></span><div><strong>Your usual</strong><span>Recent foods and saved meals, logged again without searching.</span></div></li>
           </ul>
@@ -198,19 +199,19 @@
           <h3>Every set has a number to beat</h3>
           <p>Repetite remembers your last session and tells you what to aim for this time. Hit it, and next time asks for a little more.</p>
           <ul class="points">
-            <li><span class="ic"><svg><use href="#i-target"/></svg></span><div><strong>Next-session targets</strong><span>Weight and reps for every lift, worked out from your own history.</span></div></li>
-            <li><span class="ic"><svg><use href="#i-timer"/></svg></span><div><strong>A rest timer that actually rings</strong><span>It counts down on the Lock Screen and in the Dynamic Island.</span></div></li>
-            <li><span class="ic"><svg><use href="#i-weights"/></svg></span><div><strong>Plates per side</strong><span>No more mental maths with a loaded bar.</span></div></li>
-            <li><span class="ic"><svg><use href="#i-layers"/></svg></span><div><strong>Warm-ups, drop sets, supersets</strong><span>Plus reps left in the tank, if you track that.</span></div></li>
+            <li data-pin="1"><span class="ic"><svg><use href="#i-target"/></svg></span><div><strong><i class="tnum" aria-hidden="true">1</i>Next-session targets</strong><span>Weight and reps for every lift, worked out from your own history.</span></div></li>
+            <li data-pin="2"><span class="ic"><svg><use href="#i-timer"/></svg></span><div><strong><i class="tnum" aria-hidden="true">2</i>A rest timer that actually rings</strong><span>It counts down on the Lock Screen and in the Dynamic Island.</span></div></li>
+            <li data-pin="3"><span class="ic"><svg><use href="#i-weights"/></svg></span><div><strong><i class="tnum" aria-hidden="true">3</i>Plates per side</strong><span>No more mental maths with a loaded bar.</span></div></li>
+            <li data-pin="4"><span class="ic"><svg><use href="#i-layers"/></svg></span><div><strong><i class="tnum" aria-hidden="true">4</i>Warm-ups, drop sets, supersets</strong><span>Plus reps left in the tank, if you track that.</span></div></li>
           </ul>
         </div>
         <div class="tour-panel" role="tabpanel" id="panel-progress" aria-labelledby="tab-progress" hidden>
           <h3>Where you're heading, and roughly when</h3>
           <p>Every week Repetite checks your weight trend against your plan. Stalled? It suggests new calories.</p>
           <ul class="points">
-            <li><span class="ic"><svg><use href="#i-scale"/></svg></span><div><strong>Weight trend and goal date</strong><span>A smooth line, so one salty dinner doesn't wreck your week.</span></div></li>
-            <li><span class="ic"><svg><use href="#i-scope"/></svg></span><div><strong>Weekly check-ins</strong><span>Calorie targets based on what's actually happening.</span></div></li>
-            <li><span class="ic"><svg><use href="#i-trend"/></svg></span><div><strong>Strength over time</strong><span>Your estimated best on each lift, and which way it's going.</span></div></li>
+            <li data-pin="1"><span class="ic"><svg><use href="#i-scale"/></svg></span><div><strong><i class="tnum" aria-hidden="true">1</i>Weight trend and goal date</strong><span>A smooth line, so one salty dinner doesn't wreck your week.</span></div></li>
+            <li data-pin="2"><span class="ic"><svg><use href="#i-scope"/></svg></span><div><strong><i class="tnum" aria-hidden="true">2</i>Weekly check-ins</strong><span>Calorie targets based on what's actually happening.</span></div></li>
+            <li data-pin="3"><span class="ic"><svg><use href="#i-trend"/></svg></span><div><strong><i class="tnum" aria-hidden="true">3</i>Strength over time</strong><span>Your estimated best on each lift, and which way it's going.</span></div></li>
             <li><span class="ic"><svg><use href="#i-calendar"/></svg></span><div><strong>A calendar of everything</strong><span>Tap any day to see what you ate and lifted.</span></div></li>
           </ul>
         </div>
@@ -250,33 +251,7 @@
         <li class="reveal"><span class="ic"><svg><use href="#i-tap"/></svg></span><strong>Act from the notification</strong><span>Log my usual, +1 glass, Start workout. No need to open the app.</span></li>
         <li class="reveal"><span class="ic"><svg><use href="#i-lock"/></svg></span><strong>Planned on your device</strong><span>Nothing gets sent anywhere to plan them. Ignore one kind for a few days and it backs off.</span></li>
       </ul>
-    </div>
-
-    <div class="tryit reveal" id="tryit">
-      <div>
-        <span class="eyebrow">Try it</span>
-        <h3>Tick something off. Watch its reminder disappear.</h3>
-        <p class="sub">It's noon on a training day.</p>
-        <div class="toggles">
-          <label class="switch-row"><span>Logged lunch<small>The lunch reminder is cancelled</small></span><input type="checkbox" data-done="lunch" id="try-lunch"></label>
-          <label class="switch-row"><span>Drank 2 glasses of water<small>No water check this afternoon</small></span><input type="checkbox" data-done="water" id="try-water"></label>
-          <label class="switch-row"><span>Finished today's workout<small>No workout reminder tonight</small></span><input type="checkbox" data-done="workout" id="try-workout"></label>
-          <label class="switch-row"><span>Hit 180 g protein<small>No protein reminder before dinner</small></span><input type="checkbox" data-done="protein" id="try-protein"></label>
-        </div>
-      </div>
-      <div class="coming" aria-live="polite">
-        <div class="coming-head"><strong>Coming up</strong><span>4 reminders</span></div>
-        <ol>
-          <li data-id="lunch"><time>1:30 PM</time><div><strong>No lunch logged yet</strong><span>Your usual: chicken burrito bowl (640 kcal).</span></div></li>
-          <li data-id="water"><time>3:00 PM</time><div><strong>Water check</strong><span>1.2 of 3 L so far today.</span></div></li>
-          <li data-id="workout"><time>5:30 PM</time><div><strong>Upper day today</strong><span>7 exercises, about 55 min.</span></div></li>
-          <li data-id="protein"><time>7:15 PM</time><div><strong>62 g protein to go today</strong><span>Ideas from what you eat: paneer bhurji (25 g).</span></div></li>
-        </ol>
-        <p class="empty" hidden>Nothing left to remind you about. Nice.</p>
-        <p class="foot"></p>
-      </div>
-    </div>
-  </div>
+    </div>  </div>
 </section>
 
 <section class="section" id="rest" aria-labelledby="rest-title">
@@ -332,37 +307,6 @@
         <button type="button" class="btn btn-brand" id="rest-start"><svg width="18" height="18" aria-hidden="true"><use href="#i-play"/></svg>Start a 20-second rest</button>
         <p class="rest-hint">Try −15 s and +15 s like you would on your Lock Screen. Turn your sound on to hear it ring.</p>
       </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="plates" aria-labelledby="plates-title">
-  <div class="wrap plates-grid">
-    <div class="reveal">
-      <span class="eyebrow">Plate maths</span>
-      <h2 id="plates-title" class="h2">What goes on each side? Sorted.</h2>
-      <p class="plates-lede">Repetite works out the plates for every barbell set, so you stop counting and start lifting. Drag the slider and see.</p>
-      <div class="plate-controls">
-        <div class="segmented" role="tablist" aria-label="Units" id="plate-units">
-          <span class="seg-pill" aria-hidden="true"></span>
-          <button role="tab" data-unit="lb" aria-selected="true">lb</button>
-          <button role="tab" data-unit="kg" aria-selected="false" tabindex="-1">kg</button>
-        </div>
-        <label class="plate-slider" for="plate-weight">
-          <span class="visually-hidden">Weight on the bar</span>
-          <input type="range" id="plate-weight" min="45" max="495" step="5" value="225">
-        </label>
-      </div>
-    </div>
-    <div class="loader reveal" aria-live="polite">
-      <div class="loader-total"><span id="plate-total">225</span><small id="plate-unit">lb</small></div>
-      <div class="barbell" aria-hidden="true">
-        <span class="bb-shaft"></span>
-        <span class="bb-sleeve left"><span class="bb-collar"></span><span class="bb-plates" id="plates-left"></span></span>
-        <span class="bb-sleeve right"><span class="bb-collar"></span><span class="bb-plates" id="plates-right"></span></span>
-      </div>
-      <p class="loader-side">Each side: <strong id="plate-side">45 + 45</strong></p>
-      <p class="loader-note" id="plate-note">On a 45 lb bar.</p>
     </div>
   </div>
 </section>
@@ -436,112 +380,6 @@
   </div>
 </section>
 
-<section class="section" id="screens" aria-labelledby="screens-title">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">Screens</span>
-      <h2 id="screens-title">Have a look around</h2>
-      <p>Swipe through, or jump to a part of the app. The dots show what each screen is for.</p>
-    </div>
-  </div>
-  <div class="showcase" id="showcase">
-    <div class="segmented showcase-tabs reveal" role="tablist" aria-label="Screens by area"><span class="seg-pill" aria-hidden="true"></span><button role="tab" type="button" data-group="today" aria-selected="true">Today</button><button role="tab" type="button" data-group="food" aria-selected="false" tabindex="-1">Food</button><button role="tab" type="button" data-group="train" aria-selected="false" tabindex="-1">Train</button><button role="tab" type="button" data-group="progress" aria-selected="false" tabindex="-1">Progress</button><button role="tab" type="button" data-group="coach" aria-selected="false" tabindex="-1">Coach</button><button role="tab" type="button" data-group="skincare" aria-selected="false" tabindex="-1">Skincare</button></div>
-    <div class="stage" tabindex="0" role="region" aria-roledescription="carousel" aria-label="App screens">
-      <figure class="slide" data-index="0" data-group="today" data-title="Today" data-sub="Your day at a glance"><div class="phone"><span class="shot"><img class="l" src="images/today-light.webp" width="603" height="1311" alt="Today: Your day at a glance" loading="lazy" decoding="async"><img class="d" src="images/today-dark.webp" width="603" height="1311" alt="Today: Your day at a glance" loading="lazy" decoding="async"></span><span class="pins"><span class="pin l" style="--y:27%;--n:0"><i aria-hidden="true">1</i><s aria-hidden="true"></s><b>Calories and macros left</b></span><span class="pin r" style="--y:40%;--n:1"><i aria-hidden="true">2</i><s aria-hidden="true"></s><b>Today&#x27;s workout, one tap away</b></span></span></div></figure>
-      <figure class="slide" data-index="1" data-group="today" data-title="Log anything" data-sub="Food, water, weight or a workout"><div class="phone"><span class="shot"><img class="l" src="images/quicklog-light.webp" width="603" height="1311" alt="Log anything: Food, water, weight or a workout" loading="lazy" decoding="async"><img class="d" src="images/quicklog-dark.webp" width="603" height="1311" alt="Log anything: Food, water, weight or a workout" loading="lazy" decoding="async"></span><span class="pins"><span class="pin l" style="--y:61%;--n:0"><i aria-hidden="true">1</i><s aria-hidden="true"></s><b>Search, snap a meal or scan</b></span></span></div></figure>
-      <figure class="slide" data-index="2" data-group="food" data-title="Food search" data-sub="12,000+ foods, even offline"><div class="phone"><span class="shot"><img class="l" src="images/search-light.webp" width="603" height="1311" alt="Food search: 12,000+ foods, even offline" loading="lazy" decoding="async"><img class="d" src="images/search-dark.webp" width="603" height="1311" alt="Food search: 12,000+ foods, even offline" loading="lazy" decoding="async"></span><span class="pins"><span class="pin l" style="--y:19%;--n:0"><i aria-hidden="true">1</i><s aria-hidden="true"></s><b>Works offline</b></span><span class="pin r" style="--y:38%;--n:1"><i aria-hidden="true">2</i><s aria-hidden="true"></s><b>Real portions</b></span></span></div></figure>
-      <figure class="slide" data-index="3" data-group="food" data-title="Your meals" data-sub="Every food and macro"><div class="phone"><span class="shot"><img class="l" src="images/food-light.webp" width="603" height="1311" alt="Your meals: Every food and macro" loading="lazy" decoding="async"><img class="d" src="images/food-dark.webp" width="603" height="1311" alt="Your meals: Every food and macro" loading="lazy" decoding="async"></span><span class="pins"><span class="pin l" style="--y:32%;--n:0"><i aria-hidden="true">1</i><s aria-hidden="true"></s><b>Every macro, every meal</b></span></span></div></figure>
-      <figure class="slide" data-index="4" data-group="food" data-title="Vitamins &amp; minerals" data-sub="What your day adds up to"><div class="phone"><span class="shot"><img class="l" src="images/nutrients-light.webp" width="603" height="1311" alt="Vitamins &amp; minerals: What your day adds up to" loading="lazy" decoding="async"><img class="d" src="images/nutrients-dark.webp" width="603" height="1311" alt="Vitamins &amp; minerals: What your day adds up to" loading="lazy" decoding="async"></span><span class="pins"><span class="pin r" style="--y:20%;--n:0"><i aria-hidden="true">1</i><s aria-hidden="true"></s><b>From real food data</b></span></span></div></figure>
-      <figure class="slide" data-index="5" data-group="train" data-title="Logging a set" data-sub="Last time, the target and your rest"><div class="phone"><span class="shot"><img class="l" src="images/workout-light.webp" width="603" height="1311" alt="Logging a set: Last time, the target and your rest" loading="lazy" decoding="async"><img class="d" src="images/workout-dark.webp" width="603" height="1311" alt="Logging a set: Last time, the target and your rest" loading="lazy" decoding="async"></span><span class="pins"><span class="pin r" style="--y:35%;--n:0"><i aria-hidden="true">1</i><s aria-hidden="true"></s><b>The target for this set</b></span><span class="pin l" style="--y:44%;--n:1"><i aria-hidden="true">2</i><s aria-hidden="true"></s><b>Rest timer</b></span><span class="pin l" style="--y:65%;--n:2"><i aria-hidden="true">3</i><s aria-hidden="true"></s><b>Plates per side</b></span></span></div></figure>
-      <figure class="slide" data-index="6" data-group="train" data-title="Workout done" data-sub="New bests and next time&#x27;s targets"><div class="phone"><span class="shot"><img class="l" src="images/summary-light.webp" width="603" height="1311" alt="Workout done: New bests and next time&#x27;s targets" loading="lazy" decoding="async"><img class="d" src="images/summary-dark.webp" width="603" height="1311" alt="Workout done: New bests and next time&#x27;s targets" loading="lazy" decoding="async"></span><span class="pins"><span class="pin l" style="--y:46%;--n:0"><i aria-hidden="true">1</i><s aria-hidden="true"></s><b>New bests</b></span><span class="pin l" style="--y:64%;--n:1"><i aria-hidden="true">2</i><s aria-hidden="true"></s><b>Next session&#x27;s targets</b></span></span></div></figure>
-      <figure class="slide" data-index="7" data-group="train" data-title="This week" data-sub="Your plan, day by day"><div class="phone"><span class="shot"><img class="l" src="images/train-light.webp" width="603" height="1311" alt="This week: Your plan, day by day" loading="lazy" decoding="async"><img class="d" src="images/train-dark.webp" width="603" height="1311" alt="This week: Your plan, day by day" loading="lazy" decoding="async"></span><span class="pins"><span class="pin l" style="--y:28%;--n:0"><i aria-hidden="true">1</i><s aria-hidden="true"></s><b>Your week at a glance</b></span></span></div></figure>
-      <figure class="slide" data-index="8" data-group="train" data-title="Training plan" data-sub="Any split, any week"><div class="phone"><span class="shot"><img class="l" src="images/plan-light.webp" width="603" height="1311" alt="Training plan: Any split, any week" loading="lazy" decoding="async"><img class="d" src="images/plan-dark.webp" width="603" height="1311" alt="Training plan: Any split, any week" loading="lazy" decoding="async"></span><span class="pins"><span class="pin l" style="--y:21%;--n:0"><i aria-hidden="true">1</i><s aria-hidden="true"></s><b>Fixed weekdays or a rotation</b></span></span></div></figure>
-      <figure class="slide" data-index="9" data-group="train" data-title="Rest sound" data-sub="Five sounds, or your own"><div class="phone"><span class="shot"><img class="l" src="images/sound-light.webp" width="603" height="1311" alt="Rest sound: Five sounds, or your own" loading="lazy" decoding="async"><img class="d" src="images/sound-dark.webp" width="603" height="1311" alt="Rest sound: Five sounds, or your own" loading="lazy" decoding="async"></span><span class="pins"><span class="pin l" style="--y:24%;--n:0"><i aria-hidden="true">1</i><s aria-hidden="true"></s><b>Five built in</b></span><span class="pin l" style="--y:68%;--n:1"><i aria-hidden="true">2</i><s aria-hidden="true"></s><b>Or your own</b></span></span></div></figure>
-      <figure class="slide" data-index="10" data-group="progress" data-title="Progress" data-sub="Weight, strength and check-ins"><div class="phone"><span class="shot"><img class="l" src="images/progress-light.webp" width="603" height="1311" alt="Progress: Weight, strength and check-ins" loading="lazy" decoding="async"><img class="d" src="images/progress-dark.webp" width="603" height="1311" alt="Progress: Weight, strength and check-ins" loading="lazy" decoding="async"></span><span class="pins"><span class="pin r" style="--y:32%;--n:0"><i aria-hidden="true">1</i><s aria-hidden="true"></s><b>Trend toward your goal</b></span><span class="pin l" style="--y:54%;--n:1"><i aria-hidden="true">2</i><s aria-hidden="true"></s><b>Weekly check-in</b></span></span></div></figure>
-      <figure class="slide" data-index="11" data-group="coach" data-title="AI coach" data-sub="Answers with your numbers"><div class="phone"><span class="shot"><img class="l" src="images/coach-light.webp" width="603" height="1311" alt="AI coach: Answers with your numbers" loading="lazy" decoding="async"><img class="d" src="images/coach-dark.webp" width="603" height="1311" alt="AI coach: Answers with your numbers" loading="lazy" decoding="async"></span><span class="pins"><span class="pin r" style="--y:48%;--n:0"><i aria-hidden="true">1</i><s aria-hidden="true"></s><b>Uses what you logged</b></span></span></div></figure>
-      <figure class="slide" data-index="12" data-group="skincare" data-title="Skincare" data-sub="Routines, streaks and your shelf"><div class="phone"><span class="shot"><img class="l" src="images/skincare-light.webp" width="603" height="1311" alt="Skincare: Routines, streaks and your shelf" loading="lazy" decoding="async"><img class="d" src="images/skincare-dark.webp" width="603" height="1311" alt="Skincare: Routines, streaks and your shelf" loading="lazy" decoding="async"></span><span class="pins"><span class="pin l" style="--y:28%;--n:0"><i aria-hidden="true">1</i><s aria-hidden="true"></s><b>Morning and night</b></span><span class="pin l" style="--y:38%;--n:1"><i aria-hidden="true">2</i><s aria-hidden="true"></s><b>Streaks</b></span></span></div></figure>
-    </div>
-    <ol class="showcase-notes" aria-hidden="true"></ol>
-    <div class="showcase-foot">
-      <button type="button" class="round-btn" id="showcase-back" aria-label="Previous screen"><svg><use href="#i-left"/></svg></button>
-      <div class="showcase-caption" aria-live="polite"><strong></strong><span></span></div>
-      <button type="button" class="round-btn" id="showcase-next" aria-label="Next screen"><svg><use href="#i-right"/></svg></button>
-    </div>
-    <div class="showcase-meta"><span class="showcase-count"></span><span class="showcase-timer" aria-hidden="true"><i></i></span></div>
-  </div>
-</section>
-
-<section class="section" id="features" aria-labelledby="features-title">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">Everything in Repetite</span>
-      <h2 id="features-title">The full list</h2>
-    </div>
-    <div class="cats">
-      <div class="cat reveal"><span class="ic"><svg><use href="#i-fork"/></svg></span><h3>Food</h3><ul>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>12,000+ foods offline, Indian dishes included</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Typed amounts: &quot;2 eggs&quot;, &quot;rice 150 g&quot;</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Barcode scanning</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Meal photos and voice logging</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>AI estimates for anything else</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Saved foods, personal meals, meal plans</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Vitamins and minerals</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Water, with a one-tap glass</span></li>
-      </ul></div>
-      <div class="cat reveal"><span class="ic"><svg><use href="#i-weights"/></svg></span><h3>Training</h3><ul>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Any split, by weekday or as a rotation</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>A plan built for you from five questions</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Next-session targets</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Rest alarm on the Lock Screen and Dynamic Island</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Plates per side, warm-ups, drop sets, supersets</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Personal records and a shareable summary</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Workouts saved to Apple Health</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Import from Hevy or Strong</span></li>
-      </ul></div>
-      <div class="cat reveal"><span class="ic"><svg><use href="#i-trend"/></svg></span><h3>Progress</h3><ul>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Weight trend and goal date</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Weekly calorie check-ins</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Strength trends for every lift</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Every day on a calendar</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Workout frequency and weekly volume</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Calories and protein against your target</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Meal timing</span></li>
-      </ul></div>
-      <div class="cat reveal"><span class="ic"><svg><use href="#i-sun"/></svg></span><h3>Every day</h3><ul>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Smart reminders</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Widgets and Control Center</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Siri and Shortcuts</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Daily habits and skincare routines</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Skincare steps for training days, and a product shelf</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Night owl? Your day can end at 3 AM</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Kilograms or pounds, light or dark</span></li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Daily cloud backup when you sign in</span></li>
-      </ul></div>
-    </div>
-    <div class="highlights">
-      <div class="card widgets reveal">
-        <div>
-          <span class="ic"><svg><use href="#i-grid"/></svg></span>
-          <h3>Widgets</h3>
-          <p>Calories left and your next workout, right on your Home Screen and Lock Screen. Add water or log food from Control Center.</p>
-        </div>
-        <span class="shot"><img class="l" src="images/widgets-light.webp" width="560" height="520" alt="Small and medium Repetite widgets: 950 kcal left, macros and water" loading="lazy" decoding="async"><img class="d" src="images/widgets-dark.webp" width="560" height="520" alt="Small and medium Repetite widgets: 950 kcal left, macros and water" loading="lazy" decoding="async"></span>
-      </div>
-      <div class="card reveal">
-        <span class="ic"><svg><use href="#i-wave"/></svg></span>
-        <h3>Siri and Shortcuts</h3>
-        <p>Log food, water or your usual meal, or ask how today's going, without opening the app.</p>
-        <p class="quote">"Hey Siri, log my usual breakfast in Repetite"</p>
-      </div>
-      <div class="card reveal">
-        <span class="ic"><svg><use href="#i-heart"/></svg></span>
-        <h3>Apple Health</h3>
-        <p>Sleep, heart rate, steps and calories from Apple Watch, Fitbit, Garmin or Oura. Your weight, workouts and meals get saved back.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section class="section" id="privacy" aria-labelledby="privacy-title">
   <div class="wrap">
     <div class="privacy-panel reveal">
@@ -558,34 +396,6 @@
         <li><svg><use href="#i-trash"/></svg><div><strong>Delete whenever you like</strong><span>Your account and backups are gone straight away, from Settings.</span></div></li>
       </ul>
     </div>
-  </div>
-</section>
-
-<section class="section" id="compare" aria-labelledby="compare-title">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">Compare</span>
-      <h2 id="compare-title">How it's different</h2>
-      <p>Most people juggle two apps and hand their data to both. Repetite is one app, and your data stays on your device.</p>
-    </div>
-    <div class="table-wrap reveal">
-      <table class="cmp">
-        <thead><tr><th scope="col"><span class="visually-hidden">Feature</span></th><th scope="col" class="us">Repetite</th><th scope="col">Many fitness apps</th></tr></thead>
-        <tbody>
-          <tr><td>Food and training</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>In one app, sharing what they know</span></td><td class="them">Often two separate apps</td></tr>
-          <tr><td>Account</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>Optional, only for cloud backup</span></td><td class="them">Often required to start</td></tr>
-          <tr><td>Where your logs live</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>On your device</span></td><td class="them">Usually on the company's servers</td></tr>
-          <tr><td>Ads and trackers</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>None, on Free or Pro</span></td><td class="them">Common on free plans</td></tr>
-          <tr><td>Food search without signal</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>12,000+ foods built in</span></td><td class="them">Often needs a connection</td></tr>
-          <tr><td>What to lift next</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>A target for every set</span></td><td class="them">Usually just your last numbers</td></tr>
-          <tr><td>Calorie targets</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>Adjust to your real weight trend</span></td><td class="them">Usually set once</td></tr>
-          <tr><td>Rest timer on a locked phone</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>Rings on time, even on silent</span></td><td class="them">Often a notification silent mode mutes</td></tr>
-          <tr><td>Reminders</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>Only when something's missing</span></td><td class="them">Usually the same time every day</td></tr>
-          <tr><td>Skincare</td><td class="us"><span class="yes"><svg aria-hidden="true"><use href="#i-check"/></svg>Routines, streaks and reminders built in</span></td><td class="them">A separate app</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="footnote">Based on what's common among popular calorie counters and workout loggers. Every app is different.</p>
   </div>
 </section>
 
