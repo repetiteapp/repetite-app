@@ -1422,6 +1422,7 @@ h1, h2, h3 { font-family: var(--display); font-stretch: 78%; font-weight: 800; l
    scroll through the five screens. */
 .tour-body { display: block; }
 .tour-stick { display: grid; grid-template-columns: 340px 1fr; gap: 72px; align-items: center; }
+@media (max-width: 900px) { .tour-stick { grid-template-columns: 1fr; gap: 40px; } }
 .tour-body.pinned { height: calc(100vh + 5 * 62vh); }
 .tour-body.pinned .tour-stick { position: sticky; top: 84px; height: calc(100vh - 100px); }
 .tour-body.pinned .tour-phone { width: min(320px, calc((100vh - 150px) / 2.25)); }
