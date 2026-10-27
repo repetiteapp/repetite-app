@@ -1669,8 +1669,8 @@ h1[tabindex="-1"]:focus-visible, h2[tabindex="-1"]:focus-visible { outline: 2px 
    Driven by site.js (scrollFx); everything rests flat and still without it.
    1. The momentum line (.flow, 1260px and wider): an ember trail that draws
       itself down the page edges, crossing in the gaps, its head pulsing at
-      each heading. It holds still with the pinned tour and day, and fades
-      out around the day.
+      each heading. It holds still with the pinned tour and day, and passes
+      under the day's cards, its head waiting on their timeline.
    2. Night: Rest and Privacy darken full-bleed around their dark panels.
    3. Arc: the shaded sections arrive with a curved top that flattens.
    4. Depth: a section you've scrolled past sinks back and dims.

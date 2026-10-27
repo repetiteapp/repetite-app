@@ -1500,8 +1500,9 @@
     //    between sections, drawn up to just below the middle of the screen.
     //    Parts that hold in place while you scroll (the tour, the day) are
     //    squeezed out of the drawing, and the line slides down with them
-    //    while they hold, so it stays still on screen like they do. It fades
-    //    out around the day, which runs edge to edge.
+    //    while they hold, so it stays still on screen like they do. The day's
+    //    cards run edge to edge: the line passes under them, and its head
+    //    waits on the day's timeline above them, then pops out below.
     var flow = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     flow.setAttribute("class", "flow");
     flow.setAttribute("aria-hidden", "true");
@@ -1513,6 +1514,7 @@
     mainEl.appendChild(flow);
     var track = $(".track", flow), trail = $(".trail", flow), ring = $(".ring", flow), head = $(".head", flow), flowMask = $("mask", flow);
     var flowLen = 0, flowTable = [], flowHeads = [], flowHit = -1, flowOn = false, flowShift = "";
+    var flowBand = null, flowWaiting = false;
     var closingEl = $(".closing");
     var holdParts = $all(".tour-body, .day-scroller");
     var holds = [];
@@ -1564,21 +1566,33 @@
       trail.style.strokeDasharray = flowLen;
       flowTable = [];
       for (var k = 0; k <= 400; k++) { var L = flowLen * k / 400; flowTable.push([L, trail.getPointAtLength(L).y]); }
-      // The gap around the day, with soft edges.
+      // The band of the day's cards, where the line passes under them. (While
+      // pinned the cards sit in the sticky part, measured from its top, as
+      // the sticky part's own offset moves.)
       var rect = function (y, h, fill) { return '<rect x="0" y="' + y + '" width="' + W + '" height="' + h + '" fill="' + fill + '"/>'; };
       var hole = "";
-      if (dayScroller) {
-        var a = at(dayScroller) - 90, b = squeeze(docTop(dayScroller) + dayScroller.firstElementChild.offsetHeight) + 10;
-        hole = rect(a - 70, 70, "url(#flow-in)") + rect(a, b - a, "#000") + rect(b, 70, "url(#flow-out)");
+      flowBand = null;
+      if (dayScroller && dayCards.length) {
+        var cardTop = 0, el = dayCards[0];
+        while (el && el !== daySticky && el !== dayScroller) { cardTop += el.offsetTop; el = el.offsetParent; }
+        var a = squeeze(docTop(dayScroller) + cardTop), b = a + dayCards[0].offsetHeight;
+        flowBand = [a, b];
+        hole = rect(a - 4, 8, "url(#flow-in)") + rect(a + 4, b - a - 8, "#000") + rect(b - 4, 8, "url(#flow-out)");
       }
       flowMask.setAttribute("x", 0); flowMask.setAttribute("y", 0);
       flowMask.setAttribute("width", W); flowMask.setAttribute("height", H);
       flowMask.innerHTML = rect(0, H, "#fff") + hole;
     };
+    var flowPulse = function () { ring.classList.remove("pulse"); void ring.getBoundingClientRect(); ring.classList.add("pulse"); };
+    // How far along the line it reaches a height, read between the two
+    // nearest samples so the head glides (the line only ever goes down).
     var lengthAtY = function (y) {
-      var best = 0;
-      for (var k = 0; k < flowTable.length; k++) { if (flowTable[k][1] <= y) best = flowTable[k][0]; else if (flowTable[k][1] > y + 300) break; }
-      return best;
+      var t = flowTable, lo = 0, hi = t.length - 1;
+      if (hi < 1 || y <= t[0][1]) return 0;
+      if (y >= t[hi][1]) return t[hi][0];
+      while (hi - lo > 1) { var mid = (lo + hi) >> 1; if (t[mid][1] <= y) lo = mid; else hi = mid; }
+      var dy = t[hi][1] - t[lo][1];
+      return t[lo][0] + (dy > 0 ? (y - t[lo][1]) / dy : 0) * (t[hi][0] - t[lo][0]);
     };
     buildFlow();
     window.addEventListener("resize", function () { setTimeout(buildFlow, 150); });
@@ -1594,7 +1608,12 @@
         flow.style.transform = "translate3d(0, " + flowShift + "px, 0)";
       }
       var tipY = window.innerHeight * 0.62 - mainEl.getBoundingClientRect().top - shift;
-      var L = lengthAtY(tipY);
+      // Over the day's cards the head waits on their timeline (13px above
+      // them), then pops out below.
+      var waiting = !!flowBand && tipY > flowBand[0] - 13 && tipY < flowBand[1] + 14;
+      var L = lengthAtY(waiting ? flowBand[0] - 13 : tipY);
+      if (flowWaiting && !waiting && tipY >= flowBand[1]) flowPulse();
+      flowWaiting = waiting;
       trail.style.strokeDashoffset = (flowLen - L).toFixed(1);
       var pt = trail.getPointAtLength(L);
       head.setAttribute("cx", pt.x.toFixed(1)); head.setAttribute("cy", pt.y.toFixed(1));
@@ -1602,7 +1621,7 @@
       head.style.opacity = L > 4 ? "1" : "0";
       var hit = -1;
       flowHeads.forEach(function (y, i) { if (tipY >= y) hit = i; });
-      if (hit > flowHit) { ring.classList.remove("pulse"); void ring.getBoundingClientRect(); ring.classList.add("pulse"); }
+      if (hit > flowHit) flowPulse();
       flowHit = hit;
     });
 
