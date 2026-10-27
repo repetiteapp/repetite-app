@@ -98,10 +98,11 @@
     store("repetite-theme", theme);
     syncToggle();
   }
-  // First the plate rolls to the other end of the bar, live; then the new
-  // theme spreads out in a circle from it. The page is captured for the
-  // circle with animations off, so the navbar (and everything else) is
-  // already in its final look: nothing jumps when the circle finishes.
+  // The new theme spreads out in a circle from the switch the moment it's
+  // tapped. The switch is its own layer while that happens (theme-switching,
+  // see style.css), drawn live over the circle, so its plate keeps rolling
+  // instead of freezing in the snapshot. The page is captured with
+  // animations off, so nothing jumps when the circle finishes.
   var switching = false;
   if (toggle) {
     toggle.addEventListener("click", function () {
@@ -110,44 +111,45 @@
       toggle.setAttribute("data-state", next);
       if (!document.startViewTransition || reduceMotion) { applyTheme(next); return; }
       switching = true;
-      setTimeout(function () {
-        var box = toggle.getBoundingClientRect();
-        var x = box.left + box.width / 2;
-        var y = box.top + box.height / 2;
-        var radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
-        var applied = false;
-        var finished = false;
-        function apply() {
-          if (applied) return;
-          applied = true;
-          root.classList.add("theme-swap");
-          applyTheme(next);
-        }
-        function finish() {
-          if (finished) return;
-          finished = true;
-          apply();
-          // A moment later, so turning animations back on can't animate the swap.
-          setTimeout(function () { root.classList.remove("theme-swap"); }, 60);
-          switching = false;
-        }
-        var transition;
-        try {
-          transition = document.startViewTransition(apply);
-        } catch (e) {
-          finish();
-          return;
-        }
-        transition.ready.then(function () {
-          root.animate(
-            { clipPath: ["circle(0px at " + x + "px " + y + "px)", "circle(" + radius + "px at " + x + "px " + y + "px)"] },
-            { duration: 650, easing: "cubic-bezier(.4, 0, .2, 1)", pseudoElement: "::view-transition-new(root)" }
-          );
-        }).catch(function () {});
-        transition.finished.then(finish, finish);
-        // If the browser never runs it, the theme still changes.
-        setTimeout(finish, 1500);
-      }, 380);
+      var box = toggle.getBoundingClientRect();
+      var x = box.left + box.width / 2;
+      var y = box.top + box.height / 2;
+      var radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+      var applied = false;
+      var finished = false;
+      function apply() {
+        if (applied) return;
+        applied = true;
+        root.classList.add("theme-swap");
+        applyTheme(next);
+      }
+      function finish() {
+        if (finished) return;
+        finished = true;
+        apply();
+        root.classList.remove("theme-switching");
+        // A moment later, so turning animations back on can't animate the swap.
+        setTimeout(function () { root.classList.remove("theme-swap"); }, 60);
+        switching = false;
+        document.dispatchEvent(new CustomEvent("repetite:themed"));
+      }
+      root.classList.add("theme-switching");
+      var transition;
+      try {
+        transition = document.startViewTransition(apply);
+      } catch (e) {
+        finish();
+        return;
+      }
+      transition.ready.then(function () {
+        root.animate(
+          { clipPath: ["circle(0px at " + x + "px " + y + "px)", "circle(" + radius + "px at " + x + "px " + y + "px)"] },
+          { duration: 560, easing: "cubic-bezier(.4, 0, .2, 1)", pseudoElement: "::view-transition-new(root)" }
+        );
+      }).catch(function () {});
+      transition.finished.then(finish, finish);
+      // If the browser never runs it, the theme still changes.
+      setTimeout(finish, 1500);
     });
   }
   if (systemDark.addEventListener) systemDark.addEventListener("change", syncToggle);
@@ -1419,6 +1421,7 @@
       var src = reel.getAttribute(effectiveTheme() === "dark" ? "data-dark" : "data-light");
       if (reel.getAttribute("src") === src) return;
       var at = reel.currentTime || 0, wasPlaying = !reel.paused;
+      reel.classList.remove("on");
       reel.setAttribute("src", src);
       reel.preload = "auto";
       reel.addEventListener("loadedmetadata", function () {
@@ -1471,8 +1474,20 @@
         drawChapters();
       });
     });
-    new MutationObserver(function () { if (reel.getAttribute("src")) reelSource(); }).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
-    if (systemDark.addEventListener) systemDark.addEventListener("change", function () { if (reel.getAttribute("src")) reelSource(); });
+    // A theme change swaps the recording after the switch's circle has
+    // finished (fading through the screenshot), never in the middle of it.
+    var reelRetheme = function () {
+      if (!reel.getAttribute("src") || root.classList.contains("theme-switching")) return;
+      if (reel.classList.contains("on")) {
+        reel.classList.remove("on");
+        setTimeout(reelSource, 320);
+      } else {
+        reelSource();
+      }
+    };
+    document.addEventListener("repetite:themed", reelRetheme);
+    new MutationObserver(reelRetheme).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+    if (systemDark.addEventListener) systemDark.addEventListener("change", reelRetheme);
     if ("IntersectionObserver" in window) {
       // Loads a screen ahead; plays only while on screen.
       new IntersectionObserver(function (entries) {

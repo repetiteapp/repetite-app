@@ -345,8 +345,16 @@ html:root .theme-toggle[data-state="light"] .tt-ring { transform: none; }
 html:root .theme-toggle[data-state="light"] .tt-sun { opacity: 1; transform: none; }
 html:root .theme-toggle[data-state="light"] .tt-moon { opacity: 0; transform: scale(0.4) rotate(-60deg); }
 /* While the theme swaps, nothing animates, so the reveal shows the
-   finished page (the navbar's glass included), never a half-faded one. */
+   finished page (the navbar's glass included), never a half-faded one.
+   The switch is the exception: it's its own layer during the switch,
+   drawn live over the spreading circle, and its plate keeps rolling. */
 html.theme-swap *, html.theme-swap *::before, html.theme-swap *::after { transition: none !important; }
+html.theme-switching .theme-toggle { view-transition-name: theme-toggle; }
+::view-transition-group(theme-toggle) { animation: none; }
+::view-transition-old(theme-toggle) { display: none; }
+::view-transition-new(theme-toggle) { animation: none; }
+html.theme-swap .theme-toggle .tt-plate, html.theme-swap .theme-toggle .tt-ring { transition: transform 560ms cubic-bezier(.34, 1.45, .55, 1) !important; }
+html.theme-swap .theme-toggle svg { transition: opacity 260ms ease, transform 420ms cubic-bezier(.34, 1.45, .55, 1) !important; }
 
 /* ============ Phone frame ============ */
 .phone { border-radius: 46px; padding: 9px; background: var(--bezel); box-shadow: var(--shadow); }
@@ -1861,3 +1869,4 @@ main { position: relative; }
   border-radius: 38px; object-fit: cover; opacity: 0; transition: opacity 600ms ease; pointer-events: none; background: transparent;
 }
 .phone .reel.on { opacity: 1; }
+.phone .reel:not(.on) { transition-duration: 300ms; }
