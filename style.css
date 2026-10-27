@@ -1590,3 +1590,76 @@ h1[tabindex="-1"]:focus-visible, h2[tabindex="-1"]:focus-visible { outline: 2px 
   #tour .tour-phone .stack .shot.was { visibility: hidden; }
   .tour-phone .stack.sweep::after { animation: none; }
 }
+
+/* ============ Hero, as a scene ============
+   One entrance on load (the arcs sweep in, the headline rises out of a
+   mask, the main phone lifts, the others fan out, notifications drop in),
+   then, on big screens, a short held stretch of scroll (.pinned, --hp)
+   where the arcs spin and the phones move. Nothing moves with Reduce Motion. */
+.hero-stage { position: relative; }
+.hero h1 .hl { display: block; overflow: hidden; padding: 0.08em 0 0.04em; margin: -0.08em 0 -0.04em; }
+.hero h1 .hl > span { display: inline-block; }
+.hero-spin { position: absolute; z-index: 0; left: 50%; top: 50%; width: 228%; height: auto; aspect-ratio: 1; translate: -50% -50%;
+  color: var(--brand-2); pointer-events: none; overflow: visible; }
+.hero-phones .phone { z-index: 1; }
+.hero-phones .p1 { z-index: 2; }
+.float-chip { z-index: 4; }
+.float-chip .fc-ic.ok { background: var(--ok); }
+.float-chip.c3 { right: -6%; top: 72%; }
+.scroll-cue { display: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html.js .hero h1 .hl > span { animation: hero-line 1000ms 120ms cubic-bezier(.16, 1, .3, 1) both; }
+  html.js .hero h1 .hl + .hl > span { animation-delay: 260ms; }
+  html.js .hero .lede { animation: hero-up 800ms 520ms cubic-bezier(.16, 1, .3, 1) both; }
+  html.js .hero .cta-row { animation: hero-up 800ms 640ms cubic-bezier(.16, 1, .3, 1) both; }
+  html.js .hero .promises { animation: hero-up 800ms 760ms cubic-bezier(.16, 1, .3, 1) both; }
+  html.js .hero-spin { animation: hero-spin-in 1700ms 100ms cubic-bezier(.16, 1, .3, 1) both; }
+  html.js .hero-phones .p1 { animation: hero-phone 1200ms 260ms cubic-bezier(.16, 1, .3, 1) both; }
+  html.js .hero-phones .p2 { animation: hero-fan-l 1100ms 720ms cubic-bezier(.3, 1.25, .5, 1) both; }
+  html.js .hero-phones .p3 { animation: hero-fan-r 1100ms 720ms cubic-bezier(.3, 1.25, .5, 1) both; }
+  html.js .float-chip.c2 { animation: hero-banner 800ms 1250ms cubic-bezier(.3, 1.45, .5, 1) both, bob 7s 2.1s ease-in-out infinite reverse; }
+  html.js .float-chip.c1 { animation: hero-banner 800ms 1500ms cubic-bezier(.3, 1.45, .5, 1) both, bob 6s 2.3s ease-in-out infinite; }
+  html.js .float-chip.c3 { animation: hero-banner 800ms 1750ms cubic-bezier(.3, 1.45, .5, 1) both, bob 6.5s 2.6s ease-in-out infinite; }
+}
+@keyframes hero-line { from { transform: translateY(110%); } }
+@keyframes hero-up { from { opacity: 0; transform: translateY(18px); } }
+@keyframes hero-spin-in { from { opacity: 0; transform: rotate(-150deg) scale(0.72); } }
+@keyframes hero-phone { from { opacity: 0; transform: translateY(110px) rotateX(26deg) scale(0.9); } }
+@keyframes hero-fan-l { from { opacity: 0; transform: translateX(48%) rotate(0deg) scale(0.86); } }
+@keyframes hero-fan-r { from { opacity: 0; transform: translateX(-48%) rotate(0deg) scale(0.86); } }
+@keyframes hero-banner { from { opacity: 0; transform: translateY(-28px) scale(0.9); filter: blur(6px); } }
+
+/* Scrolling: everyone gets a gentle exit; big screens get the held scene. */
+.hero-spin { rotate: calc(var(--hp, 0) * 120deg); }
+.hero.pinned { height: 175vh; padding: 0; overflow: clip; }
+.hero.pinned .hero-stage { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; padding-top: 70px; overflow: hidden; }
+.hero.pinned .wrap { width: 100%; }
+.hero.pinned .hero-phones { height: min(660px, calc(100vh - 150px)); }
+.hero.pinned .hero-phones .p1 { width: calc(min(660px, 100vh - 150px) * 0.442); margin-left: calc(min(660px, 100vh - 150px) * -0.221); top: 2%; }
+.hero.pinned .hero-phones .p2, .hero.pinned .hero-phones .p3 { width: calc(min(660px, 100vh - 150px) * 0.373); top: 14.5%; }
+.hero.pinned .hero-spin { rotate: calc(var(--hp, 0) * 210deg); scale: calc(1 + var(--hp, 0) * 0.3); }
+.hero.pinned .hero-phones .p1 { translate: 0 calc(var(--hp, 0) * -20px); scale: calc(1 + var(--hp, 0) * 0.14); }
+.hero.pinned .hero-phones .p2 { translate: calc(var(--hp, 0) * -150px) calc(var(--hp, 0) * 46px); rotate: calc(var(--hp, 0) * -13deg); opacity: calc(1 - var(--hp, 0) * 0.75); }
+.hero.pinned .hero-phones .p3 { translate: calc(var(--hp, 0) * 150px) calc(var(--hp, 0) * 46px); rotate: calc(var(--hp, 0) * 13deg); opacity: calc(1 - var(--hp, 0) * 0.75); }
+.hero.pinned .wrap > div:first-child { translate: 0 calc(var(--hp, 0) * -50px); opacity: calc(1 - var(--hp, 0) * 1.3); }
+.hero.pinned h1 .hl:first-child { translate: calc(var(--hp, 0) * -7vw) 0; }
+.hero.pinned h1 .hl + .hl { translate: calc(var(--hp, 0) * -3vw) 0; }
+.hero.pinned .float-chip.c1 { translate: calc(var(--px, 0) * -18px - var(--hp, 0) * 180px) calc(var(--py, 0) * -12px + var(--hp, 0) * 60px); opacity: calc(1 - var(--hp, 0) * 1.6); }
+.hero.pinned .float-chip.c2 { translate: calc(var(--px, 0) * -18px + var(--hp, 0) * 180px) calc(var(--py, 0) * -12px - var(--hp, 0) * 70px); opacity: calc(1 - var(--hp, 0) * 1.6); }
+.hero.pinned .float-chip.c3 { translate: calc(var(--px, 0) * -18px + var(--hp, 0) * 140px) calc(var(--py, 0) * -12px + var(--hp, 0) * 90px); opacity: calc(1 - var(--hp, 0) * 1.6); }
+.hero.pinned .scroll-cue {
+  display: grid; justify-items: center; gap: 8px; position: absolute; left: 50%; bottom: 22px; translate: -50% 0; z-index: 5;
+  font-size: 12.5px; font-weight: 600; color: var(--text-3); opacity: calc(1 - var(--hp, 0) * 5);
+}
+.scroll-cue i { width: 2px; height: 34px; border-radius: 2px; background: color-mix(in srgb, var(--text-3) 30%, transparent); position: relative; overflow: hidden; }
+.scroll-cue i::after { content: ""; position: absolute; left: 0; right: 0; top: -40%; height: 40%; background: var(--brand); animation: cue 1.8s ease-in-out infinite; }
+@keyframes cue { to { top: 100%; } }
+@media (prefers-reduced-motion: reduce) {
+  .hero-spin { rotate: none; }
+  .scroll-cue i::after { animation: none; }
+}
+@media (max-width: 960px) {
+  .hero-spin { width: 175%; }
+  .float-chip.c3 { right: 0; top: 80%; }
+}

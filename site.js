@@ -1361,11 +1361,21 @@
     renderSteps();
     render();
   }
-  // ---------- Hero: the phones fan out as you scroll away ----------
+  // ---------- Hero: a scene you scroll through ----------
+  // On big screens the hero holds while you scroll a little: the arcs spin,
+  // the main phone comes forward, the others swing away. Elsewhere it just
+  // fans out as it scrolls off. --hp is 0 at the top, 1 at the end.
   var hero = $(".hero");
   if (hero) {
+    var heroQuery = window.matchMedia("(min-width: 901px) and (min-height: 640px)");
+    var heroLayout = function () { hero.classList.toggle("pinned", !reduceMotion && heroQuery.matches); };
+    heroLayout();
+    if (heroQuery.addEventListener) heroQuery.addEventListener("change", heroLayout);
     scrollFx.push(function () {
-      hero.style.setProperty("--hp", clamp01(window.scrollY / (hero.offsetHeight * 0.85)).toFixed(3));
+      var p = hero.classList.contains("pinned")
+        ? clamp01(window.scrollY / Math.max(1, hero.offsetHeight - window.innerHeight))
+        : clamp01(window.scrollY / (hero.offsetHeight * 0.85));
+      hero.style.setProperty("--hp", p.toFixed(3));
     });
   }
 
