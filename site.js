@@ -1394,6 +1394,272 @@
     });
   }
 
+  // ---------- The hero's reel ----------
+  // A short loop of the real app on the main phone, in the page's light or
+  // dark look. It plays only while on screen; with Reduce Motion it never
+  // loads and the screenshot under it stays.
+  var reel = $(".hero-phones .reel");
+  if (reel && !reduceMotion && reel.canPlayType("video/mp4")) {
+    var reelVisible = false;
+    var reelSource = function () {
+      var src = reel.getAttribute(effectiveTheme() === "dark" ? "data-dark" : "data-light");
+      if (reel.getAttribute("src") === src) return;
+      reel.classList.remove("on");
+      reel.setAttribute("src", src);
+      reel.preload = "auto";
+      if (reelVisible) reelPlay(true);
+    };
+    var reelPlay = function (on) {
+      if (!on) { reel.pause(); return; }
+      var playing = reel.play();
+      if (playing && playing.catch) playing.catch(function () {});
+    };
+    reel.addEventListener("playing", function () { reel.classList.add("on"); });
+    new MutationObserver(reelSource).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+    if (systemDark.addEventListener) systemDark.addEventListener("change", reelSource);
+    reelSource();
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        reelVisible = entries[0].isIntersecting;
+        reelPlay(reelVisible);
+      }).observe(reel);
+    } else {
+      reelVisible = true;
+      reelPlay(true);
+    }
+  }
+
+  // ---------- Try it: type what you ate (hero) ----------
+  // A taste of the app's food log. The foods (try-foods.js: a couple hundred
+  // from the app's database, made by tools/website/export_try_foods.py) load
+  // on first use. What you type is read the way the app reads it: "2 eggs
+  // and toast", "dal 200 g", "a cup of rice".
+  var tryForm = $("#try");
+  if (tryForm) {
+    var tryInput = $("#try-input"), tryOut = $("#try-out"), tryEg = $(".try-eg", tryForm);
+    var tryFoods = null, tryLoading = null;
+    var singular = function (w) {
+      if (w.length > 4 && /ies$/.test(w)) return w.slice(0, -3) + "y";
+      if (w.length > 4 && /(ches|shes|sses|xes|oes)$/.test(w)) return w.slice(0, -2);
+      if (w.length > 3 && /s$/.test(w) && !/(ss|us|is)$/.test(w)) return w.slice(0, -1);
+      return w;
+    };
+    var norm = function (text) { return text.toLowerCase().split(/[^a-z0-9%]+/).filter(Boolean).map(singular).join(" "); };
+    var loadFoods = function () {
+      if (!tryLoading) {
+        tryLoading = new Promise(function (resolve, reject) {
+          var script = document.createElement("script");
+          script.src = tryForm.getAttribute("data-foods");
+          script.onload = function () {
+            tryFoods = (window.TRY_FOODS || []).map(function (r) {
+              var words = {};
+              r[1].split(" ").forEach(function (w) { words[singular(w)] = 1; });
+              var phrases = r[2] ? r[2].split("|").map(norm) : [];
+              return { name: r[0], words: words, phrases: phrases, plain: norm(r[0]), size: norm(r[0]).split(" ").length,
+                kcal: r[3], p: r[4], c: r[5], f: r[6], serving: r[7], g: r[8], pop: r[9], portions: r[10] };
+            });
+            resolve();
+          };
+          script.onerror = function () { tryLoading = null; reject(); };
+          document.head.appendChild(script);
+        });
+      }
+      return tryLoading;
+    };
+    tryInput.addEventListener("focus", function () { loadFoods().catch(function () {}); }, { once: true });
+
+    var NUMS = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, half: 0.5, couple: 2 };
+    var UNITS = { g: "g", gm: "g", gms: "g", gram: "g", grams: "g", kg: "kg", ml: "ml", oz: "oz", ounce: "oz", ounces: "oz",
+      cup: "cup", cups: "cup", glass: "cup", glasses: "cup", mug: "cup", slice: "slice", slices: "slice",
+      tbsp: "tbsp", tablespoon: "tbsp", tablespoons: "tbsp", tsp: "tsp", teaspoon: "tsp", teaspoons: "tsp",
+      scoop: "scoop", scoops: "scoop", piece: "piece", pieces: "piece", pc: "piece", pcs: "piece",
+      bowl: "bowl", bowls: "bowl", plate: "bowl", plates: "bowl" };
+    var UNIT_G = { cup: 240, slice: 30, tbsp: 15, tsp: 5, scoop: 30, bowl: 250 };
+    var SKIP = { of: 1, some: 1, the: 1, my: 1, i: 1, had: 1, ate: 1, have: 1, for: 1, just: 1, x: 1, a: 1, an: 1,
+      breakfast: 1, lunch: 1, dinner: 1, snack: 1 };
+    // Words that can go unmatched ("grilled chicken" is still chicken); any
+    // other unmatched word means it's a different dish.
+    var SOFT = { grilled: 1, fried: 1, boiled: 1, baked: 1, roasted: 1, steamed: 1, toasted: 1, plain: 1, fresh: 1, homemade: 1,
+      cooked: 1, large: 1, small: 1, big: 1, medium: 1, hot: 1, cold: 1, iced: 1, sliced: 1, whole: 1, usual: 1, mixed: 1, organic: 1 };
+    var readNumber = function (t) {
+      if (/^\d+(\.\d+)?$/.test(t)) return parseFloat(t);
+      if (/^\d+\/\d+$/.test(t)) { var ab = t.split("/"); return +ab[1] ? ab[0] / ab[1] : null; }
+      return Object.prototype.hasOwnProperty.call(NUMS, t) ? NUMS[t] : null;
+    };
+    // "2 roti", "200g chicken", "a bowl of dal", "dal 200 g".
+    var readItem = function (chunk) {
+      var tokens = chunk.toLowerCase().replace(/(\d)([a-z])/g, "$1 $2").replace(/[^a-z0-9.%\/ ]+/g, " ").split(/\s+/).filter(Boolean);
+      var n = null, unit = null, words = [];
+      for (var i = 0; i < tokens.length; i++) {
+        var t = tokens[i], num = n === null ? readNumber(t) : null;
+        if (num !== null && !((t === "a" || t === "an") && i > 0)) {
+          n = num;
+          if (t !== "half" && tokens[i + 1] === "half") { n = t === "a" || t === "an" ? 0.5 : n + 0.5; i++; }
+          var j = i + 1;
+          while (tokens[j] === "a" || tokens[j] === "an") j++;
+          if (UNITS[tokens[j]]) { unit = UNITS[tokens[j]]; i = j; }
+          continue;
+        }
+        if (!SKIP[t]) words.push(singular(t));
+      }
+      return { text: chunk.trim(), n: n === null ? 1 : n, unit: unit, words: words };
+    };
+    // The best food for the words: all of them matched (bar SOFT ones), then
+    // how common it is. Raw foods only when you say so ("2 eggs" are cooked).
+    var findFood = function (words) {
+      if (!words.length) return null;
+      var phrase = words.join(" "), best = null, bestScore = -Infinity;
+      tryFoods.forEach(function (food) {
+        var hit = 0, hard = false;
+        words.forEach(function (w) { if (food.words[w]) hit++; else if (!SOFT[w]) hard = true; });
+        if (!hit || hard) return;
+        var score = hit * 100 - (words.length - hit) * 120 + food.pop * 0.6 - Math.max(0, food.size - hit) * 4;
+        if (food.plain === phrase) score += 140;
+        else if (food.phrases.indexOf(phrase) >= 0) score += 80;
+        if (/\braw\b/i.test(food.name) && !/\braw\b/.test(phrase)) score -= 45;
+        if (score > bestScore) { bestScore = score; best = food; }
+      });
+      return best;
+    };
+    var fmt = function (n) { return n === 0.5 ? "½" : n % 1 === 0 ? String(n) : n.toFixed(1).replace(/\.0$/, ""); };
+    var plural = function (word) {
+      if (/^(small|medium|large|regular|whole|extra|oz|g|ml|fl)$/.test(word)) return word;
+      if (/[^aeiou]y$/.test(word)) return word.slice(0, -1) + "ies";
+      if (/(s|x|ch|sh)$/.test(word)) return word + "es";
+      return word + "s";
+    };
+    // "1 large" → "2 large", "1 cup, cooked" → "2 cups, cooked".
+    var servings = function (label, n) {
+      if (n === 1) return label;
+      var m = /^1 ([^,(]*)(.*)$/.exec(label);
+      if (!m) return fmt(n) + " × " + label;
+      var head = m[1].trim().split(" "), last = head.pop();
+      if (n > 1) head.push(plural(last)); else head.push(last);
+      return fmt(n) + " " + head.join(" ") + (m[2] ? (m[2][0] === "," ? "" : " ") + m[2] : "");
+    };
+    var amountOf = function (item, food) {
+      var n = item.n;
+      if (item.unit === "g" || item.unit === "ml") return { g: n, label: fmt(n) + " " + item.unit };
+      if (item.unit === "kg") return { g: n * 1000, label: fmt(n) + " kg" };
+      if (item.unit === "oz") return { g: n * 28.35, label: fmt(n) + " oz" };
+      if (item.unit) {
+        var each = food.portions[item.unit] || (item.unit === "piece" ? food.g : UNIT_G[item.unit]) || 100;
+        return { g: n * each, label: fmt(n) + " " + (n > 1 && !/^(tbsp|tsp)$/.test(item.unit) ? plural(item.unit) : item.unit) };
+      }
+      if (food.g) return { g: n * food.g, label: servings(food.serving, n) };
+      return { g: n * 100, label: fmt(n * 100) + " g" };
+    };
+    var el = function (tag, cls, text) {
+      var node = document.createElement(tag);
+      if (cls) node.className = cls;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    };
+    // Two columns (wider than 960px): the answer slides up inside the main
+    // phone, like a sheet in the app, so the text beside it doesn't move;
+    // screen readers get it as text by the box. One column: a card under the box.
+    var heroChip = $(".hero .float-chip.c3"), heroPhone = $(".hero-phones .p1");
+    var twoColumns = window.matchMedia("(min-width: 961px)");
+    var showTry = function (text) {
+      var hour = new Date().getHours();
+      var meal = hour < 11 ? ["Breakfast", "9:00 breakfast"] : hour < 16 ? ["Lunch", "1:30 lunch"] : ["Dinner", "8:30 dinner"];
+      var chunks = text.split(/,|;|\+|&|\band\b|\bwith\b|\bplus\b|\n/i).map(function (c) { return c.trim(); }).filter(Boolean).slice(0, 6);
+      var total = { kcal: 0, p: 0, c: 0, f: 0 }, found = 0, said = [];
+      var inPhone = !!heroPhone && twoColumns.matches;
+      var card = el("div", "try-card"), list = el("ul", "try-items");
+      chunks.forEach(function (chunk) {
+        var item = readItem(chunk), food = findFood(item.words), li = el("li");
+        if (!food) {
+          li.className = "miss";
+          li.appendChild(el("span", "ti-name", "“" + chunk + "”"));
+          li.appendChild(el("span", "ti-amt", "Not in this demo. The app knows 12,000+ foods."));
+          said.push(chunk + ": not in this demo");
+        } else {
+          var amount = amountOf(item, food), k = amount.g / 100;
+          var amountText = amount.label + (/\b(g|ml|kg|oz)$/.test(amount.label) ? "" : " · " + Math.round(amount.g) + " g");
+          total.kcal += food.kcal * k; total.p += food.p * k; total.c += food.c * k; total.f += food.f * k;
+          found++;
+          li.appendChild(el("span", "ti-name", food.name));
+          li.appendChild(el("span", "ti-amt", amountText));
+          li.appendChild(el("span", "ti-kcal", Math.round(food.kcal * k) + " kcal"));
+          said.push(food.name + ", " + amountText + ", " + Math.round(food.kcal * k) + " kcal");
+        }
+        list.appendChild(li);
+      });
+      var top = el("div", "try-top");
+      var title = el("span", "try-meal");
+      title.innerHTML = '<svg aria-hidden="true"><use href="#i-check"/></svg>';
+      title.appendChild(document.createTextNode(found ? meal[0] + " logged" : "Not in this demo"));
+      top.appendChild(title);
+      card.appendChild(top); card.appendChild(list);
+      var reminder = "So the " + meal[1] + " reminder won't come.";
+      if (found) {
+        var sum = el("div", "try-total");
+        [["", Math.round(total.kcal), " kcal"], ["Protein ", Math.round(total.p), " g"], ["Carbs ", Math.round(total.c), " g"], ["Fat ", Math.round(total.f), " g"]].forEach(function (s) {
+          var part = el("span", "", s[0]);
+          part.appendChild(el("b", "", String(s[1])));
+          part.appendChild(document.createTextNode(s[2]));
+          sum.appendChild(part);
+        });
+        card.appendChild(sum);
+        if (heroChip) {
+          $("strong", heroChip).textContent = meal[0] + " logged";
+          $("strong + span", heroChip).textContent = inPhone ? reminder.replace(" " + meal[1].split(" ")[1], "") : Math.round(total.kcal) + " kcal · " + Math.round(total.p) + " g protein";
+          if (heroChip.animate && !reduceMotion) heroChip.animate([{ scale: "1" }, { scale: "1.1" }, { scale: "1" }], { duration: 560, easing: "cubic-bezier(.3, 1.6, .5, 1)" });
+        }
+      }
+      var old = $(".try-sheet", heroPhone || document);
+      if (old) old.remove();
+      tryOut.textContent = "";
+      var note = el("p", "try-note");
+      if (found) {
+        note.innerHTML = '<svg aria-hidden="true"><use href="#i-bell"/></svg>';
+        note.appendChild(document.createTextNode(reminder));
+      } else {
+        note.textContent = "This demo has a couple hundred everyday foods. Try “2 eggs and toast”.";
+      }
+      card.appendChild(note);
+      if (inPhone) {
+        // The floating notifications beside the phone step aside while it's up.
+        var sheet = el("div", "try-sheet"), phones = heroPhone.parentNode;
+        sheet.setAttribute("aria-hidden", "true");
+        sheet.title = "Close";
+        sheet.appendChild(card);
+        sheet.addEventListener("click", function () { sheet.remove(); phones.classList.remove("has-sheet"); });
+        heroPhone.appendChild(sheet);
+        phones.classList.add("has-sheet");
+        tryOut.className = "try-out visually-hidden";
+        tryOut.textContent = (found ? meal[0] + " logged. " : "") + said.join(". ") + "." +
+          (found ? " Total " + Math.round(total.kcal) + " kcal, " + Math.round(total.p) + " g protein. " + reminder : "");
+        tryOut.hidden = false;
+        return;
+      }
+      var again = el("button", "try-again", "Try another");
+      again.type = "button";
+      again.addEventListener("click", function () {
+        tryOut.hidden = true; tryEg.hidden = false;
+        tryInput.value = ""; tryInput.focus();
+      });
+      top.appendChild(again);
+      tryOut.className = "try-out";
+      tryOut.appendChild(card);
+      tryOut.hidden = false; tryEg.hidden = true;
+    };
+    tryForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!tryInput.value.trim()) tryInput.value = tryInput.placeholder;
+      var text = tryInput.value.trim();
+      loadFoods().then(function () { showTry(text); }, function () {
+        tryOut.textContent = "";
+        tryOut.appendChild(el("p", "try-note", "Couldn't load the demo. Check your connection and try again."));
+        tryOut.hidden = false;
+      });
+    });
+    $all("button", tryEg).forEach(function (b) {
+      b.addEventListener("click", function () { tryInput.value = b.textContent; tryForm.requestSubmit ? tryForm.requestSubmit() : tryForm.dispatchEvent(new Event("submit", { cancelable: true })); });
+    });
+  }
+
   // ---------- A day, hour by hour: sideways as you scroll down ----------
   // On big screens the day pins and moves sideways with the scroll, the
   // card in the middle lit; elsewhere it's a strip you swipe.
