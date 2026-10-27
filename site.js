@@ -68,6 +68,12 @@
     var vh = window.innerHeight;
     return clamp01((start * vh - el.getBoundingClientRect().top) / ((start - end) * vh));
   }
+  // Scroll motion writes CSS variables through this: only when the value
+  // changes, and on the element that uses it. A variable set on a big parent
+  // makes the browser restyle everything inside it, every frame.
+  function setVar(el, name, value) {
+    if (el.style.getPropertyValue(name) !== value) el.style.setProperty(name, value);
+  }
 
   // ---------- Theme: the plate rolls along the bar ----------
   var toggle = $(".theme-toggle");
@@ -428,6 +434,7 @@
     var pinQuery = window.matchMedia("(min-width: 901px) and (min-height: 640px)");
     var pinned = false;
     var STICK_TOP = 84;
+    var tourTimer = $(".tour-timer", tour);
     function tourDistance() { return Math.max(1, tourBody.offsetHeight - tourStick.offsetHeight); }
     function scrollToStep(i) {
       var top = tourBody.getBoundingClientRect().top + window.scrollY - STICK_TOP + tourDistance() * (i + 0.5) / tabs.length;
@@ -524,7 +531,7 @@
     scrollFx.push(function () {
       if (!pinned) return;
       var p = clamp01((STICK_TOP - tourBody.getBoundingClientRect().top) / tourDistance());
-      tour.style.setProperty("--tp", p.toFixed(3));
+      setVar(tourTimer || tour, "--tp", p.toFixed(3));
       var i = Math.min(tabs.length - 1, Math.floor(p * tabs.length));
       if (i !== tourIndex) select(tabs[i]);
     });
@@ -1375,7 +1382,7 @@
       var p = hero.classList.contains("pinned")
         ? clamp01(window.scrollY / Math.max(1, hero.offsetHeight - window.innerHeight))
         : clamp01(window.scrollY / (hero.offsetHeight * 0.85));
-      hero.style.setProperty("--hp", p.toFixed(3));
+      setVar(hero, "--hp", p.toFixed(3));
     });
   }
 
@@ -1383,7 +1390,7 @@
   var plansRow = $("#plans");
   if (plansRow) {
     scrollFx.push(function () {
-      plansRow.style.setProperty("--pp", progressOf(plansRow, 1, 0.6).toFixed(3));
+      setVar(plansRow, "--pp", progressOf(plansRow, 1, 0.6).toFixed(3));
     });
   }
 
@@ -1452,59 +1459,121 @@
       mq.addEventListener("pointerleave", function () { mqHover = false; });
       requestAnimationFrame(mqTick);
     }
+    // Only the headings on screen lean, skewed directly.
+    var leaners = $all(".section-head h2, .h2, .rest-panel h2, .privacy-panel h2");
+    var leanSeen = leaners.slice();
+    if ("IntersectionObserver" in window) {
+      leanSeen = [];
+      var leanIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          var i = leanSeen.indexOf(en.target);
+          if (en.isIntersecting && i < 0) leanSeen.push(en.target);
+          if (!en.isIntersecting && i >= 0) { leanSeen.splice(i, 1); en.target.style.transform = ""; en.target.leanSkew = ""; }
+        });
+      });
+      leaners.forEach(function (h) { leanIO.observe(h); });
+    }
     lenis.on("scroll", function () {
       var lean = Math.max(-3, Math.min(3, (lenis.velocity || 0) * 0.08));
-      root.style.setProperty("--lean", lean.toFixed(2));
+      var skew = "skewY(" + (-lean).toFixed(2) + "deg)";
+      leanSeen.forEach(function (h) {
+        if (h.leanSkew !== skew) { h.leanSkew = skew; h.style.transform = skew; }
+      });
     });
   }
 
   // ---------- Between sections ----------
   var mainEl = $("main");
   var flowSections = $all("main > section.section");
+  // 5's giant words are real elements, not ::after, so the scroll can move
+  // them without restyling their sections.
+  flowSections.forEach(function (sec) {
+    if (!sec.hasAttribute("data-word")) return;
+    var word = document.createElement("span");
+    word.className = "sec-word";
+    word.setAttribute("aria-hidden", "true");
+    word.textContent = sec.getAttribute("data-word");
+    sec.appendChild(word);
+  });
   if (mainEl && flowSections.length && !reduceMotion) {
     // 1. The momentum line: down the page edges, crossing sides in the gap
     //    between sections, drawn up to just below the middle of the screen.
-    var NS = "http://www.w3.org/2000/svg";
-    var flow = document.createElementNS(NS, "svg");
+    //    Parts that hold in place while you scroll (the tour, the day) are
+    //    squeezed out of the drawing, and the line slides down with them
+    //    while they hold, so it stays still on screen like they do. It fades
+    //    out around the day, which runs edge to edge.
+    var flow = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     flow.setAttribute("class", "flow");
     flow.setAttribute("aria-hidden", "true");
-    var track = document.createElementNS(NS, "path"); track.setAttribute("class", "track");
-    var trail = document.createElementNS(NS, "path"); trail.setAttribute("class", "trail");
-    var ring = document.createElementNS(NS, "circle"); ring.setAttribute("class", "ring"); ring.setAttribute("r", "6");
-    var head = document.createElementNS(NS, "circle"); head.setAttribute("class", "head"); head.setAttribute("r", "6");
-    [track, trail, ring, head].forEach(function (el) { flow.appendChild(el); });
+    flow.innerHTML =
+      '<defs><linearGradient id="flow-in" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient>' +
+      '<linearGradient id="flow-out" x2="0" y2="1"><stop offset="0" stop-color="#000"/><stop offset="1" stop-color="#fff"/></linearGradient>' +
+      '<mask id="flow-mask" maskUnits="userSpaceOnUse"></mask></defs>' +
+      '<g mask="url(#flow-mask)"><path class="track"/><path class="trail"/><circle class="ring" r="6"/><circle class="head" r="6"/></g>';
     mainEl.appendChild(flow);
-    var flowLen = 0, flowTable = [], flowHeads = [], flowHit = -1, flowOn = false;
+    var track = $(".track", flow), trail = $(".trail", flow), ring = $(".ring", flow), head = $(".head", flow), flowMask = $("mask", flow);
+    var flowLen = 0, flowTable = [], flowHeads = [], flowHit = -1, flowOn = false, flowShift = "";
     var closingEl = $(".closing");
+    var holdParts = $all(".tour-body, .day-scroller");
+    var holds = [];
+    // Distance from the top of main, ignoring transforms (sections receding).
+    var docTop = function (el) {
+      var y = 0;
+      while (el && el !== mainEl) { y += el.offsetTop; el = el.offsetParent; }
+      return y;
+    };
+    // A y on the page → the same y on the line, each hold's extra scroll taken out.
+    var squeeze = function (y) {
+      var s = y;
+      holds.forEach(function (h) { s -= Math.min(h.extra, Math.max(0, y - h.end)); });
+      return s;
+    };
     var buildFlow = function () {
       var W = mainEl.clientWidth;
-      flowOn = W >= 1180;
+      flowOn = W >= 1260;
       flow.classList.toggle("on", flowOn);
       if (!flowOn) return;
-      var H = mainEl.scrollHeight;
+      holds = [];
+      holdParts.forEach(function (part) {
+        if (!part.classList.contains("pinned")) return;
+        var stick = part.firstElementChild, top = docTop(part);
+        holds.push({ part: part, end: top + stick.offsetHeight, extra: Math.max(0, part.offsetHeight - stick.offsetHeight),
+          stickTop: parseFloat(getComputedStyle(stick).top) || 0 });
+      });
+      var H = squeeze(mainEl.offsetHeight);
       flow.setAttribute("width", W); flow.setAttribute("height", H);
       flow.setAttribute("viewBox", "0 0 " + W + " " + H);
       var gutter = Math.max(40, ((W - 1160) / 2 + 20) / 2);
       var xs = [gutter, W - gutter];
-      var top = function (el) { return el.getBoundingClientRect().top - mainEl.getBoundingClientRect().top; };
-      var y0 = top(flowSections[0]) + 40, side = 0;
+      var at = function (el) { return squeeze(docTop(el)); };
+      var y0 = at(flowSections[0]) + 40, side = 0;
       var d = "M" + (W / 2) + " " + (y0 - 30) + " C" + (W / 2) + " " + (y0 + 60) + " " + xs[0] + " " + (y0 + 20) + " " + xs[0] + " " + (y0 + 140);
       flowHeads = [];
       flowSections.forEach(function (sec, i) {
         var h = $("h2", sec);
-        if (h) flowHeads.push(top(h) + 20);
+        if (h) flowHeads.push(at(h) + 20);
         if (i === 0) return;
-        var gy = top(sec), from = xs[side], to = xs[1 - side];
+        var gy = at(sec), from = xs[side], to = xs[1 - side];
         d += " L" + from + " " + (gy - 110) + " C" + from + " " + gy + " " + to + " " + gy + " " + to + " " + (gy + 110);
         side = 1 - side;
       });
-      var end = closingEl ? top(closingEl) + 160 : H - 200;
+      var end = closingEl ? at(closingEl) + 160 : H - 200;
       d += " L" + xs[side] + " " + (end - 140) + " C" + xs[side] + " " + end + " " + (W / 2) + " " + (end - 40) + " " + (W / 2) + " " + end;
       track.setAttribute("d", d); trail.setAttribute("d", d);
       flowLen = trail.getTotalLength();
       trail.style.strokeDasharray = flowLen;
       flowTable = [];
       for (var k = 0; k <= 400; k++) { var L = flowLen * k / 400; flowTable.push([L, trail.getPointAtLength(L).y]); }
+      // The gap around the day, with soft edges.
+      var rect = function (y, h, fill) { return '<rect x="0" y="' + y + '" width="' + W + '" height="' + h + '" fill="' + fill + '"/>'; };
+      var hole = "";
+      if (dayScroller) {
+        var a = at(dayScroller) - 90, b = squeeze(docTop(dayScroller) + dayScroller.firstElementChild.offsetHeight) + 10;
+        hole = rect(a - 70, 70, "url(#flow-in)") + rect(a, b - a, "#000") + rect(b, 70, "url(#flow-out)");
+      }
+      flowMask.setAttribute("x", 0); flowMask.setAttribute("y", 0);
+      flowMask.setAttribute("width", W); flowMask.setAttribute("height", H);
+      flowMask.innerHTML = rect(0, H, "#fff") + hole;
     };
     var lengthAtY = function (y) {
       var best = 0;
@@ -1518,8 +1587,13 @@
     if ("ResizeObserver" in window) { var flowRO = null; new ResizeObserver(function () { clearTimeout(flowRO); flowRO = setTimeout(buildFlow, 200); }).observe(mainEl); }
     scrollFx.push(function () {
       if (!flowOn || !flowLen) return;
-      var mainTop = mainEl.getBoundingClientRect().top;
-      var tipY = window.innerHeight * 0.62 - mainTop;
+      var shift = 0;
+      holds.forEach(function (h) { shift += Math.min(h.extra, Math.max(0, h.stickTop - h.part.getBoundingClientRect().top)); });
+      if (shift.toFixed(1) !== flowShift) {
+        flowShift = shift.toFixed(1);
+        flow.style.transform = "translate3d(0, " + flowShift + "px, 0)";
+      }
+      var tipY = window.innerHeight * 0.62 - mainEl.getBoundingClientRect().top - shift;
       var L = lengthAtY(tipY);
       trail.style.strokeDashoffset = (flowLen - L).toFixed(1);
       var pt = trail.getPointAtLength(L);
@@ -1538,27 +1612,31 @@
     var night = { rest: 1, privacy: 1 };
     flowSections.forEach(function (sec) {
       var wrap = $(":scope > .wrap", sec);
+      var word = $(":scope > .sec-word", sec);
       var receding = false;
       scrollFx.push(function () {
         var r = sec.getBoundingClientRect(), vh = window.innerHeight;
         if (r.bottom < -vh || r.top > vh * 2) return;
         if (night[sec.id]) {
           var nIn = clamp01((vh * 0.9 - r.top) / (vh * 0.45)), nOut = clamp01((r.bottom - vh * 0.1) / (vh * 0.45));
-          sec.style.setProperty("--night", Math.min(nIn, nOut).toFixed(3));
+          setVar(sec, "--night", Math.min(nIn, nOut).toFixed(2));
         }
-        if (banded[sec.id]) sec.style.setProperty("--arc", (1 - progressOf(sec, 1, 0.55)).toFixed(3));
-        if (sec.hasAttribute("data-word")) {
+        if (banded[sec.id]) setVar(sec, "--arc", (1 - progressOf(sec, 1, 0.55)).toFixed(3));
+        if (word) {
           var t = clamp01((vh - r.top) / (vh + Math.min(r.height, vh)));
-          sec.style.setProperty("--wx", ((0.5 - t) * window.innerWidth * 0.55).toFixed(1));
+          var slide = "translate3d(calc(-50% + " + ((0.5 - t) * window.innerWidth * 0.55).toFixed(1) + "px), 0, 0)";
+          if (word.slide !== slide) { word.slide = slide; word.style.transform = slide; }
         }
         if (wrap) {
           var e = bigScreen.matches ? clamp01((vh * 0.35 - r.bottom) / (vh * 0.35)) : 0;
           if (e > 0) {
+            // Its own layer while it moves, so the text isn't redrawn each frame.
+            if (!receding) wrap.style.willChange = "transform, opacity";
             wrap.style.transform = "translateY(" + (e * -24).toFixed(1) + "px) scale(" + (1 - e * 0.06).toFixed(4) + ")";
             wrap.style.opacity = (1 - e * 0.65).toFixed(3);
             receding = true;
           } else if (receding) {
-            wrap.style.transform = ""; wrap.style.opacity = "";
+            wrap.style.transform = ""; wrap.style.opacity = ""; wrap.style.willChange = "";
             receding = false;
           }
         }
