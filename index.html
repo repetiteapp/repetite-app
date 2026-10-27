@@ -19,10 +19,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Instrument+Sans:wght@400..700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="style.css?v=501131b6cf">
+<link rel="stylesheet" href="style.css?v=fc7b3525cb">
 <script src="vendor/lenis.min.js" defer></script>
 <script src="vendor/lenis-snap.min.js" defer></script>
-<script src="site.js?v=7789a47e36" defer></script>
+<script src="site.js?v=225b76bf00" defer></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -161,24 +161,24 @@
 </div>
 
 <section class="section watch" id="watch" data-word="Watch" aria-labelledby="watch-title">
-  <div class="wrap watch-body">
-    <div class="watch-text">
-      <div class="section-head reveal">
-        <span class="eyebrow">Watch</span>
-        <h2 id="watch-title">The app, for real</h2>
-        <p>Sixteen seconds, straight from the app.</p>
-      </div>
-      <ol class="watch-chapters reveal" aria-label="Chapters">
-        <li><button type="button" data-at="0"><span class="wc-bar"><i></i></span><b>Your day</b></button></li>
-        <li><button type="button" data-at="2.3"><span class="wc-bar"><i></i></span><b>A new best</b></button></li>
-        <li><button type="button" data-at="6.1"><span class="wc-bar"><i></i></span><b>Your week</b></button></li>
-      </ol>
-      <button type="button" class="watch-toggle reveal" aria-pressed="false">
-        <svg class="wt-play" aria-hidden="true"><use href="#i-play"/></svg><svg class="wt-pause" aria-hidden="true"><use href="#i-pause"/></svg><span>Play</span>
-      </button>
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Watch</span>
+      <h2 id="watch-title">The app, for real</h2>
+      <p>Sixteen seconds, straight from the app.</p>
     </div>
     <div class="watch-stage reveal">
-      <div class="phone watch-phone"><span class="shot"><img class="l" src="images/today-light.webp" width="603" height="1311" alt="The Today screen, where the video starts" loading="lazy" decoding="async"><img class="d" src="images/today-dark.webp" width="603" height="1311" alt="The Today screen, where the video starts" loading="lazy" decoding="async"></span><video class="reel" muted loop playsinline preload="none" aria-label="Sixteen seconds of Repetite: Today, a new best, then the week's recap" data-light="images/reel-light.mp4" data-dark="images/reel-dark.mp4"></video></div>
+      <button type="button" class="wcap a" data-at="0"><span>01</span><b>Your day</b></button>
+      <div class="watch-phone"><div class="phone"><span class="shot"><img class="l" src="images/today-light.webp" width="603" height="1311" alt="The Today screen, where the video starts" loading="lazy" decoding="async"><img class="d" src="images/today-dark.webp" width="603" height="1311" alt="The Today screen, where the video starts" loading="lazy" decoding="async"></span><video class="reel" muted loop playsinline preload="none" aria-label="Sixteen seconds of Repetite: Today, a new best, then the week's recap" data-light="images/reel-light.mp4" data-dark="images/reel-dark.mp4"></video></div></div>
+      <button type="button" class="wcap b" data-at="2.3"><span>02</span><b>A new best</b></button>
+      <button type="button" class="wcap c" data-at="6.1"><span>03</span><b>Your week</b></button>
+    </div>
+    <div class="watch-bar reveal">
+      <button type="button" class="watch-toggle" aria-label="Play">
+        <svg class="wt-play" aria-hidden="true"><use href="#i-play"/></svg><svg class="wt-pause" aria-hidden="true"><use href="#i-pause"/></svg>
+      </button>
+      <div class="wb-track" aria-hidden="true"><i></i><i></i><i></i></div>
+      <span class="wb-time" aria-hidden="true">0:00</span>
     </div>
   </div>
 </section>

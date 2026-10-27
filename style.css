@@ -1793,47 +1793,68 @@ main { position: relative; }
 .try-sheet .try-note { font-size: 13px; margin-top: 8px; }
 
 /* ============ Watch ============
-   The app, for real: a 16-second recording (Today, a new best, the week's
-   recap) over a screenshot, which shows until it plays. Chapters beside it
-   fill as it plays (--cp, from site.js) and jump there when tapped. */
-.watch-body { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 72px; align-items: center; }
-.watch .section-head { display: block; }
-.watch .section-head p { margin-top: 18px; }
-.watch-chapters { list-style: none; margin: 44px 0 0; padding: 0; display: grid; gap: 6px; max-width: 440px; }
-.watch-chapters button {
-  width: 100%; display: grid; gap: 12px; padding: 14px 0; border: 0; background: none; cursor: pointer;
-  text-align: left; font: inherit; color: var(--text-3);
+   A short film, not another tour: a dark stage in either theme, the phone
+   in the middle playing a 16-second recording (Today, a new best, the
+   week's recap) over a screenshot, which shows until it plays. Big chapter
+   captions sit around it and light up in turn (tap one to jump there), and
+   a player bar below fills chapter by chapter (--cp, from site.js). */
+.watch {
+  --text: #F7F2EE; --text-2: #AFA59E; --text-3: #7F756F; --border: #2E2825; --surface: #1A1715; --bezel: #2A2421;
+  color: var(--text); color-scheme: dark;
+  background: radial-gradient(55% 45% at 50% 58%, rgba(255, 106, 46, 0.2), transparent 70%), #0B0807;
 }
-.watch-chapters b {
-  font-family: var(--display); font-weight: 800; font-stretch: 82%; font-size: clamp(26px, 3vw, 38px);
-  line-height: 1; letter-spacing: -0.02em; transition: color 300ms ease;
+.watch .section-head h2 { color: var(--text); }
+.watch-stage {
+  display: grid; grid-template-columns: 1fr auto 1fr; grid-template-areas: "a phone b" "c phone b";
+  column-gap: 56px; margin-top: 56px; align-items: center;
 }
-.watch-chapters button.now b, .watch-chapters button:hover b { color: var(--text); }
-.wc-bar { display: block; height: 3px; border-radius: 3px; background: var(--border); overflow: hidden; }
-.wc-bar i { display: block; height: 100%; background: var(--brand-2); transform-origin: left; transform: scaleX(var(--cp, 0)); }
+.watch-phone { grid-area: phone; position: relative; width: 320px; }
+.watch-phone::before {
+  content: ""; position: absolute; inset: 6% -18%; z-index: 0; pointer-events: none; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 116, 68, 0.38), transparent); filter: blur(30px);
+}
+.watch-phone .phone { position: relative; z-index: 1; box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.06); }
+.wcap {
+  display: grid; gap: 8px; border: 0; background: none; padding: 8px 0; cursor: pointer; font: inherit;
+  color: var(--text); opacity: 0.22; transition: opacity 400ms ease, translate 500ms cubic-bezier(.2, .8, .2, 1);
+}
+.wcap span { font-family: var(--mono); font-size: 15px; color: var(--brand-2); }
+.wcap b {
+  font-family: var(--display); font-weight: 900; font-stretch: 72%; text-transform: uppercase;
+  font-size: clamp(40px, 4.6vw, 68px); line-height: 0.9; letter-spacing: -0.01em;
+}
+.wcap.a { grid-area: a; justify-self: end; text-align: right; align-self: end; margin-bottom: 40px; }
+.wcap.c { grid-area: c; justify-self: end; text-align: right; align-self: start; margin-top: 40px; }
+.wcap.b { grid-area: b; justify-self: start; text-align: left; }
+.wcap.a, .wcap.c { translate: 12px 0; }
+.wcap.b { translate: -12px 0; }
+.wcap.now { opacity: 1; translate: 0 0; }
+.wcap:hover { opacity: 0.7; }
+.wcap.now:hover { opacity: 1; }
+.watch-bar { display: flex; align-items: center; gap: 16px; max-width: 460px; margin: 44px auto 0; }
 .watch-toggle {
-  margin-top: 26px; display: inline-flex; align-items: center; gap: 10px; height: 50px; padding: 0 22px 0 18px;
-  border: 0; border-radius: 999px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--border);
-  color: var(--text); font: inherit; font-weight: 600; font-size: 16px; cursor: pointer;
+  flex: none; width: 52px; height: 52px; border: 0; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+  background: #FF7444; color: #1A0B04; transition: transform 160ms ease;
 }
-.watch-toggle svg { width: 16px; height: 16px; color: var(--brand); }
+.watch-toggle:active { transform: scale(0.92); }
+.watch-toggle svg { width: 18px; height: 18px; }
 .watch-toggle .wt-pause, .watch-toggle.playing .wt-play { display: none; }
 .watch-toggle.playing .wt-pause { display: block; }
-.watch-stage { position: relative; }
-.watch-stage::before {
-  content: ""; position: absolute; inset: 8% -30%; z-index: 0; pointer-events: none;
-  background: radial-gradient(closest-side, var(--glow), transparent); filter: blur(24px);
-}
-.watch-phone { position: relative; z-index: 1; width: 320px; }
-/* One column: heading, the video, then the chapters under it. */
+.wb-track { flex: 1; display: flex; gap: 6px; }
+.wb-track i { display: block; height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.14); overflow: hidden; position: relative; }
+.wb-track i:nth-child(1) { flex: 2.3; }
+.wb-track i:nth-child(2) { flex: 3.8; }
+.wb-track i:nth-child(3) { flex: 10.4; }
+.wb-track i::after { content: ""; position: absolute; inset: 0; background: var(--brand-2); transform-origin: left; transform: scaleX(var(--cp, 0)); }
+.wb-time { flex: none; min-width: 40px; font-family: var(--mono); font-size: 14px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+/* One column: the phone, then only the playing chapter's caption, swapping. */
 @media (max-width: 900px) {
-  .watch-body { grid-template-columns: 1fr; gap: 0; }
-  .watch-text { display: contents; }
-  .watch .section-head { order: 1; }
-  .watch-stage { order: 2; justify-self: center; margin-top: 36px; }
-  .watch-chapters { order: 3; margin-top: 28px; max-width: none; }
-  .watch-toggle { order: 4; justify-self: start; }
+  .watch-stage { grid-template-columns: 1fr; grid-template-areas: "phone" "cap"; justify-items: center; margin-top: 40px; }
   .watch-phone { width: 270px; }
+  .wcap.a, .wcap.b, .wcap.c { grid-area: cap; justify-self: center; align-self: start; text-align: center; margin: 28px 0 0; translate: 0 8px; opacity: 0; pointer-events: none; }
+  .wcap.now { opacity: 1; translate: 0 0; pointer-events: auto; }
+  .wcap b { font-size: 40px; }
+  .watch-bar { margin-top: 20px; }
 }
 .phone .reel {
   position: absolute; left: 9px; top: 9px; width: calc(100% - 18px); height: calc(100% - 18px); z-index: 1;

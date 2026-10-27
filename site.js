@@ -1397,14 +1397,17 @@
   // ---------- Watch: the app, for real ----------
   // A 16-second recording of the app (images/reel-light|dark.mp4, matching
   // the page's look). It loads as the section comes near and plays while it's
-  // on screen; once paused it stays paused. The chapters fill as it plays,
-  // and a tap jumps there. With Reduce Motion it waits for Play, and the
-  // screenshot under it shows until then.
+  // on screen; once paused it stays paused. The captions around the phone
+  // light up in turn (a tap jumps there) and the player bar fills chapter by
+  // chapter. With Reduce Motion it waits for Play, and the screenshot under
+  // it shows until then.
   var watch = $("#watch");
   var reel = watch && $(".reel", watch);
   if (reel && reel.canPlayType && reel.canPlayType("video/mp4")) {
     var watchToggle = $(".watch-toggle", watch);
-    var chapters = $all(".watch-chapters button", watch);
+    var chapters = $all(".wcap", watch);
+    var segments = $all(".wb-track i", watch);
+    var watchTime = $(".wb-time", watch);
     var starts = chapters.map(function (b) { return parseFloat(b.getAttribute("data-at")) || 0; });
     var reelVisible = false, reelHeld = reduceMotion, reelFrame = 0;
     var reelPlay = function () {
@@ -1428,8 +1431,10 @@
       chapters.forEach(function (b, i) {
         var from = starts[i], to = i + 1 < starts.length ? starts[i + 1] : end;
         b.classList.toggle("now", t >= from && t < to);
-        setVar(b, "--cp", clamp01((t - from) / (to - from)).toFixed(3));
+        if (segments[i]) setVar(segments[i], "--cp", clamp01((t - from) / (to - from)).toFixed(3));
       });
+      var whole = Math.floor(t);
+      watchTime.textContent = Math.floor(whole / 60) + ":" + ("0" + (whole % 60)).slice(-2);
     };
     var tick = function () {
       drawChapters();
@@ -1438,8 +1443,7 @@
     var syncToggle = function () {
       var playing = !reel.paused;
       watchToggle.classList.toggle("playing", playing);
-      watchToggle.setAttribute("aria-pressed", playing ? "true" : "false");
-      $("span", watchToggle).textContent = playing ? "Pause" : "Play";
+      watchToggle.setAttribute("aria-label", playing ? "Pause" : "Play");
     };
     reel.addEventListener("playing", function () {
       reel.classList.add("on");
