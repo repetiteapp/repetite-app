@@ -1663,3 +1663,57 @@ h1[tabindex="-1"]:focus-visible, h2[tabindex="-1"]:focus-visible { outline: 2px 
   .hero-spin { width: 175%; }
   .float-chip.c3 { right: 0; top: 80%; }
 }
+
+/* ============ Between sections ============
+   Driven by site.js (scrollFx); everything rests flat and still without it.
+   1. The momentum line (.flow): an ember trail that draws itself down the
+      page edges, crossing in the gaps, its head pulsing at each heading.
+   2. Night: Rest and Privacy darken full-bleed around their dark panels.
+   3. Arc: the shaded sections arrive with a curved top that flattens.
+   4. Depth: a section you've scrolled past sinks back and dims.
+   5. A giant outlined word in each section's top gap, sliding sideways. */
+main { position: relative; }
+.section { position: relative; }
+.section > .wrap, .section > .day-scroller { position: relative; z-index: 1; }
+:root { --night-bg: #120E0C; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --night-bg: #060403; } }
+:root[data-theme="dark"] { --night-bg: #060403; }
+
+/* 1 */
+.flow { position: absolute; left: 0; top: 0; z-index: 3; pointer-events: none; overflow: visible; display: none; }
+.flow.on { display: block; }
+.flow .track { fill: none; stroke: color-mix(in srgb, var(--text) 10%, transparent); stroke-width: 1.5; stroke-dasharray: 2 8; stroke-linecap: round; }
+.flow .trail { fill: none; stroke: var(--brand-2); stroke-width: 3; stroke-linecap: round; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--brand-2) 70%, transparent)); }
+.flow .head { fill: #FFF3E8; filter: drop-shadow(0 0 8px var(--brand-2)) drop-shadow(0 0 18px var(--brand-2)); }
+.flow .ring { fill: none; stroke: var(--brand-2); stroke-width: 2; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.flow .ring.pulse { animation: flow-pulse 900ms cubic-bezier(.2, .8, .2, 1); }
+@keyframes flow-pulse { 0% { opacity: 0.9; transform: scale(1); } 100% { opacity: 0; transform: scale(5); } }
+
+/* 2 */
+#rest { background: color-mix(in srgb, var(--bg), var(--night-bg) calc(var(--night, 0) * 100%)); }
+#privacy { background: color-mix(in srgb, var(--band), var(--night-bg) calc(var(--night, 0) * 100%)); }
+
+/* 3 */
+#reminders, #skincare, #privacy, #faq { box-shadow: inset 0 -1px 0 var(--border); }
+#reminders::before, #skincare::before, #privacy::before, #faq::before {
+  content: ""; position: absolute; left: -6%; right: -6%; bottom: 100%; margin-bottom: -1px; pointer-events: none;
+  height: calc(var(--arc, 0) * 140px); background: inherit; border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+}
+
+/* 4 */
+.section > .wrap { transform-origin: 50% 0; }
+
+/* 5 */
+.section[data-word]::after {
+  content: attr(data-word); position: absolute; z-index: 0; top: 10px; left: 50%; pointer-events: none; white-space: nowrap;
+  font-family: var(--display); font-weight: 900; font-stretch: 68%; text-transform: uppercase; letter-spacing: -0.01em;
+  font-size: clamp(88px, 14vw, 230px); line-height: 0.8; color: transparent;
+  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--text) 14%, transparent);
+  transform: translateX(calc(-50% + var(--wx, 0) * 1px));
+}
+#rest[data-word]::after, #privacy[data-word]::after { -webkit-text-stroke-color: color-mix(in srgb, var(--brand-2) 34%, transparent); }
+
+@media (max-width: 820px) {
+  #reminders::before, #skincare::before, #privacy::before, #faq::before { height: calc(var(--arc, 0) * 60px); }
+  .section[data-word]::after { top: 18px; -webkit-text-stroke-width: 1px; }
+}

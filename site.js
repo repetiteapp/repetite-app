@@ -1458,6 +1458,114 @@
     });
   }
 
+  // ---------- Between sections ----------
+  var mainEl = $("main");
+  var flowSections = $all("main > section.section");
+  if (mainEl && flowSections.length && !reduceMotion) {
+    // 1. The momentum line: down the page edges, crossing sides in the gap
+    //    between sections, drawn up to just below the middle of the screen.
+    var NS = "http://www.w3.org/2000/svg";
+    var flow = document.createElementNS(NS, "svg");
+    flow.setAttribute("class", "flow");
+    flow.setAttribute("aria-hidden", "true");
+    var track = document.createElementNS(NS, "path"); track.setAttribute("class", "track");
+    var trail = document.createElementNS(NS, "path"); trail.setAttribute("class", "trail");
+    var ring = document.createElementNS(NS, "circle"); ring.setAttribute("class", "ring"); ring.setAttribute("r", "6");
+    var head = document.createElementNS(NS, "circle"); head.setAttribute("class", "head"); head.setAttribute("r", "6");
+    [track, trail, ring, head].forEach(function (el) { flow.appendChild(el); });
+    mainEl.appendChild(flow);
+    var flowLen = 0, flowTable = [], flowHeads = [], flowHit = -1, flowOn = false;
+    var closingEl = $(".closing");
+    var buildFlow = function () {
+      var W = mainEl.clientWidth;
+      flowOn = W >= 1180;
+      flow.classList.toggle("on", flowOn);
+      if (!flowOn) return;
+      var H = mainEl.scrollHeight;
+      flow.setAttribute("width", W); flow.setAttribute("height", H);
+      flow.setAttribute("viewBox", "0 0 " + W + " " + H);
+      var gutter = Math.max(40, ((W - 1160) / 2 + 20) / 2);
+      var xs = [gutter, W - gutter];
+      var top = function (el) { return el.getBoundingClientRect().top - mainEl.getBoundingClientRect().top; };
+      var y0 = top(flowSections[0]) + 40, side = 0;
+      var d = "M" + (W / 2) + " " + (y0 - 30) + " C" + (W / 2) + " " + (y0 + 60) + " " + xs[0] + " " + (y0 + 20) + " " + xs[0] + " " + (y0 + 140);
+      flowHeads = [];
+      flowSections.forEach(function (sec, i) {
+        var h = $("h2", sec);
+        if (h) flowHeads.push(top(h) + 20);
+        if (i === 0) return;
+        var gy = top(sec), from = xs[side], to = xs[1 - side];
+        d += " L" + from + " " + (gy - 110) + " C" + from + " " + gy + " " + to + " " + gy + " " + to + " " + (gy + 110);
+        side = 1 - side;
+      });
+      var end = closingEl ? top(closingEl) + 160 : H - 200;
+      d += " L" + xs[side] + " " + (end - 140) + " C" + xs[side] + " " + end + " " + (W / 2) + " " + (end - 40) + " " + (W / 2) + " " + end;
+      track.setAttribute("d", d); trail.setAttribute("d", d);
+      flowLen = trail.getTotalLength();
+      trail.style.strokeDasharray = flowLen;
+      flowTable = [];
+      for (var k = 0; k <= 400; k++) { var L = flowLen * k / 400; flowTable.push([L, trail.getPointAtLength(L).y]); }
+    };
+    var lengthAtY = function (y) {
+      var best = 0;
+      for (var k = 0; k < flowTable.length; k++) { if (flowTable[k][1] <= y) best = flowTable[k][0]; else if (flowTable[k][1] > y + 300) break; }
+      return best;
+    };
+    buildFlow();
+    window.addEventListener("resize", function () { setTimeout(buildFlow, 150); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(buildFlow);
+    window.addEventListener("load", buildFlow);
+    if ("ResizeObserver" in window) { var flowRO = null; new ResizeObserver(function () { clearTimeout(flowRO); flowRO = setTimeout(buildFlow, 200); }).observe(mainEl); }
+    scrollFx.push(function () {
+      if (!flowOn || !flowLen) return;
+      var mainTop = mainEl.getBoundingClientRect().top;
+      var tipY = window.innerHeight * 0.62 - mainTop;
+      var L = lengthAtY(tipY);
+      trail.style.strokeDashoffset = (flowLen - L).toFixed(1);
+      var pt = trail.getPointAtLength(L);
+      head.setAttribute("cx", pt.x.toFixed(1)); head.setAttribute("cy", pt.y.toFixed(1));
+      ring.setAttribute("cx", pt.x.toFixed(1)); ring.setAttribute("cy", pt.y.toFixed(1));
+      head.style.opacity = L > 4 ? "1" : "0";
+      var hit = -1;
+      flowHeads.forEach(function (y, i) { if (tipY >= y) hit = i; });
+      if (hit > flowHit) { ring.classList.remove("pulse"); void ring.getBoundingClientRect(); ring.classList.add("pulse"); }
+      flowHit = hit;
+    });
+
+    // 2–5, per section.
+    var bigScreen = window.matchMedia("(min-width: 901px)");
+    var banded = { reminders: 1, skincare: 1, privacy: 1, faq: 1 };
+    var night = { rest: 1, privacy: 1 };
+    flowSections.forEach(function (sec) {
+      var wrap = $(":scope > .wrap", sec);
+      var receding = false;
+      scrollFx.push(function () {
+        var r = sec.getBoundingClientRect(), vh = window.innerHeight;
+        if (r.bottom < -vh || r.top > vh * 2) return;
+        if (night[sec.id]) {
+          var nIn = clamp01((vh * 0.9 - r.top) / (vh * 0.45)), nOut = clamp01((r.bottom - vh * 0.1) / (vh * 0.45));
+          sec.style.setProperty("--night", Math.min(nIn, nOut).toFixed(3));
+        }
+        if (banded[sec.id]) sec.style.setProperty("--arc", (1 - progressOf(sec, 1, 0.55)).toFixed(3));
+        if (sec.hasAttribute("data-word")) {
+          var t = clamp01((vh - r.top) / (vh + Math.min(r.height, vh)));
+          sec.style.setProperty("--wx", ((0.5 - t) * window.innerWidth * 0.55).toFixed(1));
+        }
+        if (wrap) {
+          var e = bigScreen.matches ? clamp01((vh * 0.35 - r.bottom) / (vh * 0.35)) : 0;
+          if (e > 0) {
+            wrap.style.transform = "translateY(" + (e * -24).toFixed(1) + "px) scale(" + (1 - e * 0.06).toFixed(4) + ")";
+            wrap.style.opacity = (1 - e * 0.65).toFixed(3);
+            receding = true;
+          } else if (receding) {
+            wrap.style.transform = ""; wrap.style.opacity = "";
+            receding = false;
+          }
+        }
+      });
+    });
+  }
+
   // ---------- Run the scroll motion ----------
   // With Lenis it runs on Lenis's own frames, in step with the glide.
   if (!reduceMotion && scrollFx.length) {
