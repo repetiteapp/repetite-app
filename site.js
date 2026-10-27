@@ -1394,38 +1394,90 @@
     });
   }
 
-  // ---------- The hero's reel ----------
-  // A short loop of the real app on the main phone, in the page's light or
-  // dark look. It plays only while on screen; with Reduce Motion it never
-  // loads and the screenshot under it stays.
-  var reel = $(".hero-phones .reel");
-  if (reel && !reduceMotion && reel.canPlayType("video/mp4")) {
-    var reelVisible = false;
-    var reelSource = function () {
-      var src = reel.getAttribute(effectiveTheme() === "dark" ? "data-dark" : "data-light");
-      if (reel.getAttribute("src") === src) return;
-      reel.classList.remove("on");
-      reel.setAttribute("src", src);
-      reel.preload = "auto";
-      if (reelVisible) reelPlay(true);
-    };
-    var reelPlay = function (on) {
-      if (!on) { reel.pause(); return; }
+  // ---------- Watch: the app, for real ----------
+  // A 16-second recording of the app (images/reel-light|dark.mp4, matching
+  // the page's look). It loads as the section comes near and plays while it's
+  // on screen; once paused it stays paused. The chapters fill as it plays,
+  // and a tap jumps there. With Reduce Motion it waits for Play, and the
+  // screenshot under it shows until then.
+  var watch = $("#watch");
+  var reel = watch && $(".reel", watch);
+  if (reel && reel.canPlayType && reel.canPlayType("video/mp4")) {
+    var watchToggle = $(".watch-toggle", watch);
+    var chapters = $all(".watch-chapters button", watch);
+    var starts = chapters.map(function (b) { return parseFloat(b.getAttribute("data-at")) || 0; });
+    var reelVisible = false, reelHeld = reduceMotion, reelFrame = 0;
+    var reelPlay = function () {
       var playing = reel.play();
       if (playing && playing.catch) playing.catch(function () {});
     };
-    reel.addEventListener("playing", function () { reel.classList.add("on"); });
-    new MutationObserver(reelSource).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
-    if (systemDark.addEventListener) systemDark.addEventListener("change", reelSource);
-    reelSource();
+    // The light or dark recording; a switch keeps the place.
+    var reelSource = function () {
+      var src = reel.getAttribute(effectiveTheme() === "dark" ? "data-dark" : "data-light");
+      if (reel.getAttribute("src") === src) return;
+      var at = reel.currentTime || 0, wasPlaying = !reel.paused;
+      reel.setAttribute("src", src);
+      reel.preload = "auto";
+      reel.addEventListener("loadedmetadata", function () {
+        if (at) reel.currentTime = at;
+        if (wasPlaying || (reelVisible && !reelHeld)) reelPlay();
+      }, { once: true });
+    };
+    var drawChapters = function () {
+      var t = reel.currentTime || 0, end = reel.duration || 16.5;
+      chapters.forEach(function (b, i) {
+        var from = starts[i], to = i + 1 < starts.length ? starts[i + 1] : end;
+        b.classList.toggle("now", t >= from && t < to);
+        setVar(b, "--cp", clamp01((t - from) / (to - from)).toFixed(3));
+      });
+    };
+    var tick = function () {
+      drawChapters();
+      if (!reel.paused) reelFrame = requestAnimationFrame(tick);
+    };
+    var syncToggle = function () {
+      var playing = !reel.paused;
+      watchToggle.classList.toggle("playing", playing);
+      watchToggle.setAttribute("aria-pressed", playing ? "true" : "false");
+      $("span", watchToggle).textContent = playing ? "Pause" : "Play";
+    };
+    reel.addEventListener("playing", function () {
+      reel.classList.add("on");
+      syncToggle();
+      cancelAnimationFrame(reelFrame);
+      reelFrame = requestAnimationFrame(tick);
+    });
+    reel.addEventListener("pause", function () { syncToggle(); drawChapters(); });
+    watchToggle.addEventListener("click", function () {
+      if (reel.paused) {
+        reelHeld = false;
+        reelSource();
+        reelPlay();
+      } else {
+        reelHeld = true;
+        reel.pause();
+      }
+    });
+    chapters.forEach(function (b, i) {
+      b.addEventListener("click", function () {
+        reelHeld = false;
+        reelSource();
+        reel.currentTime = starts[i];
+        reelPlay();
+        drawChapters();
+      });
+    });
+    new MutationObserver(function () { if (reel.getAttribute("src")) reelSource(); }).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+    if (systemDark.addEventListener) systemDark.addEventListener("change", function () { if (reel.getAttribute("src")) reelSource(); });
     if ("IntersectionObserver" in window) {
+      // Loads a screen ahead; plays only while on screen.
+      new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting && !reduceMotion) reelSource();
+      }, { rootMargin: "600px 0px" }).observe(reel);
       new IntersectionObserver(function (entries) {
         reelVisible = entries[0].isIntersecting;
-        reelPlay(reelVisible);
-      }).observe(reel);
-    } else {
-      reelVisible = true;
-      reelPlay(true);
+        if (reelVisible && !reelHeld) { reelSource(); reelPlay(); } else if (!reelVisible) reel.pause();
+      }, { threshold: 0.35 }).observe(reel);
     }
   }
 

@@ -1792,10 +1792,49 @@ main { position: relative; }
 .hero-phones.has-sheet .float-chip.c1, .hero-phones.has-sheet .float-chip.c3 { filter: opacity(0); visibility: hidden; transition: filter 260ms ease, visibility 0s 260ms; }
 .try-sheet .try-note { font-size: 13px; margin-top: 8px; }
 
-/* ============ The hero's reel ============
-   A 16-second loop of the real app (Today, a new best, the week's recap)
-   over the main phone's screenshot, which shows until it plays and instead
-   of it with Reduce Motion. site.js picks the light or dark recording. */
+/* ============ Watch ============
+   The app, for real: a 16-second recording (Today, a new best, the week's
+   recap) over a screenshot, which shows until it plays. Chapters beside it
+   fill as it plays (--cp, from site.js) and jump there when tapped. */
+.watch-body { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 72px; align-items: center; }
+.watch .section-head { display: block; }
+.watch .section-head p { margin-top: 18px; }
+.watch-chapters { list-style: none; margin: 44px 0 0; padding: 0; display: grid; gap: 6px; max-width: 440px; }
+.watch-chapters button {
+  width: 100%; display: grid; gap: 12px; padding: 14px 0; border: 0; background: none; cursor: pointer;
+  text-align: left; font: inherit; color: var(--text-3);
+}
+.watch-chapters b {
+  font-family: var(--display); font-weight: 800; font-stretch: 82%; font-size: clamp(26px, 3vw, 38px);
+  line-height: 1; letter-spacing: -0.02em; transition: color 300ms ease;
+}
+.watch-chapters button.now b, .watch-chapters button:hover b { color: var(--text); }
+.wc-bar { display: block; height: 3px; border-radius: 3px; background: var(--border); overflow: hidden; }
+.wc-bar i { display: block; height: 100%; background: var(--brand-2); transform-origin: left; transform: scaleX(var(--cp, 0)); }
+.watch-toggle {
+  margin-top: 26px; display: inline-flex; align-items: center; gap: 10px; height: 50px; padding: 0 22px 0 18px;
+  border: 0; border-radius: 999px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--border);
+  color: var(--text); font: inherit; font-weight: 600; font-size: 16px; cursor: pointer;
+}
+.watch-toggle svg { width: 16px; height: 16px; color: var(--brand); }
+.watch-toggle .wt-pause, .watch-toggle.playing .wt-play { display: none; }
+.watch-toggle.playing .wt-pause { display: block; }
+.watch-stage { position: relative; }
+.watch-stage::before {
+  content: ""; position: absolute; inset: 8% -30%; z-index: 0; pointer-events: none;
+  background: radial-gradient(closest-side, var(--glow), transparent); filter: blur(24px);
+}
+.watch-phone { position: relative; z-index: 1; width: 320px; }
+/* One column: heading, the video, then the chapters under it. */
+@media (max-width: 900px) {
+  .watch-body { grid-template-columns: 1fr; gap: 0; }
+  .watch-text { display: contents; }
+  .watch .section-head { order: 1; }
+  .watch-stage { order: 2; justify-self: center; margin-top: 36px; }
+  .watch-chapters { order: 3; margin-top: 28px; max-width: none; }
+  .watch-toggle { order: 4; justify-self: start; }
+  .watch-phone { width: 270px; }
+}
 .phone .reel {
   position: absolute; left: 9px; top: 9px; width: calc(100% - 18px); height: calc(100% - 18px); z-index: 1;
   border-radius: 38px; object-fit: cover; opacity: 0; transition: opacity 600ms ease; pointer-events: none; background: transparent;
