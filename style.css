@@ -1967,9 +1967,9 @@ main { position: relative; }
 .demo-label { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--brand); }
 .demo-now strong { font-family: var(--display); font-stretch: 78%; font-weight: 800; font-size: 28px; line-height: 1.02; }
 .demo-now p { color: var(--text-2); font-size: 16px; }
-.demo-places { display: flex; flex-wrap: wrap; gap: 8px; }
+.demo-places { display: flex; flex-wrap: wrap; gap: 6px; }
 .demo-places button {
-  min-height: 40px; padding: 0 15px; border-radius: 999px; border: 1px dashed color-mix(in srgb, var(--text) 24%, transparent);
+  min-height: 40px; padding: 0 13px; border-radius: 999px; border: 1px dashed color-mix(in srgb, var(--text) 24%, transparent);
   background: transparent; color: var(--text-2); font: inherit; font-size: 15px; font-weight: 500; cursor: pointer;
   transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
 }

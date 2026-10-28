@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Instrument+Sans:wght@400..700&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="style.css?v=90a844b7c1">
+<link rel="stylesheet" href="style.css?v=c804baccf7">
 <script src="vendor/lenis.min.js" defer></script>
 <script src="vendor/lenis-snap.min.js" defer></script>
 <script src="site.js?v=36b16f6ffc" defer></script>
@@ -196,10 +196,11 @@
               <button type="button" data-go="food" aria-pressed="false">Food</button>
               <button type="button" data-go="search" aria-pressed="false">Search</button>
               <button type="button" data-go="quicklog" aria-pressed="false">Log</button>
+              <button type="button" data-go="train" aria-pressed="false">Train</button>
               <button type="button" data-go="workout" aria-pressed="false">Workout</button>
               <button type="button" data-go="progress" aria-pressed="false">Progress</button>
             </div>
-            <span class="demo-seen">You've seen <b>1</b> of 6 screens</span>
+            <span class="demo-seen">You've seen <b>1</b> of 7 screens</span>
           </div>
         </div>
         <div class="demo-phone">
@@ -211,12 +212,14 @@
                 <button type="button" class="spot" data-go="progress" style="--x:90%;--y:11%" aria-label="Open Progress"></button>
                 <button type="button" class="spot" data-go="food" style="--x:32%;--y:91.5%" aria-label="Food tab"></button>
                 <button type="button" class="spot" data-go="quicklog" style="--x:50%;--y:91.5%" aria-label="Log something"></button>
+                <button type="button" class="spot" data-go="train" style="--x:68%;--y:91.5%" aria-label="Train tab"></button>
               </span>
               <span class="shot demo-shot" data-screen="food" data-label="Food" data-title="Your day, meal by meal" data-line="Every food with its macros, and vitamins added up for the day. Tap + to add to lunch."><img class="l" src="images/food-light.webp" width="603" height="1311" alt="The day&#x27;s meals with calories, protein, carbs and fat for each food" loading="lazy" decoding="async"><img class="d" src="images/food-dark.webp" width="603" height="1311" alt="The day&#x27;s meals with calories, protein, carbs and fat for each food" loading="lazy" decoding="async">
                 <button type="button" class="spot hot" data-go="search" style="--x:89%;--y:84.2%" aria-label="Add to lunch"></button>
                 <button type="button" class="spot" data-go="progress" style="--x:90%;--y:11%" aria-label="Open Progress"></button>
                 <button type="button" class="spot" data-go="today" style="--x:14%;--y:91.5%" aria-label="Today tab"></button>
                 <button type="button" class="spot" data-go="quicklog" style="--x:50%;--y:91.5%" aria-label="Log something"></button>
+                <button type="button" class="spot" data-go="train" style="--x:68%;--y:91.5%" aria-label="Train tab"></button>
               </span>
               <span class="shot demo-shot" data-screen="search" data-label="Search" data-title="Type it, scan it or snap it" data-line="12,000+ foods that work offline, Indian dishes too. Tap a result to log it."><img class="l" src="images/search-light.webp" width="603" height="1311" alt="Food search for chicken, with calories and protein for each result" loading="lazy" decoding="async"><img class="d" src="images/search-dark.webp" width="603" height="1311" alt="Food search for chicken, with calories and protein for each result" loading="lazy" decoding="async">
                 <button type="button" class="spot hot" data-go="food" data-note="Chicken breast added to Lunch" style="--x:50%;--y:36%" aria-label="Log chicken breast, cooked"></button>
@@ -226,6 +229,13 @@
                 <button type="button" class="spot hot" data-go="search" style="--x:13%;--y:62%" aria-label="Log food"></button>
                 <button type="button" class="spot" data-go="workout" style="--x:73%;--y:76%" aria-label="Start the workout"></button>
                 <button type="button" class="spot" data-go="today" style="--x:88%;--y:51.7%" aria-label="Close"></button>
+              </span>
+              <span class="shot demo-shot" data-screen="train" data-label="Train" data-title="Your week, planned" data-line="Each day's workout, with a target for every exercise from your own history. Tap one to start."><img class="l" src="images/train-light.webp" width="603" height="1311" alt="The Train tab: this week&#x27;s plan and Thursday&#x27;s upper-body exercises, each with its target weight" loading="lazy" decoding="async"><img class="d" src="images/train-dark.webp" width="603" height="1311" alt="The Train tab: this week&#x27;s plan and Thursday&#x27;s upper-body exercises, each with its target weight" loading="lazy" decoding="async">
+                <button type="button" class="spot hot" data-go="workout" style="--x:50%;--y:54.5%" aria-label="Start with Flat Barbell Bench Press"></button>
+                <button type="button" class="spot" data-go="progress" style="--x:90%;--y:11%" aria-label="Open Progress"></button>
+                <button type="button" class="spot" data-go="today" style="--x:14%;--y:91.5%" aria-label="Today tab"></button>
+                <button type="button" class="spot" data-go="food" style="--x:32%;--y:91.5%" aria-label="Food tab"></button>
+                <button type="button" class="spot" data-go="quicklog" style="--x:50%;--y:91.5%" aria-label="Log something"></button>
               </span>
               <span class="shot demo-shot" data-screen="workout" data-label="Workout" data-title="Every set has a number to beat" data-line="Last time's weights, a rest timer that rings and plates per side. Tap Log set." data-best-title="A new best, noticed for you" data-best-line="Beat your best and it celebrates, with a picture ready to share."><img class="l" src="images/workout-light.webp" width="603" height="1311" alt="Logging a set of Flat Barbell Bench Press, with the rest timer and plates per side" loading="lazy" decoding="async"><img class="d" src="images/workout-dark.webp" width="603" height="1311" alt="Logging a set of Flat Barbell Bench Press, with the rest timer and plates per side" loading="lazy" decoding="async">
                 <button type="button" class="spot hot" data-go="best" style="--x:50%;--y:77.8%" aria-label="Log set"></button>
