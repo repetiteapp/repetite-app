@@ -1871,3 +1871,127 @@ main { position: relative; }
 }
 .phone .reel.on { opacity: 1; }
 .phone .reel:not(.on) { transition-duration: 300ms; }
+
+/* ============ Tour: zoom in, then try it ============
+   On big screens (.pinned) the tour holds while scrolling zooms the phone
+   into one detail at a time (.demo-steps), then the last step (.play) lets
+   you tap around the app: the buttons that work glow (.spot). Phones, small
+   windows and Reduce Motion start at the tappable phone. Script: "Tour: zoom
+   in, then try it" in site.js. */
+.demo { margin-top: 56px; }
+.demo-stick { display: grid; grid-template-columns: minmax(0, 560px) 340px; justify-content: center; gap: 104px; align-items: center; }
+.demo-phone { width: 320px; max-width: 100%; justify-self: center; }
+.demo-hint { display: none; }
+.demo-screen { position: relative; border-radius: 38px; overflow: hidden; isolation: isolate; }
+.demo-zoom {
+  position: relative; aspect-ratio: 603 / 1311;
+  transform-origin: var(--ox, 50%) var(--oy, 50%); transform: scale(var(--z, 1));
+  transition: transform 850ms cubic-bezier(.2, .8, .2, 1), transform-origin 850ms cubic-bezier(.2, .8, .2, 1);
+}
+.demo-shot { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity 320ms ease, visibility 0s linear 320ms; }
+.demo-shot.on { opacity: 1; visibility: visible; transition-delay: 0s; }
+.demo-shot img { vertical-align: top; }
+
+/* The buttons that work, glowing; the suggested next one pulses. */
+.demo .spot {
+  position: absolute; left: var(--x); top: var(--y); z-index: 1; width: 44px; height: 44px; margin: -22px 0 0 -22px; padding: 0;
+  border-radius: 50%; border: 2px solid color-mix(in srgb, var(--brand) 55%, transparent);
+  background: color-mix(in srgb, var(--brand) 8%, transparent); cursor: pointer;
+  opacity: 0; visibility: hidden; transition: opacity 300ms ease, visibility 0s linear 300ms, background-color 150ms ease;
+}
+.demo.play .demo-shot.on .spot { opacity: 1; visibility: visible; transition-delay: 0s; }
+.demo .spot.hot { border-color: var(--brand); background: color-mix(in srgb, var(--brand) 16%, transparent); }
+.demo.play .demo-shot.on .spot.hot { animation: demo-pulse 1.6s ease-out infinite; }
+.demo .spot:hover { border-color: var(--brand); background: color-mix(in srgb, var(--brand) 26%, transparent); }
+.demo .spot:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
+.demo.best .spot[data-go="best"] { display: none; }
+@keyframes demo-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 45%, transparent); }
+  100% { box-shadow: 0 0 0 16px color-mix(in srgb, var(--brand) 0%, transparent); }
+}
+
+/* Log set: a new best drops in with confetti. Logging a food: a note. */
+.demo-best {
+  position: absolute; z-index: 2; top: 14%; left: 4%; right: 4%; display: flex; align-items: center; gap: 10px;
+  padding: 11px 12px 11px 13px; border-radius: 18px; background: #1C1613; color: #FFFFFF;
+  box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  opacity: 0; visibility: hidden; transform: translateY(-14px) scale(0.96);
+  transition: opacity 250ms ease, transform 450ms cubic-bezier(.2, .9, .25, 1.25), visibility 0s linear 250ms;
+}
+.demo.best .demo-best { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.demo-best svg { flex: none; width: 24px; height: 24px; fill: none; stroke: #FF7444; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.demo-best span { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 1px; line-height: 1.2; }
+.demo-best strong { font-size: 14px; }
+.demo-best small { font-size: 11.5px; color: #D9CFC8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.demo-best em { flex: none; font-style: normal; font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 999px; background: #FF7444; color: #1C1613; }
+.demo-toast {
+  position: absolute; z-index: 2; left: 50%; top: 14%; transform: translate(-50%, -8px); white-space: nowrap;
+  padding: 8px 14px; border-radius: 999px; background: #1C1613; color: #FFFFFF; font-size: 13px; font-weight: 500;
+  box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  opacity: 0; pointer-events: none; transition: opacity 250ms ease, transform 350ms cubic-bezier(.2, .8, .2, 1);
+}
+.demo-toast.on { opacity: 1; transform: translate(-50%, 0); }
+.demo-confetti { position: absolute; inset: 0; z-index: 2; overflow: hidden; pointer-events: none; }
+.demo-confetti i { position: absolute; top: -14px; width: 7px; height: 12px; border-radius: 2px; opacity: 0; }
+.demo-confetti.go i { animation: demo-fall 1.8s ease-in forwards; }
+@keyframes demo-fall {
+  0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(640px) rotate(540deg); }
+}
+
+/* Beside the phone: the zoom steps while pinned, then trying it. */
+.demo-text { display: grid; min-width: 0; }
+.demo-tell, .demo-play { grid-area: 1 / 1; align-self: center; transition: opacity 400ms ease, transform 500ms cubic-bezier(.2, .8, .2, 1), visibility 0s; }
+.demo:not(.pinned) .demo-tell { display: none; }
+.demo.pinned:not(.play) .demo-play, .demo.play .demo-tell { opacity: 0; visibility: hidden; transform: translateY(14px); transition-delay: 0s, 0s, 400ms; }
+.demo-steps { display: grid; margin: 0; padding: 0; list-style: none; }
+.demo-steps li { grid-area: 1 / 1; opacity: 0; transform: translateY(18px); transition: opacity 380ms ease, transform 520ms cubic-bezier(.2, .8, .2, 1); }
+.demo-steps li.on { opacity: 1; transform: none; transition-delay: 120ms; }
+.demo-n { display: block; font-family: var(--mono); font-size: 15px; font-weight: 500; color: var(--brand); }
+.demo-n s { text-decoration: none; color: var(--text-2); }
+.demo-steps h3 { margin-top: 18px; font-size: clamp(40px, 4.4vw, 64px); line-height: 0.94; }
+.demo-steps p { margin-top: 18px; font-size: 20px; color: var(--text-2); max-width: 34ch; }
+.demo-progress { display: flex; align-items: center; gap: 22px; margin-top: 36px; }
+.demo-bars { display: flex; gap: 6px; width: 180px; }
+.demo-bars i { flex: 1 1 0; height: 4px; border-radius: 4px; background: var(--surface-2); transition: background-color 300ms ease; }
+.demo-bars i.on { background: var(--brand); }
+.demo-skip { border: 0; background: none; min-height: 44px; padding: 0; font: inherit; font-size: 15px; font-weight: 500; color: var(--brand); cursor: pointer; }
+.demo-skip:hover { text-decoration: underline; }
+.demo-play { display: flex; flex-direction: column; gap: 18px; }
+.demo-kicker, .demo-hint { font-family: var(--mono); font-size: 13px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand); }
+.demo-big { font-size: clamp(38px, 4.2vw, 60px); line-height: 0.95; margin-top: -6px; }
+.demo-now {
+  display: flex; flex-direction: column; gap: 8px; margin-top: 6px; padding: 22px 24px; box-sizing: border-box; min-height: 156px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 22px;
+}
+.demo-label { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--brand); }
+.demo-now strong { font-family: var(--display); font-stretch: 78%; font-weight: 800; font-size: 28px; line-height: 1.02; }
+.demo-now p { color: var(--text-2); font-size: 16px; }
+.demo-places { display: flex; flex-wrap: wrap; gap: 8px; }
+.demo-places button {
+  min-height: 40px; padding: 0 15px; border-radius: 999px; border: 1px dashed color-mix(in srgb, var(--text) 24%, transparent);
+  background: transparent; color: var(--text-2); font: inherit; font-size: 15px; font-weight: 500; cursor: pointer;
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+.demo-places button:hover { color: var(--text); border-color: color-mix(in srgb, var(--text) 45%, transparent); }
+.demo-places button.seen { border-style: solid; border-color: var(--border); background: var(--surface); color: var(--text); }
+.demo-places button[aria-pressed="true"] { border-style: solid; border-color: var(--text); background: var(--text); color: var(--bg); }
+.demo-seen { font-size: 15px; color: var(--text-2); }
+
+.demo.pinned { height: calc(100vh + 6 * 55vh); }
+.demo.pinned .demo-stick { position: sticky; top: 84px; height: calc(100vh - 100px); }
+.demo.pinned .demo-phone { width: min(320px, calc((100vh - 150px) / 2.25)); }
+
+@media (max-width: 900px) {
+  .demo { margin-top: 40px; }
+  .demo-stick { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .demo-phone { order: -1; width: 290px; }
+  .demo-hint { display: block; margin: 0 0 16px; text-align: center; }
+  .demo-kicker, .demo-big { display: none; }
+  .demo .spot { width: 36px; height: 36px; margin: -18px 0 0 -18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .demo-zoom, .demo-shot, .demo-steps li, .demo-tell, .demo-play, .demo-best, .demo-toast { transition: none; }
+  .demo.play .demo-shot.on .spot.hot { animation: none; }
+  .demo-confetti { display: none; }
+}

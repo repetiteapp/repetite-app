@@ -376,12 +376,14 @@
     pill.style.width = on.offsetWidth + "px";
   }
 
-  // ---------- Tour ----------
+  // ---------- Tour (archived) ----------
   // Tabs with a phone that slides between screens. Numbered points beside
   // it light their dot on the phone. It moves on every 6 s while it's on
   // screen and nobody's touching it; a swipe on the phone changes tab.
+  // Its markup is archived (tools/website/archive/tour.section.html), so
+  // this runs only if that's put back.
   var tour = $("#tour");
-  if (tour) {
+  if (tour && $(".tour-body", tour)) {
     var tabs = $all('[role="tab"]', tour);
     var control = $(".segmented", tour);
     var stack = $(".tour-phone .stack", tour);
@@ -537,6 +539,142 @@
       var i = Math.min(tabs.length - 1, Math.floor(p * tabs.length));
       if (i !== tourIndex) select(tabs[i]);
     });
+  }
+
+  // ---------- Tour: zoom in, then try it ----------
+  // On big screens the tour holds while scrolling zooms the phone into one
+  // detail at a time (.demo-steps: each names its screen and zoom), and the
+  // last step lets you tap around the app. The buttons that work glow
+  // (.spot): data-go names the screen they open ("best" logs the set) and
+  // data-note a note to show. Phones, small windows and Reduce Motion start
+  // at the tappable phone.
+  var demo = $("#tour .demo");
+  if (demo) {
+    var demoStick = $(".demo-stick", demo);
+    var demoZoom = $(".demo-zoom", demo);
+    var demoShots = $all(".demo-shot", demo);
+    var demoSteps = $all(".demo-steps li", demo);
+    var demoBars = $all(".demo-bars i", demo);
+    var demoPlaces = $all(".demo-places button", demo);
+    var demoNow = $(".demo-now", demo);
+    var demoToast = $(".demo-toast", demo);
+    var demoConfetti = $(".demo-confetti", demo);
+    var demoSeen = $(".demo-seen b", demo);
+    var DEMO_STEPS = demoSteps.length + 1; // the zooms, then trying it
+    var DEMO_TOP = 84;
+    var demoPin = window.matchMedia("(min-width: 901px) and (min-height: 640px)");
+    var demoPinned = false, demoStep = -1, playScreen = "today", seen = { today: true }, toastTimer = 0;
+    var showScreen = function (name) {
+      demoShots.forEach(function (shot) { shot.classList.toggle("on", shot.getAttribute("data-screen") === name); });
+    };
+    var describe = function () {
+      var shot = demoShots.filter(function (s) { return s.getAttribute("data-screen") === playScreen; })[0];
+      var best = demo.classList.contains("best");
+      $(".demo-label", demoNow).textContent = shot.getAttribute("data-label");
+      $("strong", demoNow).textContent = shot.getAttribute(best ? "data-best-title" : "data-title");
+      $("p", demoNow).textContent = shot.getAttribute(best ? "data-best-line" : "data-line");
+      demoPlaces.forEach(function (b) {
+        var name = b.getAttribute("data-go");
+        b.setAttribute("aria-pressed", name === playScreen ? "true" : "false");
+        b.classList.toggle("seen", !!seen[name]);
+      });
+      if (demoSeen) demoSeen.textContent = Object.keys(seen).length;
+    };
+    var note = function (text) {
+      clearTimeout(toastTimer);
+      demoToast.textContent = text || "";
+      demoToast.classList.toggle("on", !!text);
+      if (text) toastTimer = setTimeout(function () { demoToast.classList.remove("on"); }, 2600);
+    };
+    var go = function (name, text) {
+      playScreen = name;
+      seen[name] = true;
+      demo.classList.remove("best");
+      showScreen(name);
+      describe();
+      note(text);
+    };
+    if (demoConfetti) {
+      var bitColors = ["var(--brand)", "var(--brand-3)", "#E9B44C", "#2E8A7A", "var(--text)"];
+      for (var b = 0; b < 16; b++) {
+        var bit = document.createElement("i");
+        bit.style.left = (4 + b * 6) + "%";
+        bit.style.background = bitColors[b % bitColors.length];
+        bit.style.animationDelay = ((b * 53) % 320) + "ms";
+        demoConfetti.appendChild(bit);
+      }
+    }
+    var celebrate = function () {
+      demo.classList.add("best");
+      describe();
+      if (demoConfetti && !reduceMotion) {
+        demoConfetti.classList.remove("go");
+        void demoConfetti.offsetWidth;
+        demoConfetti.classList.add("go");
+      }
+    };
+    demo.addEventListener("click", function (e) {
+      var button = e.target.closest("[data-go]");
+      if (!button) return;
+      var to = button.getAttribute("data-go");
+      if (to === "best") celebrate(); else go(to, button.getAttribute("data-note"));
+      // A tapped spot goes with its screen, so keyboard focus moves to the
+      // new screen's glowing one.
+      if (button.classList.contains("spot")) {
+        var next = $('.demo-shot.on .spot.hot:not([data-go="best"])', demo) || $('.demo-shot.on .spot:not([data-go="best"])', demo);
+        if (next) next.focus({ preventScroll: true });
+      }
+    });
+    var setStep = function (i) {
+      if (i === demoStep) return;
+      demoStep = i;
+      var playing = i >= demoSteps.length;
+      var step = demoSteps[i];
+      demo.classList.toggle("play", playing);
+      demoSteps.forEach(function (li, k) { li.classList.toggle("on", k === i); });
+      demoBars.forEach(function (bar, k) { bar.classList.toggle("on", k <= i); });
+      setVar(demoZoom, "--z", playing ? "1" : step.getAttribute("data-z"));
+      setVar(demoZoom, "--ox", playing ? "50%" : step.getAttribute("data-ox"));
+      setVar(demoZoom, "--oy", playing ? "50%" : step.getAttribute("data-oy"));
+      if (playing) {
+        showScreen(playScreen);
+        describe();
+      } else {
+        demo.classList.remove("best");
+        note("");
+        showScreen(step.getAttribute("data-screen"));
+      }
+    };
+    var demoDistance = function () { return Math.max(1, demo.offsetHeight - demoStick.offsetHeight); };
+    var demoStepY = function (i) {
+      return demo.getBoundingClientRect().top + window.scrollY - DEMO_TOP + demoDistance() * (i + 0.5) / DEMO_STEPS;
+    };
+    var demoUnsnap = [];
+    var setDemoSnaps = function () {
+      demoUnsnap.forEach(function (remove) { remove(); });
+      demoUnsnap = [];
+      if (!snap || !demoPinned) return;
+      for (var i = 0; i < DEMO_STEPS; i++) demoUnsnap.push(snap.add(demoStepY(i)));
+    };
+    var demoScroll = function () {
+      if (!demoPinned) return;
+      var p = clamp01((DEMO_TOP - demo.getBoundingClientRect().top) / demoDistance());
+      setStep(Math.min(DEMO_STEPS - 1, Math.floor(p * DEMO_STEPS)));
+    };
+    var setDemoPinned = function () {
+      demoPinned = !reduceMotion && demoPin.matches;
+      demo.classList.toggle("pinned", demoPinned);
+      demoStep = -1;
+      if (demoPinned) demoScroll(); else setStep(DEMO_STEPS - 1);
+      setDemoSnaps();
+    };
+    var skip = $(".demo-skip", demo);
+    if (skip) skip.addEventListener("click", function () { scrollToY(demoStepY(DEMO_STEPS - 1)); });
+    if (demoPin.addEventListener) demoPin.addEventListener("change", setDemoPinned);
+    window.addEventListener("resize", function () { setTimeout(setDemoSnaps, 120); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(setDemoSnaps);
+    setDemoPinned();
+    scrollFx.push(demoScroll);
   }
 
   // ---------- Lock Screen: a day of reminders, in the tone you pick ----------
@@ -1853,7 +1991,7 @@
     var flowLen = 0, flowTable = [], flowHeads = [], flowHit = -1, flowOn = false, flowShift = "";
     var flowBand = null, flowWaiting = false;
     var closingEl = $(".closing");
-    var holdParts = $all(".tour-body, .day-scroller");
+    var holdParts = $all(".demo, .tour-body, .day-scroller");
     var holds = [];
     // Distance from the top of main, ignoring transforms (sections receding).
     var docTop = function (el) {
