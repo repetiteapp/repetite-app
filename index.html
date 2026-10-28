@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="style.css?v=40f05584d5">
 <script src="vendor/lenis.min.js" defer></script>
 <script src="vendor/lenis-snap.min.js" defer></script>
-<script src="site.js?v=0da6f68eb5" defer></script>
+<script src="site.js?v=5b37003a67" defer></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -89,7 +89,7 @@
         <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span class="tt-bar"></span><span class="tt-plate"><span class="tt-ring"></span><svg class="tt-sun" aria-hidden="true"><use href="#i-sun"/></svg><svg class="tt-moon" aria-hidden="true"><use href="#i-moon"/></svg></span></button>
         <button class="isl-close" type="button" aria-label="Close the menu"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6"/></svg></button>
       </div>
-      <div class="isl-cols"><div class="isl-col app"><p class="isl-h">The app</p><div class="isl-list"><a class="isl-link" href="#tour" style="--i:0"><svg aria-hidden="true"><use href="#i-tap"/></svg><span>Tour</span></a><a class="isl-link" href="#reminders" style="--i:1"><svg aria-hidden="true"><use href="#i-bell"/></svg><span>Reminders</span></a><a class="isl-link" href="#rest" style="--i:2"><svg aria-hidden="true"><use href="#i-timer"/></svg><span>Rest timer</span></a><a class="isl-link" href="#wrist" style="--i:3"><svg aria-hidden="true"><use href="#i-watch"/></svg><span>Apple Watch</span></a><a class="isl-link" href="#skincare" style="--i:4"><svg aria-hidden="true"><use href="#i-drop"/></svg><span>Skincare</span></a><a class="isl-link" href="#coach" style="--i:5"><svg aria-hidden="true"><use href="#i-chat"/></svg><span>AI coach</span></a><a class="isl-link" href="#privacy" style="--i:6"><svg aria-hidden="true"><use href="#i-lock"/></svg><span>Privacy</span></a></div></div><div class="isl-col"><p class="isl-h">Get it</p><div class="isl-list"><a class="isl-link" href="#pricing" style="--i:7"><svg aria-hidden="true"><use href="#i-spark"/></svg><span>Pricing</span></a><a class="isl-link" href="#faq" style="--i:8"><svg aria-hidden="true"><use href="#i-list"/></svg><span>FAQ</span></a></div><a class="isl-big" href="#pricing"><svg aria-hidden="true"><use href="#i-phone"/></svg><span><small>Coming soon to the</small><strong>App Store</strong></span></a></div></div>
+      <div class="isl-cols"><div class="isl-col app"><p class="isl-h">The app</p><div class="isl-list"><a class="isl-link" href="#tour" style="--i:0"><svg aria-hidden="true"><use href="#i-tap"/></svg><span>Tour</span></a><a class="isl-link" href="#wrist" style="--i:1"><svg aria-hidden="true"><use href="#i-watch"/></svg><span>Apple Watch</span></a><a class="isl-link" href="#reminders" style="--i:2"><svg aria-hidden="true"><use href="#i-bell"/></svg><span>Reminders</span></a><a class="isl-link" href="#rest" style="--i:3"><svg aria-hidden="true"><use href="#i-timer"/></svg><span>Rest timer</span></a><a class="isl-link" href="#skincare" style="--i:4"><svg aria-hidden="true"><use href="#i-drop"/></svg><span>Skincare</span></a><a class="isl-link" href="#coach" style="--i:5"><svg aria-hidden="true"><use href="#i-chat"/></svg><span>AI coach</span></a><a class="isl-link" href="#privacy" style="--i:6"><svg aria-hidden="true"><use href="#i-lock"/></svg><span>Privacy</span></a></div></div><div class="isl-col"><p class="isl-h">Get it</p><div class="isl-list"><a class="isl-link" href="#pricing" style="--i:7"><svg aria-hidden="true"><use href="#i-spark"/></svg><span>Pricing</span></a><a class="isl-link" href="#faq" style="--i:8"><svg aria-hidden="true"><use href="#i-list"/></svg><span>FAQ</span></a></div><a class="isl-big" href="#pricing"><svg aria-hidden="true"><use href="#i-phone"/></svg><span><small>Coming soon to the</small><strong>App Store</strong></span></a></div></div>
       <a class="isl-big wide" href="#pricing"><svg aria-hidden="true"><use href="#i-phone"/></svg><span><small>Coming soon to the</small><strong>App Store</strong></span></a>
     </div>
   </nav>
@@ -256,6 +256,49 @@
   </div>
 </section>
 
+<section class="section" id="wrist" data-word="Watch" aria-labelledby="wrist-title">
+  <div class="wrap wr-grid">
+    <div class="reveal">
+      <span class="eyebrow">Apple Watch</span>
+      <h2 id="wrist-title" class="h2">Your workout, on your wrist</h2>
+      <p class="wr-lede">Leave your phone in your bag.</p>
+      <ul class="points">
+        <li><span class="ic"><svg><use href="#i-watch"/></svg></span><div><strong>Log sets with the Crown</strong><span>Weight and reps, no typing.</span></div></li>
+        <li><span class="ic"><svg><use href="#i-timer"/></svg></span><div><strong>Rest that taps your wrist</strong><span>On time, even wrist down.</span></div></li>
+        <li><span class="ic"><svg><use href="#i-heart"/></svg></span><div><strong>Heart rate and calories</strong><span>Saved to Apple Health.</span></div></li>
+        <li><span class="ic"><svg><use href="#i-drop"/></svg></span><div><strong>Food and water at a glance</strong><span>One tap for water or your usual meal.</span></div></li>
+      </ul>
+    </div>
+    <div class="wr-demo reveal" id="wr-demo">
+      <div class="wr-watch">
+        <span class="wr-crown" aria-hidden="true"></span>
+        <span class="wr-side" aria-hidden="true"></span>
+        <div class="wr-screen">
+          <img class="wr-shot is-on" data-step="today" src="images/watch-today.webp" width="208" height="248" alt="Today on the watch: Upper with a Start button, and calories, protein and water left">
+          <img class="wr-shot" data-step="set" src="images/watch-set.webp" width="208" height="248" loading="lazy" alt="Logging a set: bench press at 190 lb for 8 reps, plates per side, and a Log set button">
+          <img class="wr-shot" data-step="rest" src="images/watch-rest.webp" width="208" height="248" loading="lazy" alt="Rest counting down from 1:30, with minus 15, plus 15 and Skip">
+          <img class="wr-shot" data-step="restup" src="images/watch-restup.webp" width="208" height="248" loading="lazy" alt="Rest's up, in orange, with the next set and a Go button">
+          <img class="wr-shot" data-step="best" src="images/watch-best.webp" width="208" height="248" loading="lazy" alt="New best: bench press 190 for 8, beating 185 for 8">
+          <img class="wr-shot" data-step="done" src="images/watch-done.webp" width="208" height="248" loading="lazy" alt="Workout done: 21 sets, 18,240 lb lifted, average heart rate 132, 412 active calories">
+          <img class="wr-shot" data-step="food" src="images/watch-food.webp" width="208" height="248" loading="lazy" alt="Food: 831 calories left, with protein, carbs and fat">
+          <img class="wr-shot" data-step="log" src="images/watch-log.webp" width="208" height="248" loading="lazy" alt="Quick log: your usual lunch, a whey shake and a glass of water">
+        </div>
+      </div>
+      <div class="wr-steps" role="tablist" aria-label="Watch screens">
+        <button type="button" role="tab" data-step="today" aria-selected="true" data-caption="Start today's workout, and see what's left to eat.">Today</button>
+        <button type="button" role="tab" data-step="set" aria-selected="false" tabindex="-1" data-caption="Turn the Crown for the weight. Plates per side included.">Log a set</button>
+        <button type="button" role="tab" data-step="rest" aria-selected="false" tabindex="-1" data-caption="Rest counts down by itself. Add 15 seconds, or skip.">Rest</button>
+        <button type="button" role="tab" data-step="restup" aria-selected="false" tabindex="-1" data-caption="A tap on your wrist when rest is up, even wrist down.">Rest's up</button>
+        <button type="button" role="tab" data-step="best" aria-selected="false" tabindex="-1" data-caption="Beat your best and the watch says so.">New best</button>
+        <button type="button" role="tab" data-step="done" aria-selected="false" tabindex="-1" data-caption="Heart rate and calories, saved to Apple Health.">Done</button>
+        <button type="button" role="tab" data-step="food" aria-selected="false" tabindex="-1" data-caption="Calories and macros left, at a glance.">Food</button>
+        <button type="button" role="tab" data-step="log" aria-selected="false" tabindex="-1" data-caption="Water, your usual meal or a shake, in one tap.">Quick log</button>
+      </div>
+      <p class="wr-caption" id="wr-caption">Start today's workout, and see what's left to eat.</p>
+    </div>
+  </div>
+</section>
+
 <section class="section" id="reminders" data-word="Reminders" aria-labelledby="reminders-title">
   <div class="wrap">
     <div class="section-head reveal">
@@ -271,7 +314,7 @@
           <div class="lock-date">Monday, October 19</div>
           <div class="lock-time">7:15</div>
           <ol class="notes" aria-live="polite">
-            <li class="note"><img src="images/icon-64.png" alt="" width="34" height="34"><div><div class="note-head"><b>REPETITE</b><span>now</span></div><strong>62 g protein to go today</strong><p>Ideas from what you eat: paneer bhurji (25 g) or Greek yogurt (20 g).</p></div><div class="note-actions"><span>Log food</span></div></li>
+            <li class="note"><img src="images/icon-64.png" alt="" width="34" height="34"><div><div class="note-head"><b>REPETITE</b><span>now</span></div><strong>62 g protein to go today</strong><p>Ideas from what you eat: paneer bhurji (25 g) or Greek yogurt (20 g).</p></div><div class="note-actions"><span>Log paneer bhurji</span><span>In 1 hour</span></div></li>
             <li class="note"><img src="images/icon-64.png" alt="" width="34" height="34"><div><div class="note-head"><b>REPETITE</b><span>5:30 PM</span></div><strong>Upper day today</strong><p>7 exercises, about 55 min. Last time: Bench Press 80 kg × 8.</p></div></li>
             <li class="note"><img src="images/icon-64.png" alt="" width="34" height="34"><div><div class="note-head"><b>REPETITE</b><span>9:00 AM</span></div><strong>No breakfast logged yet</strong><p>Your usual: oats, banana and whey (520 kcal). Log it in one tap, or add something else.</p></div></li>
           </ol>
@@ -295,6 +338,8 @@
           <li class="reveal"><strong>It learns your times</strong><span>No alarms to set.</span></li>
           <li class="reveal"><strong>Gone once it's done</strong><span>Log it and it's cancelled.</span></li>
           <li class="reveal"><strong>One tap from the notification</strong><span>Log my usual, +1 glass, Start workout.</span></li>
+          <li class="reveal"><strong>Reply with what you ate</strong><span>Type "2 roti and dal" and it's logged.</span></li>
+          <li class="reveal"><strong>In 1 hour, or fewer like this</strong><span>Snooze one, or tell it to back off.</span></li>
         </ul>
       </div>
     </div>  </div>
@@ -305,14 +350,15 @@
         <p>Reminders only when something's missing.</p>
       </div>
       <ol class="day-track" aria-label="A day of reminders">
-        <li class="day-card"><time>7:15 AM</time><span class="day-kind">Morning check-in</span><strong>Yesterday: protein hit, Upper done</strong><span>Today: Lower, about 55 min. You've got this, Alex.</span></li>
+        <li class="day-card"><time>7:15 AM</time><span class="day-kind">Morning check-in</span><strong>Morning, Alex ☀️</strong><span>Yesterday: protein ✅ Upper ✅. Today: Lower, 180 g protein. Let's go 🚀</span></li>
         <li class="day-card done"><time>8:40 AM</time><span class="day-kind">You logged breakfast</span><strong>Oats, banana and whey</strong><span>So the 9:00 breakfast reminder never comes.</span></li>
-        <li class="day-card"><time>1:30 PM</time><span class="day-kind">Lunch</span><strong>Lunch o'clock 🍛</strong><span>Your usual: chicken burrito bowl. One tap logs it.</span></li>
-        <li class="day-card"><time>3:00 PM</time><span class="day-kind">Water</span><strong>Water check</strong><span>1.2 of 3 L so far today. +1 glass right from the notification.</span></li>
-        <li class="day-card"><time>5:30 PM</time><span class="day-kind">Workout</span><strong>Leg day is calling 🦵</strong><span>6 exercises, about 55 min. Last time: Squat 100 kg × 6.</span></li>
+        <li class="day-card"><time>1:30 PM</time><span class="day-kind">Lunch</span><strong>Lunch o'clock 🍛</strong><span>One tap logs your usual: chicken burrito bowl. Or reply with what you ate.</span></li>
+        <li class="day-card"><time>3:00 PM</time><span class="day-kind">Water</span><strong>Sip happens 💦</strong><span>1.2 of 3 L so far today. +1 glass logs it right there.</span></li>
+        <li class="day-card"><time>5:30 PM</time><span class="day-kind">Workout</span><strong>Leg day is calling 🦵</strong><span>6 exercises, about 55 min. Last time: Squat 100 kg × 6. Beat it.</span></li>
         <li class="day-card done"><time>6:45 PM</time><span class="day-kind">You finished Lower</span><strong>New best: Squat 102.5 kg × 6</strong><span>So there's no workout nudge tonight.</span></li>
-        <li class="day-card"><time>7:15 PM</time><span class="day-kind">Protein</span><strong>Protein called. You didn't pick up 💪</strong><span>38 g to go, Alex. Paneer bhurji (25 g) would nearly close it.</span></li>
-        <li class="day-card"><time>9:30 PM</time><span class="day-kind">Skincare</span><strong>Night routine</strong><span>4 steps, about 5 minutes. Done ticks them all off.</span></li>
+        <li class="day-card"><time>7:15 PM</time><span class="day-kind">Protein</span><strong>Protein called. You didn't pick up 💪</strong><span>38 g to go, Alex. One tap logs your usual paneer bhurji (25 g).</span></li>
+        <li class="day-card done"><time>8:10 PM</time><span class="day-kind">You hit your protein</span><strong>Protein: done ✅</strong><span>182 g today, Alex. Your muscles say thanks 💪</span></li>
+        <li class="day-card"><time>9:30 PM</time><span class="day-kind">Skincare</span><strong>Your skin is waiting 🌙</strong><span>Night routine: 3 steps left. Done ticks them all off.</span></li>
         <li class="day-card quiet"><time>10:30 PM</time><span class="day-kind">Quiet hours</span><strong>Nothing until morning</strong><span>Your phone stays quiet until 7:00.</span></li>
       </ol>
     </div>
@@ -330,6 +376,7 @@
           <li><span class="ic"><svg><use href="#i-timer"/></svg></span><div><strong>−15 s, +15 s, Skip</strong><span>Without unlocking.</span></div></li>
           <li><span class="ic"><svg><use href="#i-weights"/></svg></span><div><strong>Rest that fits the lift</strong><span>Longer for heavy lifts.</span></div></li>
           <li><span class="ic"><svg><use href="#i-speaker"/></svg></span><div><strong>Pick your sound</strong><span>Five built in, or your own.</span></div></li>
+          <li><span class="ic"><svg><use href="#i-watch"/></svg></span><div><strong>On your Apple Watch too</strong><span>A tap on your wrist when it's up.</span></div></li>
         </ul>
         <div class="sounds">
           <span class="sounds-label" id="sounds-label">Tap to hear</span>
@@ -372,49 +419,6 @@
         <button type="button" class="btn btn-brand" id="rest-start"><svg width="18" height="18" aria-hidden="true"><use href="#i-play"/></svg>Start a 20-second rest</button>
         <p class="rest-hint">Turn your sound on to hear it.</p>
       </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="wrist" data-word="Watch" aria-labelledby="wrist-title">
-  <div class="wrap wr-grid">
-    <div class="reveal">
-      <span class="eyebrow">Apple Watch</span>
-      <h2 id="wrist-title" class="h2">Your workout, on your wrist</h2>
-      <p class="wr-lede">Leave your phone in your bag.</p>
-      <ul class="points">
-        <li><span class="ic"><svg><use href="#i-watch"/></svg></span><div><strong>Log sets with the Crown</strong><span>Weight and reps, no typing.</span></div></li>
-        <li><span class="ic"><svg><use href="#i-timer"/></svg></span><div><strong>Rest that taps your wrist</strong><span>On time, even wrist down.</span></div></li>
-        <li><span class="ic"><svg><use href="#i-heart"/></svg></span><div><strong>Heart rate and calories</strong><span>Saved to Apple Health.</span></div></li>
-        <li><span class="ic"><svg><use href="#i-drop"/></svg></span><div><strong>Food and water at a glance</strong><span>One tap for water or your usual meal.</span></div></li>
-      </ul>
-    </div>
-    <div class="wr-demo reveal" id="wr-demo">
-      <div class="wr-watch">
-        <span class="wr-crown" aria-hidden="true"></span>
-        <span class="wr-side" aria-hidden="true"></span>
-        <div class="wr-screen">
-          <img class="wr-shot is-on" data-step="today" src="images/watch-today.webp" width="208" height="248" alt="Today on the watch: Upper with a Start button, and calories, protein and water left">
-          <img class="wr-shot" data-step="set" src="images/watch-set.webp" width="208" height="248" loading="lazy" alt="Logging a set: bench press at 190 lb for 8 reps, plates per side, and a Log set button">
-          <img class="wr-shot" data-step="rest" src="images/watch-rest.webp" width="208" height="248" loading="lazy" alt="Rest counting down from 1:30, with minus 15, plus 15 and Skip">
-          <img class="wr-shot" data-step="restup" src="images/watch-restup.webp" width="208" height="248" loading="lazy" alt="Rest's up, in orange, with the next set and a Go button">
-          <img class="wr-shot" data-step="best" src="images/watch-best.webp" width="208" height="248" loading="lazy" alt="New best: bench press 190 for 8, beating 185 for 8">
-          <img class="wr-shot" data-step="done" src="images/watch-done.webp" width="208" height="248" loading="lazy" alt="Workout done: 21 sets, 18,240 lb lifted, average heart rate 132, 412 active calories">
-          <img class="wr-shot" data-step="food" src="images/watch-food.webp" width="208" height="248" loading="lazy" alt="Food: 831 calories left, with protein, carbs and fat">
-          <img class="wr-shot" data-step="log" src="images/watch-log.webp" width="208" height="248" loading="lazy" alt="Quick log: your usual lunch, a whey shake and a glass of water">
-        </div>
-      </div>
-      <div class="wr-steps" role="tablist" aria-label="Watch screens">
-        <button type="button" role="tab" data-step="today" aria-selected="true" data-caption="Start today's workout, and see what's left to eat.">Today</button>
-        <button type="button" role="tab" data-step="set" aria-selected="false" tabindex="-1" data-caption="Turn the Crown for the weight. Plates per side included.">Log a set</button>
-        <button type="button" role="tab" data-step="rest" aria-selected="false" tabindex="-1" data-caption="Rest counts down by itself. Add 15 seconds, or skip.">Rest</button>
-        <button type="button" role="tab" data-step="restup" aria-selected="false" tabindex="-1" data-caption="A tap on your wrist when rest is up, even wrist down.">Rest's up</button>
-        <button type="button" role="tab" data-step="best" aria-selected="false" tabindex="-1" data-caption="Beat your best and the watch says so.">New best</button>
-        <button type="button" role="tab" data-step="done" aria-selected="false" tabindex="-1" data-caption="Heart rate and calories, saved to Apple Health.">Done</button>
-        <button type="button" role="tab" data-step="food" aria-selected="false" tabindex="-1" data-caption="Calories and macros left, at a glance.">Food</button>
-        <button type="button" role="tab" data-step="log" aria-selected="false" tabindex="-1" data-caption="Water, your usual meal or a shake, in one tap.">Quick log</button>
-      </div>
-      <p class="wr-caption" id="wr-caption">Start today's workout, and see what's left to eat.</p>
     </div>
   </div>
 </section>

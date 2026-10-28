@@ -687,7 +687,7 @@
     var tones = {
       playful: [
         ["Rise and dine, Alex ☀️", "Your usual: " + usual + ". One tap and breakfast is logged."],
-        ["Leg day is calling 🦵", "It's not taking no for an answer. 6 exercises, about 55 min."],
+        ["Leg day is calling 🦵", "It's not taking no for an answer. 6 exercises, about 55 min. Last time: Squat 100 kg × 6. Beat it."],
         ["Protein called. You didn't pick up 💪", "62 g to go, Alex. " + ideas]
       ],
       friendly: [
@@ -703,13 +703,14 @@
       tough: [
         ["Alex, breakfast won't log itself", "Your usual: " + usual + ". One tap. Do it now."],
         ["Alex, it's Lower day", "6 exercises, about 55 min. Last time: Squat 100 kg × 6. Beat it."],
-        ["62 g protein still missing", "Muscle doesn't grow on good intentions, Alex. Paneer bhurji (25 g) or Greek yogurt (20 g)."]
+        ["62 g protein still missing", "Muscle doesn't grow on good intentions, Alex. " + ideas]
       ]
     };
+    // The first two of each reminder's buttons in the app (NudgeScheduler).
     var slots = [
-      { time: "9:00", label: "9:00 AM", actions: ["Log my usual"] },
-      { time: "5:30", label: "5:30 PM", actions: ["Start workout"] },
-      { time: "7:15", label: "7:15 PM", actions: ["Log food"] }
+      { time: "9:00", label: "9:00 AM", actions: ["Log my usual", "Type what you ate"] },
+      { time: "5:30", label: "5:30 PM", actions: ["Start workout", "In 1 hour"] },
+      { time: "7:15", label: "7:15 PM", actions: ["Log paneer bhurji", "In 1 hour"] }
     ];
     var tone = "playful";
     var list = $(".notes", lock);
