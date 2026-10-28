@@ -2138,6 +2138,54 @@
     });
   }
 
+  // ---------- Apple Watch: the watch app's screens ----------
+  // The tabs, or a tap on the screen, step through them. While on screen it
+  // moves on by itself (not with Reduce Motion), holding still under the
+  // pointer and for a while after a tap; the caption is read out only after
+  // a tap, so the slideshow doesn't keep talking.
+  var wr = $("#wr-demo");
+  if (wr) {
+    var wrTabs = $all('[role="tab"]', wr);
+    var wrShots = $all(".wr-shot", wr);
+    var wrCaption = $("#wr-caption");
+    var wrIndex = 0, wrSeen = false, wrHover = false, wrHeldUntil = 0;
+    var showWr = function (i, focus) {
+      wrIndex = (i + wrTabs.length) % wrTabs.length;
+      var step = wrTabs[wrIndex].getAttribute("data-step");
+      wrTabs.forEach(function (tab, n) {
+        tab.setAttribute("aria-selected", n === wrIndex ? "true" : "false");
+        tab.tabIndex = n === wrIndex ? 0 : -1;
+      });
+      wrShots.forEach(function (shot) { shot.classList.toggle("is-on", shot.getAttribute("data-step") === step); });
+      wrCaption.textContent = wrTabs[wrIndex].getAttribute("data-caption");
+      if (focus) wrTabs[wrIndex].focus();
+    };
+    var wrPick = function (i, focus) {
+      wrHeldUntil = Date.now() + 9000;
+      wrCaption.setAttribute("aria-live", "polite");
+      showWr(i, focus);
+    };
+    wrTabs.forEach(function (tab, i) {
+      tab.addEventListener("click", function () { wrPick(i); });
+      tab.addEventListener("keydown", function (e) {
+        var to = e.key === "ArrowRight" ? wrIndex + 1 : e.key === "ArrowLeft" ? wrIndex - 1
+          : e.key === "Home" ? 0 : e.key === "End" ? wrTabs.length - 1 : null;
+        if (to === null) return;
+        e.preventDefault();
+        wrPick(to, true);
+      });
+    });
+    $(".wr-screen", wr).addEventListener("click", function () { wrPick(wrIndex + 1); });
+    wr.addEventListener("mouseenter", function () { wrHover = true; });
+    wr.addEventListener("mouseleave", function () { wrHover = false; });
+    if (!reduceMotion && "IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) { wrSeen = entries[0].isIntersecting; }, { threshold: 0.4 }).observe(wr);
+      setInterval(function () {
+        if (wrSeen && !wrHover && !document.hidden && Date.now() > wrHeldUntil) showWr(wrIndex + 1);
+      }, 2800);
+    }
+  }
+
   // ---------- Run the scroll motion ----------
   // With Lenis it runs on Lenis's own frames, in step with the glide.
   if (!reduceMotion && scrollFx.length) {

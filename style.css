@@ -1995,3 +1995,39 @@ main { position: relative; }
   .demo.play .demo-shot.on .spot.hot { animation: none; }
   .demo-confetti { display: none; }
 }
+
+/* ---------- Apple Watch ---------- */
+/* The watch app's real screens (images/watch-*.webp, 416×496 from the
+   watch simulator) in a drawn watch: a dark case, crown and side button,
+   and an orange sport band. The bands sit behind the case (.wr-demo is
+   their stacking context). */
+.wr-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 64px; align-items: center; }
+.wr-grid .h2 { font-size: clamp(34px, 4.6vw, 56px); line-height: 1.04; letter-spacing: -0.04em; margin-top: 16px; }
+.wr-lede { color: var(--text-2); font-size: 19px; margin-top: 18px; max-width: 46ch; }
+.wr-demo { position: relative; isolation: isolate; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+.wr-watch {
+  position: relative; margin: 70px 0; padding: 13px; border-radius: 62px; background: #1B1715;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.12), inset 0 0 0 6px #0B0908, var(--shadow);
+}
+.wr-watch::before, .wr-watch::after {
+  content: ""; position: absolute; z-index: -1; left: 34px; right: 34px; height: 108px; background: var(--brand-2);
+}
+.wr-watch::before { bottom: calc(100% - 34px); border-radius: 28px 28px 6px 6px; }
+.wr-watch::after { top: calc(100% - 34px); border-radius: 6px 6px 28px 28px; }
+.wr-crown {
+  position: absolute; right: -10px; top: 74px; width: 12px; height: 40px; border-radius: 5px; background: #2B2522;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+.wr-side { position: absolute; right: -7px; top: 136px; width: 8px; height: 54px; border-radius: 4px; background: #2B2522; }
+.wr-screen { position: relative; width: 208px; height: 248px; border-radius: 44px; overflow: hidden; background: #000; cursor: pointer; }
+.wr-shot { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.35s ease; }
+.wr-shot.is-on { opacity: 1; }
+.wr-steps { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 470px; }
+.wr-steps button {
+  border: 0; cursor: pointer; padding: 9px 14px; border-radius: 999px; font: inherit; font-size: 14px; font-weight: 500;
+  color: var(--text-2); background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--border);
+}
+.wr-steps button[aria-selected="true"] { color: var(--bg); background: var(--brand); box-shadow: none; }
+.wr-caption { margin: 0; min-height: 1.5em; color: var(--text-2); font-size: 16px; text-align: center; max-width: 40ch; }
+@media (max-width: 900px) { .wr-grid { grid-template-columns: 1fr; gap: 24px; } }
+@media (prefers-reduced-motion: reduce) { .wr-shot { transition: none; } }
