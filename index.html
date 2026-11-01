@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="style.css?v=d9a17bf7e3">
 <script src="vendor/lenis.min.js" defer></script>
 <script src="vendor/lenis-snap.min.js" defer></script>
-<script src="site.js?v=1771317e26" defer></script>
+<script src="site.js?v=b170406626" defer></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -533,14 +533,14 @@
       <div class="segmented" role="tablist" aria-label="Billing" id="billing">
         <span class="seg-pill" aria-hidden="true"></span>
         <button role="tab" type="button" data-billing="monthly" aria-selected="false" tabindex="-1">Monthly</button>
-        <button role="tab" type="button" data-billing="yearly" aria-selected="true">Yearly <span class="save">Save 48%</span></button>
+        <button role="tab" type="button" data-billing="yearly" aria-selected="true">Yearly <span class="save" data-inr="Save 50%">Save 48%</span></button>
       </div>
     </div>
     <div class="plans" id="plans" data-billing="yearly">
       <div class="plan free reveal" data-plan="free">
         <div class="plan-top">
           <h3>Free</h3>
-          <p class="price"><span class="cur">$</span><span class="amount">0</span><span class="per">forever</span></p>
+          <p class="price"><span class="cur" data-inr="₹">$</span><span class="amount">0</span><span class="per">forever</span></p>
           <p class="price-sub">No card. No account. No ads.</p>
         </div>
         <ul>
@@ -558,8 +558,8 @@
         <div class="plan-top">
           <div class="plan-tags"><span class="tag">PRO</span><span class="tag ghost" id="best-value">Best value</span></div>
           <h3>Repetite Pro</h3>
-          <p class="price"><span class="cur">$</span><span class="amount" id="pro-amount" data-monthly="7.99" data-yearly="4.17">4.17</span><span class="per">/ month</span></p>
-          <p class="price-sub" id="pro-sub" data-monthly="Billed monthly. Cancel anytime." data-yearly="$49.99 billed yearly. Cancel anytime.">$49.99 billed yearly. Cancel anytime.</p>
+          <p class="price"><span class="cur" data-inr="₹">$</span><span class="amount" id="pro-amount" data-monthly="7.99" data-yearly="4.17" data-inr-monthly="249" data-inr-yearly="125">4.17</span><span class="per">/ month</span></p>
+          <p class="price-sub" id="pro-sub" data-monthly="Billed monthly. Cancel anytime." data-yearly="$49.99 billed yearly. Cancel anytime." data-inr-monthly="Billed monthly. Cancel anytime." data-inr-yearly="₹1,499 billed yearly. Cancel anytime.">$49.99 billed yearly. Cancel anytime.</p>
         </div>
         <ul>
           <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Everything in Free, plus:</span></li>
@@ -584,7 +584,7 @@
       <div class="fit-scale" aria-hidden="true"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
       <p class="fit-answer" id="fit-answer" aria-live="polite"></p>
     </div>
-    <p class="price-note reveal">US prices. Cancel any time in the App Store.</p>
+    <p class="price-note reveal" data-inr="Prices in India. Cancel any time in the App Store.">US prices. Cancel any time in the App Store.</p>
   </div>
 </section>
 

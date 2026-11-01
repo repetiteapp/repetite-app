@@ -1217,22 +1217,45 @@
   // ---------- Pricing: monthly or yearly, and which plan fits ----------
   var billing = $("#billing");
   var plansBox = $("#plans");
+  // Visitors in India see India's prices in rupees (whole numbers): its
+  // time zone, or an Indian language setting. Elements carry the rupee
+  // text in data-inr (and the amounts in data-inr-monthly/-yearly); without
+  // this script the page shows US prices.
+  var inIndia = (function () {
+    try {
+      var zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (zone === "Asia/Kolkata" || zone === "Asia/Calcutta") return true;
+    } catch (e) {}
+    return (navigator.languages || [navigator.language]).some(function (l) { return /-IN$/i.test(l || ""); });
+  })();
+  var priceDecimals = inIndia ? 0 : 2;
+  if (inIndia) {
+    $all("[data-inr]").forEach(function (el) { el.textContent = el.getAttribute("data-inr"); });
+    $all("[data-inr-monthly]").forEach(function (el) {
+      el.setAttribute("data-monthly", el.getAttribute("data-inr-monthly"));
+      el.setAttribute("data-yearly", el.getAttribute("data-inr-yearly"));
+    });
+    var shownAmount = $("#pro-amount");
+    var shownSub = $("#pro-sub");
+    if (shownAmount) shownAmount.textContent = shownAmount.getAttribute("data-yearly");
+    if (shownSub) shownSub.textContent = shownSub.getAttribute("data-yearly");
+  }
   if (billing && plansBox) {
     var proAmount = $("#pro-amount");
     var proSub = $("#pro-sub");
     function rollTo(el, to) {
       var from = parseFloat(el.textContent) || 0;
-      if (reduceMotion) { el.textContent = to.toFixed(2); return; }
+      if (reduceMotion) { el.textContent = to.toFixed(priceDecimals); return; }
       var start = performance.now();
       function frame(now) {
         var t = Math.min(1, (now - start) / 480);
         var eased = 1 - Math.pow(1 - t, 3);
-        el.textContent = (from + (to - from) * eased).toFixed(2);
+        el.textContent = (from + (to - from) * eased).toFixed(priceDecimals);
         if (t < 1) requestAnimationFrame(frame);
       }
       requestAnimationFrame(frame);
       // Lands on the exact price even if frames were skipped (a hidden tab).
-      setTimeout(function () { el.textContent = to.toFixed(2); }, 520);
+      setTimeout(function () { el.textContent = to.toFixed(priceDecimals); }, 520);
     }
     function setBilling(mode) {
       plansBox.setAttribute("data-billing", mode);
