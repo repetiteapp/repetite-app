@@ -595,7 +595,7 @@
       note(text);
     };
     if (demoConfetti) {
-      var bitColors = ["var(--brand)", "var(--brand-3)", "#E9B44C", "#2E8A7A", "var(--text)"];
+      var bitColors = ["var(--brand)", "var(--brand-3)", "#FFB25B", "#FF4F1F", "var(--text)"];
       for (var b = 0; b < 16; b++) {
         var bit = document.createElement("i");
         bit.style.left = (4 + b * 6) + "%";
@@ -1265,7 +1265,7 @@
         var meals = parseInt(fitInput.value, 10);
         var pro = meals > 3;
         fitBox.style.setProperty("--fill", (meals / 6 * 100) + "%");
-        fitBox.style.setProperty("--fit-color", pro ? "var(--brand)" : "var(--ok)");
+        fitBox.style.setProperty("--fit-color", pro ? "var(--brand)" : "var(--text-2)");
         if (meals === 0) {
           fitAnswer.innerHTML = "<b>Free</b> is all you need. The 12,000+ built-in foods and the barcode scanner have no limits.";
         } else if (!pro) {
