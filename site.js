@@ -64,9 +64,37 @@
     });
   }
   function clamp01(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
+  // Measuring a box right after moving something makes the browser lay
+  // the page out again, once per measurement: ten effects each measuring
+  // after the last one wrote is what makes scrolling stutter on phones. So
+  // the scroll loop measures every box it needs once, first (`runFx` fills
+  // `frameRects` from `measured`), and the effects read that (`rectOf`).
+  var frameRects = null, measured = [];
+  function rectOf(el) {
+    var r = frameRects && frameRects.get(el);
+    if (r) return r;
+    r = el.getBoundingClientRect();
+    if (frameRects) frameRects.set(el, r);
+    if (measured.indexOf(el) < 0) measured.push(el);
+    return r;
+  }
+  // Sizes that change only when the layout does (a resize, the fonts
+  // arriving, a section pinning): read once, forgotten when the element
+  // resizes or the window does.
+  var sizes = new Map();
+  var sizeRO = "ResizeObserver" in window
+    ? new ResizeObserver(function (entries) { entries.forEach(function (e) { sizes.delete(e.target); }); })
+    : null;
+  window.addEventListener("resize", function () { sizes.clear(); });
+  function sizeOf(el, prop) {
+    var s = sizes.get(el);
+    if (!s) { s = {}; sizes.set(el, s); if (sizeRO) sizeRO.observe(el); }
+    if (!sizeRO || !(prop in s)) s[prop] = el[prop];
+    return s[prop];
+  }
   function progressOf(el, start, end) {
     var vh = window.innerHeight;
-    return clamp01((start * vh - el.getBoundingClientRect().top) / ((start - end) * vh));
+    return clamp01((start * vh - rectOf(el).top) / ((start - end) * vh));
   }
   // Scroll motion writes CSS variables through this: only when the value
   // changes, and on the element that uses it. A variable set on a big parent
@@ -296,7 +324,7 @@
     if (spots.length) {
       var line = window.innerHeight * 0.42;
       var current = null;
-      spots.forEach(function (spot) { if (spot.el.getBoundingClientRect().top <= line) current = spot; });
+      spots.forEach(function (spot) { if (rectOf(spot.el).top <= line) current = spot; });
       showSpot(current);
     }
   }
@@ -439,7 +467,7 @@
     var pinned = false;
     var STICK_TOP = 84;
     var tourTimer = $(".tour-timer", tour);
-    function tourDistance() { return Math.max(1, tourBody.offsetHeight - tourStick.offsetHeight); }
+    function tourDistance() { return Math.max(1, sizeOf(tourBody, "offsetHeight") - sizeOf(tourStick, "offsetHeight")); }
     function scrollToStep(i) {
       var top = tourBody.getBoundingClientRect().top + window.scrollY - STICK_TOP + tourDistance() * (i + 0.5) / tabs.length;
       scrollToY(top);
@@ -534,7 +562,7 @@
     setPinned();
     scrollFx.push(function () {
       if (!pinned) return;
-      var p = clamp01((STICK_TOP - tourBody.getBoundingClientRect().top) / tourDistance());
+      var p = clamp01((STICK_TOP - rectOf(tourBody).top) / tourDistance());
       setVar(tourTimer || tour, "--tp", p.toFixed(3));
       var i = Math.min(tabs.length - 1, Math.floor(p * tabs.length));
       if (i !== tourIndex) select(tabs[i]);
@@ -645,7 +673,7 @@
         showScreen(step.getAttribute("data-screen"));
       }
     };
-    var demoDistance = function () { return Math.max(1, demo.offsetHeight - demoStick.offsetHeight); };
+    var demoDistance = function () { return Math.max(1, sizeOf(demo, "offsetHeight") - sizeOf(demoStick, "offsetHeight")); };
     var demoStepY = function (i) {
       return demo.getBoundingClientRect().top + window.scrollY - DEMO_TOP + demoDistance() * (i + 0.5) / DEMO_STEPS;
     };
@@ -658,7 +686,7 @@
     };
     var demoScroll = function () {
       if (!demoPinned) return;
-      var p = clamp01((DEMO_TOP - demo.getBoundingClientRect().top) / demoDistance());
+      var p = clamp01((DEMO_TOP - rectOf(demo).top) / demoDistance());
       setStep(Math.min(DEMO_STEPS - 1, Math.floor(p * DEMO_STEPS)));
     };
     var setDemoPinned = function () {
@@ -1544,8 +1572,8 @@
     if (heroQuery.addEventListener) heroQuery.addEventListener("change", heroLayout);
     scrollFx.push(function () {
       var p = hero.classList.contains("pinned")
-        ? clamp01(window.scrollY / Math.max(1, hero.offsetHeight - window.innerHeight))
-        : clamp01(window.scrollY / (hero.offsetHeight * 0.85));
+        ? clamp01(window.scrollY / Math.max(1, sizeOf(hero, "offsetHeight") - window.innerHeight))
+        : clamp01(window.scrollY / (sizeOf(hero, "offsetHeight") * 0.85));
       setVar(hero, "--hp", p.toFixed(3));
     });
   }
@@ -1920,9 +1948,9 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(dayLayout);
     scrollFx.push(function () {
       if (!dayPinned) return;
-      var distance = Math.max(1, dayScroller.offsetHeight - daySticky.offsetHeight);
-      var p = clamp01((84 - dayScroller.getBoundingClientRect().top) / distance);
-      dayTrack.style.transform = "translateX(" + (-p * Math.max(0, dayTrack.scrollWidth - dayTrack.clientWidth)).toFixed(1) + "px)";
+      var distance = Math.max(1, sizeOf(dayScroller, "offsetHeight") - sizeOf(daySticky, "offsetHeight"));
+      var p = clamp01((84 - rectOf(dayScroller).top) / distance);
+      dayTrack.style.transform = "translateX(" + (-p * Math.max(0, sizeOf(dayTrack, "scrollWidth") - sizeOf(dayTrack, "clientWidth"))).toFixed(1) + "px)";
       var now = Math.round(p * (dayCards.length - 1));
       dayCards.forEach(function (card, i) { card.classList.toggle("now", i === now); });
     });
@@ -1933,14 +1961,17 @@
     var mq = $(".marquee");
     var mqTrack = $(".marquee-track");
     if (mq && mqTrack) {
-      var mqPos = 0, mqLast = 0, mqDir = 1, mqOn = true, mqHover = false;
+      var mqPos = 0, mqLast = 0, mqDir = 1, mqHover = false;
+      // Off until the observer sees the strip (or on at once without one).
+      var mqOn = !("IntersectionObserver" in window);
       var mqTick = function (now) {
         var dt = mqLast ? Math.min(0.05, (now - mqLast) / 1000) : 0;
         mqLast = now;
         var v = lenis.velocity || 0;
         if (Math.abs(v) > 0.5) mqDir = v > 0 ? 1 : -1;
         var speed = mqHover ? 0 : 42 + Math.min(900, Math.abs(v) * 26);
-        var half = mqTrack.scrollWidth / 2 + 5;
+        // Remembered, not measured each frame (it would lay the page out).
+        var half = sizeOf(mqTrack, "scrollWidth") / 2 + 5;
         mqPos -= speed * mqDir * dt;
         if (mqPos <= -half) mqPos += half;
         if (mqPos > 0) mqPos -= half;
@@ -1956,7 +1987,9 @@
       }
       mq.addEventListener("pointerenter", function () { mqHover = true; });
       mq.addEventListener("pointerleave", function () { mqHover = false; });
-      requestAnimationFrame(mqTick);
+      // Started by the observer when the strip comes on screen; at load it
+      // would measure the half-built page during the hero's entrance.
+      if (!("IntersectionObserver" in window)) requestAnimationFrame(mqTick);
     }
     // Only the headings on screen lean, skewed directly.
     var leaners = $all(".section-head h2, .h2, .rest-panel h2, .privacy-panel h2");
@@ -2064,7 +2097,9 @@
       flowLen = trail.getTotalLength();
       trail.style.strokeDasharray = flowLen;
       flowTable = [];
-      for (var k = 0; k <= 400; k++) { var L = flowLen * k / 400; flowTable.push([L, trail.getPointAtLength(L).y]); }
+      // 160 samples, read between by lengthAtY: the curves are gentle, and
+      // each sample walks the path, so 400 cost more than the build itself.
+      for (var k = 0; k <= 160; k++) { var L = flowLen * k / 160; flowTable.push([L, trail.getPointAtLength(L).y]); }
       // The band of the day's cards, where the line passes under them. (While
       // pinned the cards sit in the sticky part, measured from its top, as
       // the sticky part's own offset moves.)
@@ -2093,20 +2128,31 @@
       var dy = t[hi][1] - t[lo][1];
       return t[lo][0] + (dy > 0 ? (y - t[lo][1]) / dy : 0) * (t[hi][0] - t[lo][0]);
     };
-    buildFlow();
-    window.addEventListener("resize", function () { setTimeout(buildFlow, 150); });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(buildFlow);
-    window.addEventListener("load", buildFlow);
-    if ("ResizeObserver" in window) { var flowRO = null; new ResizeObserver(function () { clearTimeout(flowRO); flowRO = setTimeout(buildFlow, 200); }).observe(mainEl); }
+    // Every reason to rebuild (fonts and images arriving, the page or the
+    // window changing size) comes here and makes one build, on idle time,
+    // and none while the hero's entrance plays (it starts within about a
+    // second and lasts under two): the line is for the sections below.
+    var flowFrom = performance.now() + 3000, flowTimer = 0;
+    var scheduleFlow = function (delay) {
+      clearTimeout(flowTimer);
+      flowTimer = setTimeout(function () {
+        if ("requestIdleCallback" in window) requestIdleCallback(buildFlow, { timeout: 600 }); else buildFlow();
+      }, Math.max(delay || 0, flowFrom - performance.now()));
+    };
+    scheduleFlow();
+    window.addEventListener("resize", function () { scheduleFlow(150); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { scheduleFlow(); });
+    window.addEventListener("load", function () { scheduleFlow(); });
+    if ("ResizeObserver" in window) new ResizeObserver(function () { scheduleFlow(200); }).observe(mainEl);
     scrollFx.push(function () {
       if (!flowOn || !flowLen) return;
       var shift = 0;
-      holds.forEach(function (h) { shift += Math.min(h.extra, Math.max(0, h.stickTop - h.part.getBoundingClientRect().top)); });
+      holds.forEach(function (h) { shift += Math.min(h.extra, Math.max(0, h.stickTop - rectOf(h.part).top)); });
       if (shift.toFixed(1) !== flowShift) {
         flowShift = shift.toFixed(1);
         flow.style.transform = "translate3d(0, " + flowShift + "px, 0)";
       }
-      var tipY = window.innerHeight * 0.62 - mainEl.getBoundingClientRect().top - shift;
+      var tipY = window.innerHeight * 0.62 - rectOf(mainEl).top - shift;
       // Over the day's cards the head waits on their timeline (13px above
       // them), then pops out below.
       var waiting = !!flowBand && tipY > flowBand[0] - 13 && tipY < flowBand[1] + 14;
@@ -2133,7 +2179,7 @@
       var word = $(":scope > .sec-word", sec);
       var receding = false;
       scrollFx.push(function () {
-        var r = sec.getBoundingClientRect(), vh = window.innerHeight;
+        var r = rectOf(sec), vh = window.innerHeight;
         if (r.bottom < -vh || r.top > vh * 2) return;
         if (night[sec.id]) {
           var nIn = clamp01((vh * 0.9 - r.top) / (vh * 0.45)), nOut = clamp01((r.bottom - vh * 0.1) / (vh * 0.45));
@@ -2210,13 +2256,31 @@
     }
   }
 
+  // ---------- Start the hero's entrance once the page has settled ----------
+  // (style.css holds it paused until html.go): after this script's setup
+  // and two drawn frames, and the fonts if they come within 800 ms (their arrival re-lays the page out).
+  (function () {
+    var started = false;
+    var go = function () {
+      if (started) return;
+      started = true;
+      requestAnimationFrame(function () { requestAnimationFrame(function () { document.documentElement.classList.add("go"); }); });
+    };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(go);
+    setTimeout(go, 800);
+  })();
+
   // ---------- Run the scroll motion ----------
   // With Lenis it runs on Lenis's own frames, in step with the glide.
   if (!reduceMotion && scrollFx.length) {
     var fxQueued = false;
     var runFx = function () {
       fxQueued = false;
+      // Measure everything first, then let the effects write.
+      frameRects = new Map();
+      measured.forEach(function (el) { frameRects.set(el, el.getBoundingClientRect()); });
       scrollFx.forEach(function (fn) { fn(); });
+      frameRects = null;
     };
     var queueFx = function () {
       if (!fxQueued) { fxQueued = true; requestAnimationFrame(runFx); }

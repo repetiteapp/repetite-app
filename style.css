@@ -1640,7 +1640,13 @@ h1[tabindex="-1"]:focus-visible, h2[tabindex="-1"]:focus-visible { outline: 2px 
 @keyframes hero-banner { from { opacity: 0; transform: translateY(-28px) scale(0.9); filter: blur(6px); } }
 
 /* Scrolling: everyone gets a gentle exit; big screens get the held scene. */
-.hero-spin { rotate: calc(var(--hp, 0) * 120deg); }
+/* Its own layer: the blurred arcs are drawn once and only turned, instead
+   of the blur being redrawn for every scroll step. */
+.hero-spin { rotate: calc(var(--hp, 0) * 120deg); will-change: rotate, scale; }
+/* The entrance waits for the page to settle (html.go, from site.js once the
+   first frames are drawn; the head's script adds it after 1.5 s whatever
+   happens), so it doesn't play over the page's first layout and stutter. */
+html.js:not(.go) .hero, html.js:not(.go) .hero * { animation-play-state: paused !important; }
 .hero.pinned { height: 175vh; padding: 0; overflow: clip; }
 .hero.pinned .hero-stage { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; padding-top: 70px; overflow: hidden; }
 .hero.pinned .wrap { width: 100%; }
